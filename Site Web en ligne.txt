@@ -1,0 +1,9 @@
+1. cmd
+
+2. target folder
+cd C:\Users\Administrator\OneDrive\Desktop\MyTask-Ma tâche
+
+3.python -m http.server 8000
+
+4. http://localhost:8000/your file name.html
+
