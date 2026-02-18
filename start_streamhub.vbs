@@ -24,7 +24,7 @@ End If
 
 ' 如果還是找不到，使用預設瀏覽器
 If CreateObject("Scripting.FileSystemObject").FileExists(chromePath) Then
-    WshShell.Run """" & chromePath & """ http://localhost:8000/Stream-hub_Ver-19_2_with_98-XP_sound-Smooth-Slide-bar.html"
+    WshShell.Run """" & chromePath & """ http://localhost:8000/Stream-hub_Ver-21_2_with_98-XP_sound-Smooth-Carousel_Securd.html"
 Else
-    WshShell.Run "http://localhost:8000/Stream-hub_Ver-19_2_with_98-XP_sound-Smooth-Slide-bar.html"
+    WshShell.Run "http://localhost:8000/Stream-hub_Ver-21_2_with_98-XP_sound-Smooth-Slide-bar.html"
 End If
