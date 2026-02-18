@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTX 5090 — Maison Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0a0a0a;
+            --white: #fafaf8;
+            --cream: #f5f3ef;
+            --gold: #c9a96e;
+            --mid-gray: #888;
+            --light-gray: #d8d5d0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ── */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 48px;
+            background: rgba(250, 250, 248, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .site-header .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: 1.05rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--black);
+            text-decoration: none;
+        }
+
+        .site-header nav {
+            display: flex;
+            gap: 36px;
+        }
+
+        .site-header nav a {
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .site-header nav a:hover { color: var(--black); }
+
+        /* ── HERO ── */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 60px;
+            text-align: center;
+            background-color: var(--cream);
+            border-bottom: 1px solid var(--light-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 119px,
+                rgba(0,0,0,0.03) 119px,
+                rgba(0,0,0,0.03) 120px
+            );
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            letter-spacing: 0.08em;
+            line-height: 1.1;
+            color: var(--black);
+            margin-bottom: 16px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            font-weight: 300;
+            color: var(--mid-gray);
+        }
+
+        .hero-sub {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            font-weight: 300;
+        }
+
+        .hero-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin: 28px auto;
+        }
+
+        /* ── GRID ── */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .section-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            text-align: center;
+            margin: 60px 0 40px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--light-gray);
+            border: 1px solid var(--light-gray);
+        }
+
+        .search-card {
+            background: var(--white);
+            padding: 36px 28px;
+            transition: background 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-card:hover {
+            background: var(--cream);
+        }
+
+        .country-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .flag-box {
+            width: 28px;
+            height: 20px;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            letter-spacing: 0.05em;
+            color: var(--white);
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .country-info h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 1.05rem;
+            letter-spacing: 0.05em;
+            color: var(--black);
+            line-height: 1.2;
+        }
+
+        .country-info .domain {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            margin-top: 2px;
+            font-weight: 300;
+        }
+
+        .search-button {
+            display: block;
+            width: 100%;
+            padding: 11px 16px;
+            background: transparent;
+            color: var(--black);
+            border: 1px solid var(--black);
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--black);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s ease;
+            z-index: 0;
+        }
+
+        .search-button span {
+            position: relative;
+            z-index: 1;
+            transition: color 0.35s ease;
+        }
+
+        .search-button:hover::after { transform: scaleX(1); }
+        .search-button:hover span { color: var(--white); }
+
+        /* ── OPEN ALL ── */
+        .open-all-section {
+            text-align: center;
+            padding: 60px 0 20px;
+        }
+
+        .open-all-btn {
+            display: inline-block;
+            padding: 16px 52px;
+            background: var(--black);
+            color: var(--white);
+            border: 1px solid var(--black);
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .open-all-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+            z-index: 0;
+        }
+
+        .open-all-btn span {
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s ease;
+        }
+
+        .open-all-btn:hover::after { transform: scaleX(1); }
+        .open-all-btn:hover span { color: var(--black); }
+
+        /* ── INFO ── */
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 2px 1fr;
+            gap: 0 48px;
+            padding: 72px 0 80px;
+            align-items: start;
+        }
+
+        .info-divider {
+            width: 1px;
+            height: 100%;
+            background: var(--light-gray);
+            justify-self: center;
+        }
+
+        .info-block h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: 1.6rem;
+            letter-spacing: 0.08em;
+            color: var(--black);
+            margin-bottom: 20px;
+        }
+
+        .info-block p {
+            font-size: 0.78rem;
+            font-weight: 300;
+            line-height: 1.9;
+            color: #555;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+        }
+
+        .info-block strong {
+            font-weight: 500;
+            color: var(--black);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--light-gray);
+            padding: 28px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cream);
+        }
+
+        footer p {
+            font-size: 0.58rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            font-weight: 300;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .search-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .search-grid { grid-template-columns: 1fr; }
+            .site-header { padding: 16px 24px; }
+            .site-header nav { display: none; }
+            .container { padding: 0 20px; }
+            .info-section { grid-template-columns: 1fr; }
+            .info-divider { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <a href="#" class="logo">Maison Search</a>
+        <nav>
+            <a href="#">Collections</a>
+            <a href="#">Regions</a>
+            <a href="#">Availability</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <p class="hero-eyebrow">Exclusive Release · 2025</p>
+        <h1>RTX 5090<br><em>Search the World</em></h1>
+        <div class="hero-divider"></div>
+        <p class="hero-sub">Couture Boutiques</p>
+    </section>
+
+    <!-- GRID -->
+    <div class="container">
+        <p class="section-label">Select Your Region</p>
+
+        <div class="search-grid">
+
+            <div class="search-card" style="animation-delay: 0.05s">
+                <div class="country-header">
+                    <div class="flag-box">US</div>
+                    <div class="country-info">
+                        <h3>États-Unis</h3>
+                        <span class="domain">amazon.com</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.com/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.12s">
+                <div class="country-header">
+                    <div class="flag-box">UK</div>
+                    <div class="country-info">
+                        <h3>Royaume-Uni</h3>
+                        <span class="domain">amazon.co.uk</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.co.uk/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.19s">
+                <div class="country-header">
+                    <div class="flag-box">DE</div>
+                    <div class="country-info">
+                        <h3>Allemagne</h3>
+                        <span class="domain">amazon.de</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.de/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.26s">
+                <div class="country-header">
+                    <div class="flag-box">FR</div>
+                    <div class="country-info">
+                        <h3>France</h3>
+                        <span class="domain">amazon.fr</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.fr/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.33s">
+                <div class="country-header">
+                    <div class="flag-box">ES</div>
+                    <div class="country-info">
+                        <h3>Espagne</h3>
+                        <span class="domain">amazon.es</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.es/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.40s">
+                <div class="country-header">
+                    <div class="flag-box">SE</div>
+                    <div class="country-info">
+                        <h3>Suède</h3>
+                        <span class="domain">amazon.se</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.se/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.47s">
+                <div class="country-header">
+                    <div class="flag-box">IT</div>
+                    <div class="country-info">
+                        <h3>Italie</h3>
+                        <span class="domain">amazon.it</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.it/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+            <div class="search-card" style="animation-delay: 0.54s">
+                <div class="country-header">
+                    <div class="flag-box">JP</div>
+                    <div class="country-info">
+                        <h3>Japon</h3>
+                        <span class="domain">amazon.co.jp</span>
+                    </div>
+                </div>
+                <a href="https://www.amazon.co.jp/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss_1" target="_blank" class="search-button"><span>Explore</span></a>
+            </div>
+
+        </div>
+
+        <!-- OPEN ALL -->
+        <div class="open-all-section">
+            <button class="open-all-btn" onclick="openAllSearches()">
+                <span>Open All Regions Simultaneously</span>
+            </button>
+        </div>
+
+        <!-- INFO -->
+        <div class="info-section">
+            <div class="info-block">
+                <h2>About the<br><em>Release</em></h2>
+                <p>The RTX 5090 represents the pinnacle of the Blackwell generation — a statement piece for those who demand the extraordinary. Built for the most discerning.</p>
+                <p>Availability varies by region. We recommend checking all boutiques simultaneously for the most complete picture.</p>
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-block">
+                <h2>How to<br><em>Discover</em></h2>
+                <p>Select your preferred region above to browse local availability, or use <strong>Open All Regions</strong> to survey the complete global landscape in a single gesture.</p>
+                <p>Pricing and stock are region-dependent. Compare across markets to find the most advantageous offering for your collection.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2025 Maison Search — All Rights Reserved</p>
+        <p>Multi-Region Discovery Platform</p>
+    </footer>
+
+    <script>
+        function openAllSearches() {
+            const urls = [
+                'https://www.amazon.com/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.co.uk/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.de/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.fr/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.es/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.se/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.it/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss',
+                'https://www.amazon.co.jp/s?k=NVIDIA+RTX+5090&ref=nb_sb_noss_1'
+            ];
+            urls.forEach(url => window.open(url, '_blank'));
+        }
+    </script>
+</body>
+</html>

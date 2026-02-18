@@ -3040,9 +3040,9 @@
 
             return `
                 <div class="video-card" id="${cardId}" 
-                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this)"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
                     <div class="video-thumbnail">
                         <img src="${thumbnailUrl}" alt="${item.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
                         <div class="thumbnail-overlay">
@@ -3154,11 +3154,15 @@
                     🔄
                 </div>` : '';
 
+                // Mid 1 (idx=0): preview disabled; Mid 2-6 (idx>0): preview with life-wellness 640×480 popup
+                const hoverAttrs = idx !== 0
+                    ? `onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', this, true)" onmouseleave="cancelPreview()"`
+                    : '';
+
                 return `
                 <div class="insight-mid-card ${extraClass}" id="${cardId}"
-                     onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', this)"
-                     onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this)">
+                     ${hoverAttrs}
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this, true)">
                     ${displayToggle}
                     <img src="${thumb}" alt="${safe}"
                          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
@@ -3217,9 +3221,9 @@
 
             return `
                 <div class="apple-card" id="${cardId}"
-                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this)"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
                     <div class="apple-card-thumb">
                         <img src="${thumb}" alt="${item.title}"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22148%22 height=%2286%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22148%22 height=%2286%22/%3E%3C/svg%3E'">

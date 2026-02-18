@@ -1,0 +1,10 @@
+upload
+
+# 1. Stage the new file (This moves it from 'Untracked' to 'Changes to be committed')
+git add Amiral-Maverick.JPG
+
+# 2. Commit the file to your history
+git commit -m "Add Admiral Maverick photo for Social category"
+
+# 3. Push to your repository
+git push origin main

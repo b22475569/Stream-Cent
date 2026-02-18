@@ -22,9 +22,9 @@ echo "正在開啟 Chrome 瀏覽器..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # Mac - 優先使用 Chrome
     if [ -d "/Applications/Google Chrome.app" ]; then
-        open -a "Google Chrome" http://localhost:8000/Stream-hub_Ver-21_3_with_98-XP_sound-Smooth-Carousel_Securd.html
+        open -a "Google Chrome" http://localhost:8000/Stream-hub_Ver-22_1_with_98-XP_sound-Smooth-Carousel_Securd.html
     else
-        open http://localhost:8000/Stream-hub_Ver-21_2_with_98-XP_sound-Smooth-Carousel_Securd.html
+        open http://localhost:8000/Stream-hub_Ver-22_1_with_98-XP_sound-Smooth-Carousel_Securd.html
     fi
 else
     # Linux - 優先使用 Chrome
