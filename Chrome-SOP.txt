@@ -1,0 +1,23 @@
+How to use — 3 steps
+
+Step 1 — Close Chrome completely
+The History file is locked while Chrome is open. Right-click taskbar → close Chrome.
+
+
+Step 2 — Run the Python server (save chrome_history_server.py to your Desktop)
+cmdpython chrome_history_server.py
+Leave that window open. You'll see ✅ History file found and 🚀 Starting server on port 8765.
+
+
+Step 3 — Open the HTML file
+Open Stream-hub_Ver-23_2_ChromeHistory.html in Chrome → click the ☰ hamburger → click History row → flyout slides open and automatically loads every URL from C:\Users\Administrator\AppData\Local\...\History.
+
+What the flyout shows
+
+Every website visited — title, full URL, domain favicon, visit count, last visit time
+Search bar — filter by keyword in real time
+⏸ Clear History — clears the view (does not delete real Chrome history)
+Status dot — 🟢 green = connected, 🔴 red = server offline, 🟠 orange = loading
+
+
+C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Default\History

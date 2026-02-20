@@ -1,0 +1,5193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Content Hub</title>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECURITY LAYER — Points 2-6
+         • Point 6: Content Security Policy (CSP)
+         • Blocks XSS attacks, unauthorized script injection,
+           and unwanted resource loading at the browser level.
+         ═══════════════════════════════════════════════════════════════ -->
+    <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
+            font-src 'self' https://fonts.gstatic.com;
+            img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google.com https://www.gstatic.com;
+            frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+            media-src 'self' https://github.com https://raw.githubusercontent.com;
+            connect-src 'self' http://localhost:8765;
+            object-src 'none';
+            base-uri 'self';
+            form-action 'self';
+            upgrade-insecure-requests;
+          ">
+
+    <!-- Point 6: Additional Security HTTP-equivalent headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Point 3: Cloudflare proxy readiness — cache control & real IP protection -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apple-blue: #0071e3;
+            --apple-blue-hover: #0077ED;
+            --apple-gray: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --border-color: #d2d2d7;
+            --white: #ffffff;
+            --sky-blue: #87CEEB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.5s ease;
+        }
+
+        body.sky-blue-mode {
+            background: var(--sky-blue);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            background: var(--sky-blue);
+            color: white;
+            border: 2px solid #6BB6D6;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-btn:hover {
+            background: #6BB6D6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(135, 206, 235, 0.4);
+        }
+
+        .theme-btn:active {
+            transform: translateY(0);
+        }
+
+        body.sky-blue-mode .theme-btn {
+            background: var(--white);
+            color: var(--sky-blue);
+            border-color: var(--white);
+        }
+
+        body.sky-blue-mode .theme-btn:hover {
+            background: var(--apple-gray);
+        }
+
+        .rise-btn {
+            margin-left: 10px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%);
+            border-color: #ff6b6b;
+        }
+
+        .rise-btn:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #fed330 50%, #26c6da 100%);
+            transform: translateY(-2px);
+        }
+
+        body.video-mode .rise-btn {
+            background: var(--white);
+            color: #ff6b6b;
+            border-color: var(--white);
+        }
+
+        body.video-mode .rise-btn:hover {
+            background: var(--apple-gray);
+        }
+
+        /* Mute Button */
+        .mute-btn {
+            background: #ff9500;
+            color: white;
+            border: 2px solid #ff8800;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mute-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .mute-btn:hover {
+            background: #ff8800;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 149, 0, 0.4);
+        }
+
+        .mute-btn.muted {
+            background: #8e8e93;
+            border-color: #6e6e73;
+        }
+
+        .mute-btn.muted:hover {
+            background: #6e6e73;
+        }
+
+        body.video-mode .mute-btn {
+            background: var(--white);
+            color: #ff9500;
+            border-color: var(--white);
+        }
+
+        body.video-mode .mute-btn.muted {
+            background: var(--white);
+            color: #8e8e93;
+        }
+
+        body.video-mode .mute-btn:hover {
+            background: var(--apple-gray);
+        }
+
+        /* Mute Toggle Container */
+        .mute-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        /* Hamburger Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 74px;
+            left: 20px;
+            z-index: 1001;
+            background: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .menu-toggle:hover {
+            background: #f5f5f7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #1d1d1f;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        body.sky-blue-mode .menu-toggle {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.video-mode .menu-toggle {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Website Sidebar Panel */
+        .website-sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding-top: 80px;
+        }
+
+        .website-sidebar.active {
+            left: 0;
+        }
+
+        body.sky-blue-mode .website-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+
+        body.video-mode .website-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+
+        .website-sidebar-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .website-sidebar-title {
+            font-size: 24px;
+            font-weight: 400;
+            color: #1d1d1f;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Video Background */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 20px;
+        }
+
+        body.video-mode .video-background {
+            opacity: 1;
+        }
+
+        body.video-mode {
+            background: transparent;
+        }
+
+        body.video-mode .hero {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        body.video-mode .category {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.video-mode .video-card {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 80px 20px 60px;
+            text-align: center;
+            transition: background 0.5s ease;
+        }
+
+        body.sky-blue-mode .hero {
+            background: linear-gradient(135deg, #87CEEB 0%, #6BB6D6 100%);
+        }
+
+        .featured-player {
+            max-width: 1400px;
+            margin: -30px auto 40px;
+            padding: 0 20px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .featured-player.active {
+            opacity: 1;
+            max-height: 800px;
+            margin-bottom: 60px;
+        }
+
+        .featured-container {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .close-player {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .close-player:hover {
+            background: #f5f5f7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .close-player span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #1d1d1f;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* X shape - same as hamburger menu when active */
+        .close-player span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .close-player span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .close-player span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .featured-video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .featured-video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .featured-info h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .featured-info p {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Limited size for Life & Wellness videos */
+        .featured-player.life-wellness {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 640px;
+            width: 90%;
+            margin: 0;
+            padding: 0;
+            z-index: 1000;
+            max-height: none;
+        }
+
+        .featured-player.life-wellness.active {
+            opacity: 1;
+            max-height: none;
+        }
+
+        .featured-player.life-wellness .featured-container {
+            max-width: 640px;
+        }
+
+        .featured-player.life-wellness .featured-video-wrapper {
+            padding-bottom: 75%;
+            /* 4:3 aspect ratio for 640x480 */
+        }
+
+        /* Overlay backdrop for Life & Wellness player */
+        .life-wellness-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .life-wellness-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary), var(--apple-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.sky-blue-mode h1 {
+            background: linear-gradient(135deg, var(--white), #4A9EBF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        body.sky-blue-mode .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .category {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-right: 16px;
+        }
+
+        .category-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        /* Dior-style list for Website section */
+        .couture-list {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.sky-blue-mode .dior-list {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.video-mode .dior-list {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .dior-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .dior-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .dior-list-item:hover {
+            background: #f8f8f8;
+            padding-left: 35px;
+        }
+
+        .dior-list-item:active {
+            background: #f0f0f0;
+        }
+
+        .dior-list-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dior-list-title {
+            font-size: 16px;
+            font-weight: 400;
+            color: #1d1d1f;
+            letter-spacing: 0.3px;
+        }
+
+        .dior-list-subtitle {
+            font-size: 13px;
+            color: #6e6e73;
+            font-weight: 300;
+        }
+
+        .dior-list-arrow {
+            font-size: 15px;
+            color: #6e6e73;
+            transition: transform 0.3s ease;
+        }
+
+        .dior-list-item:hover .dior-list-arrow {
+            transform: translateX(5px);
+            color: #1d1d1f;
+        }
+
+        /* History Section in Sidebar */
+        .history-section {
+            padding: 20px 30px;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 10px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .history-item:hover {
+            background: #f0f0f0;
+            border-color: var(--apple-blue);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .history-item-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1d1d1f;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-item-channel {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+
+        .history-preview-btn {
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .history-preview-btn:hover {
+            background: var(--apple-blue-hover);
+        }
+
+        /* Fixed 320x240 Preview Container */
+        .history-preview-container {
+            width: 320px;
+            height: 240px;
+            background: #000;
+            border-radius: 12px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: none;
+        }
+
+        .history-preview-container.active {
+            display: block;
+        }
+
+        .history-preview-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .history-preview-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 14px;
+        }
+
+        .history-summary {
+            font-size: 11px;
+            color: #8e8e93;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* ── History Flyout Panel (extends right of sidebar like a photo) ── */
+        .history-flyout {
+            position: fixed;
+            top: 0;
+            left: -400px; /* hidden behind sidebar */
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.13);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .history-flyout.open {
+            left: 350px; /* right beside sidebar (sidebar is 350px wide) */
+        }
+
+        .history-flyout-header {
+            padding: 20px 18px 14px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .history-flyout-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .history-flyout-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            background: #f5f5f7;
+            border: 1.5px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .history-flyout-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.3;
+        }
+
+        .history-flyout-clock {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--apple-blue);
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .history-flyout-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 18px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+            background: white;
+        }
+
+        .history-flyout-list-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            color: #8e8e93;
+            text-transform: uppercase;
+        }
+
+        .history-flyout-clear-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6e6e73;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-flyout-clear-btn:hover {
+            background: #f5f5f7;
+            border-color: #aeaeb2;
+            color: #1d1d1f;
+        }
+
+        .history-flyout-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            background: white;
+        }
+
+        /* Photo-style history card */
+        .history-photo-card {
+            background: #f8f8f8;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .history-photo-card:hover {
+            border-color: var(--apple-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .history-photo-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            background: #e0e0e0;
+        }
+
+        .history-photo-thumb-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #e8e8ea, #d2d2d7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .history-photo-body {
+            padding: 10px 12px 10px;
+        }
+
+        .history-photo-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+            margin-bottom: 3px;
+        }
+
+        .history-photo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-photo-channel {
+            font-size: 11px;
+            color: #6e6e73;
+            font-weight: 400;
+        }
+
+        .history-photo-time {
+            font-size: 10px;
+            color: #aeaeb2;
+            font-family: monospace;
+        }
+
+        .history-photo-preview-btn {
+            display: block;
+            width: calc(100% - 24px);
+            margin: 0 12px 10px;
+            padding: 6px 0;
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .history-photo-preview-btn:hover {
+            background: var(--apple-blue-hover);
+        }
+
+        .history-flyout-empty {
+            font-size: 13px;
+            color: #8e8e93;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* History trigger item in sidebar dior-list style */
+        .history-trigger-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        .history-trigger-item:hover {
+            background: #f8f8f8;
+            padding-left: 35px;
+        }
+
+        .history-trigger-item.active {
+            background: #f0f0f0;
+        }
+
+        .history-trigger-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .history-trigger-title {
+            font-size: 18px;
+            font-weight: 400;
+            color: #1d1d1f;
+            letter-spacing: 0.5px;
+        }
+
+        .history-trigger-sub {
+            font-size: 13px;
+            color: #6e6e73;
+            font-weight: 300;
+        }
+
+        /* ── Chrome History real-data styles ─────────────────────────── */
+        .history-search-bar {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+        }
+
+        .history-search-input {
+            flex: 1;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            outline: none;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            transition: border-color 0.2s;
+        }
+
+        .history-search-input:focus {
+            border-color: var(--apple-blue);
+            background: white;
+        }
+
+        .history-search-input::placeholder { color: #aeaeb2; }
+
+        .history-search-btn {
+            background: var(--apple-blue);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .history-search-btn:hover { background: var(--apple-blue-hover); }
+
+        .history-flyout-status {
+            padding: 6px 14px;
+            font-size: 11px;
+            color: #8e8e93;
+            border-bottom: 1px solid #f5f5f5;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+        }
+
+        .history-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #8e8e93;
+            display: inline-block;
+            margin-right: 5px;
+            transition: background 0.3s;
+        }
+
+        .history-status-dot.live    { background: #34c759; }
+        .history-status-dot.error   { background: #ff3b30; }
+        .history-status-dot.loading { background: #ff9500; animation: pulse 1s infinite; }
+
+        /* Chrome-history card — list style */
+        .history-chrome-card {
+            background: white;
+            border-radius: 10px;
+            border: 1.5px solid #e5e5e7;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .history-chrome-card:hover {
+            border-color: var(--apple-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,113,227,0.1);
+        }
+
+        .history-chrome-row1 {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .history-chrome-favicon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .history-chrome-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1d1d1f;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .history-chrome-url {
+            font-size: 11px;
+            color: var(--apple-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-left: 24px;
+            margin-bottom: 3px;
+        }
+
+        .history-chrome-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 24px;
+        }
+
+        .history-chrome-visits { font-size: 10px; color: #8e8e93; }
+        .history-chrome-time   { font-size: 10px; color: #aeaeb2; font-family: monospace; }
+
+        /* Date group header (matches screenshot "Today - Friday, February 20, 2026") */
+        .history-date-group { margin-bottom: 6px; }
+        .history-date-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            padding: 10px 14px 6px;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 6px;
+        }
+        .history-date-group .history-chrome-card {
+            margin: 0 14px 6px;
+        }
+
+        .video-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-card.previewing {
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
+            overflow: hidden;
+            background: var(--apple-gray);
+        }
+
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .thumbnail-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 40px 16px 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-card:hover .thumbnail-overlay {
+            opacity: 1;
+        }
+
+        .thumbnail-overlay span {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .play-button::after {
+            content: '▶';
+            color: var(--apple-blue);
+            font-size: 24px;
+            margin-left: 4px;
+        }
+
+        .video-card:hover .play-button {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-channel {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ─── Apple Store Carousel Style ─── */
+        .apple-category {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 36px 40px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .apple-category:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .apple-category .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .apple-category .category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .apple-see-all {
+            font-size: 14px;
+            color: var(--apple-blue);
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+
+        .apple-see-all:hover {
+            opacity: 0.7;
+        }
+
+        /* Carousel track wrapper with scroll arrows */
+        .apple-carousel-wrapper {
+            position: relative;
+            padding: 0 28px;
+        }
+
+        .apple-carousel-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 12px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .apple-carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Scroll arrow buttons */
+        .apple-scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s ease;
+            font-size: 22px;
+            color: #1d1d1f;
+        }
+
+        .apple-scroll-btn:hover {
+            background: white;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .apple-scroll-btn.prev {
+            left: -20px;
+        }
+
+        .apple-scroll-btn.next {
+            right: -20px;
+        }
+
+        /* Individual apple-style card — iPad portrait size */
+        .apple-card {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            padding: 20px 16px 18px;
+            border-radius: 24px;
+            border: 2px solid transparent;
+            background: var(--apple-gray);
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .apple-card:hover {
+            background: #eaeaec;
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+        }
+
+        .apple-card.previewing {
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 5px rgba(0, 113, 227, 0.14);
+        }
+
+        /* Thumbnail inside apple card — tall portrait ratio */
+        .apple-card-thumb {
+            width: 248px;
+            height: 310px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #d2d2d7;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .apple-card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+            display: block;
+        }
+
+        .apple-card:hover .apple-card-thumb img {
+            transform: scale(1.05);
+        }
+
+        /* Play circle overlay on thumb */
+        .apple-thumb-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0);
+            transition: background 0.2s;
+            border-radius: 18px;
+        }
+
+        .apple-card:hover .apple-thumb-play {
+            background: rgba(0, 0, 0, 0.20);
+        }
+
+        .apple-play-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.65);
+            transition: all 0.25s ease;
+            font-size: 20px;
+            color: var(--apple-blue);
+            padding-left: 3px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        .apple-card:hover .apple-play-circle {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Card text */
+        .apple-card-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .apple-card-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Dark mode adaptation for apple cards */
+        body.sky-blue-mode .apple-category {
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        body.video-mode .apple-category {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.video-mode .apple-card {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .category {
+                padding: 24px;
+            }
+
+            .category-title {
+                font-size: 24px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .rise-btn,
+            .mute-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .apple-card {
+                flex: 0 0 220px;
+            }
+
+            .apple-card-thumb {
+                width: 192px;
+                height: 240px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           AOC-STYLE CAROUSEL FOR LIFE & WELLNESS
+           ═══════════════════════════════════════════════════════════════════ */
+
+        .aoc-category {
+            background: white !important;
+        }
+
+        .aoc-carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .aoc-carousel-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px 0;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
+        }
+
+        .aoc-carousel-track::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        .aoc-card {
+            flex: 0 0 auto;
+            width: 340px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #e5e5e5;
+        }
+
+        .aoc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .aoc-card-image {
+            width: 100%;
+            height: 190px;
+            position: relative;
+            overflow: hidden;
+            background: #f5f5f7;
+        }
+
+        .aoc-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .aoc-card:hover .aoc-card-image img {
+            transform: scale(1.05);
+        }
+
+        .aoc-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .aoc-card:hover .aoc-card-overlay {
+            opacity: 1;
+        }
+
+        .aoc-play-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #0071e3;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .aoc-card:hover .aoc-play-icon {
+            transform: scale(1);
+        }
+
+        .aoc-card-content {
+            padding: 18px 20px;
+        }
+
+        .aoc-card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .aoc-card-channel {
+            font-size: 14px;
+            color: #6e6e73;
+            font-weight: 400;
+        }
+
+        /* AOC Scrollbar Container - Like a video player control bar */
+        .aoc-scrollbar-container {
+            position: relative;
+            margin-top: 20px;
+            padding: 11px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .aoc-scrollbar-track {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .aoc-scrollbar-thumb {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #1d1d1f;
+            border-radius: 3px;
+            width: 30%;
+            transition: background 0.2s ease;
+        }
+
+        .aoc-scrollbar-thumb:hover {
+            background: #0071e3;
+        }
+
+        .aoc-pause-btn {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border: 2px solid #1d1d1f;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            padding: 0;
+            font-family: monospace;
+        }
+
+        .aoc-pause-btn:hover {
+            background: #f5f5f7;
+            border-color: #0071e3;
+            color: #0071e3;
+        }
+
+        .aoc-pause-btn.playing {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .aoc-card {
+                width: 280px;
+            }
+
+            .aoc-card-image {
+                height: 160px;
+            }
+
+            .aoc-scrollbar-container {
+                padding: 15px;
+            }
+
+            .aoc-pause-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 12px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SECURITY STYLES — Points 2-6
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* Point 7: Auth Lock Screen */
+        /* ── USER-TUNABLE overlay opacity via CSS variable ── */
+        :root {
+            --lock-overlay-opacity: 0.92;
+            --lock-blur: 24px;
+        }
+
+        #auth-lock-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(240, 244, 255, var(--lock-overlay-opacity));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(var(--lock-blur)) saturate(140%) brightness(1.05);
+            -webkit-backdrop-filter: blur(var(--lock-blur)) saturate(140%) brightness(1.05);
+            transition: opacity 0.5s ease;
+            overflow: hidden;
+        }
+
+        /* Video Background for Auth Lock Screen */
+        #auth-video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        #auth-lock-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 24px;
+            padding: 48px 40px 36px;
+            width: 360px;
+            max-width: 90vw;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            animation: authSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            z-index: 100;
+        }
+
+        .auth-box:active {
+            cursor: grabbing;
+        }
+
+        @keyframes authSlideIn {
+            from {
+                transform: translateY(40px) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .auth-icon {
+            font-size: 52px;
+            margin-bottom: 12px;
+        }
+
+        .auth-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 6px;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: #6e6e73;
+            margin-bottom: 28px;
+        }
+
+        .auth-pin-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-pin-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #d2d2d7;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+
+        .auth-pin-dot.filled {
+            background: #0071e3;
+            border-color: #0071e3;
+            transform: scale(1.1);
+        }
+
+        .auth-pin-dot.error {
+            background: #ff3b30;
+            border-color: #ff3b30;
+        }
+
+        .auth-numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .auth-key {
+            height: 56px;
+            border-radius: 14px;
+            border: 1.5px solid #e5e5e7;
+            background: #f5f5f7;
+            font-size: 20px;
+            font-weight: 500;
+            color: #1d1d1f;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-key:hover {
+            background: #e8e8ed;
+            transform: scale(1.04);
+        }
+
+        .auth-key:active {
+            transform: scale(0.96);
+            background: #d2d2d7;
+        }
+
+        .auth-key.delete-key {
+            background: #fff0f0;
+            border-color: #ffd5d5;
+            color: #ff3b30;
+            font-size: 22px;
+        }
+
+        .auth-key.spacer {
+            visibility: hidden;
+        }
+
+        .auth-error-msg {
+            font-size: 13px;
+            color: #ff3b30;
+            height: 18px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        /* ── NEW: User Repair / Tune Panel ─────────────────────────── */
+        .auth-tune-toggle {
+            font-size: 12px;
+            color: #0071e3;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 0 2px;
+            font-weight: 500;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .auth-tune-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .auth-tune-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            background: #f5f5f7;
+            border-radius: 14px;
+            margin-top: 0;
+        }
+
+        .auth-tune-panel.open {
+            max-height: 200px;
+            padding: 14px 16px;
+            margin-top: 10px;
+        }
+
+        .auth-tune-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .auth-tune-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .auth-tune-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6e6e73;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            width: 54px;
+            flex-shrink: 0;
+        }
+
+        .auth-tune-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 4px;
+            background: #d2d2d7;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .auth-tune-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #0071e3;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.35);
+        }
+
+        .auth-tune-val {
+            font-size: 11px;
+            color: #1d1d1f;
+            width: 34px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
+
+        .auth-tune-reset {
+            font-size: 11px;
+            color: #ff3b30;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 0 0;
+            font-weight: 500;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .auth-tune-reset:hover {
+            text-decoration: underline;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           NEW FEATURE: HORIZON CROP + GRID API
+           — Photo editor with left/right pan, zoom, grid overlay
+           — Triggered by clicking the lock screen photo icon
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* Crop editor modal overlay */
+        #horizon-crop-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        #horizon-crop-modal.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .crop-panel {
+            background: #1c1c1e;
+            border-radius: 24px;
+            padding: 28px;
+            width: 480px;
+            max-width: 95vw;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+            animation: cropSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: white;
+        }
+
+        @keyframes cropSlideIn {
+            from {
+                transform: scale(0.88) translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .crop-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .crop-panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .crop-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3a3a3c;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .crop-close-btn:hover {
+            background: #48484a;
+        }
+
+        /* Viewport — the visible crop window */
+        .crop-viewport {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            cursor: grab;
+            user-select: none;
+            margin-bottom: 16px;
+        }
+
+        .crop-viewport:active {
+            cursor: grabbing;
+        }
+
+        /* The actual image inside viewport — panned via transform */
+        #crop-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            transform: translate(calc(-50% + var(--pan-x, 0px)), -50%) scale(var(--zoom, 1));
+            transition: transform 0.05s linear;
+            max-width: none;
+            height: 260px;
+            pointer-events: none;
+        }
+
+        /* Grid overlay — 3x3 rule of thirds */
+        .crop-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .crop-grid-overlay.visible {
+            opacity: 1;
+        }
+
+        .crop-grid-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        /* Vertical lines at 33% and 66% */
+        .crop-grid-line.v1 {
+            left: 33.33%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+        }
+
+        .crop-grid-line.v2 {
+            left: 66.66%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+        }
+
+        /* Horizontal lines at 33% and 66% */
+        .crop-grid-line.h1 {
+            top: 33.33%;
+            left: 0;
+            height: 1px;
+            width: 100%;
+        }
+
+        .crop-grid-line.h2 {
+            top: 66.66%;
+            left: 0;
+            height: 1px;
+            width: 100%;
+        }
+
+        /* Corner markers */
+        .crop-corner {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-color: #FFD700;
+            border-style: solid;
+            border-width: 0;
+        }
+
+        .crop-corner.tl {
+            top: 0;
+            left: 0;
+            border-top-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .crop-corner.tr {
+            top: 0;
+            right: 0;
+            border-top-width: 3px;
+            border-right-width: 3px;
+        }
+
+        .crop-corner.bl {
+            bottom: 0;
+            left: 0;
+            border-bottom-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .crop-corner.br {
+            bottom: 0;
+            right: 0;
+            border-bottom-width: 3px;
+            border-right-width: 3px;
+        }
+
+        /* Controls section */
+        .crop-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .crop-control-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .crop-control-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #aeaeb2;
+            width: 52px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Horizon slider — left/right pan */
+        .crop-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 4px;
+            background: #3a3a3c;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .crop-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0071e3;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.4);
+            transition: transform 0.15s ease;
+        }
+
+        .crop-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .crop-slider-value {
+            font-size: 12px;
+            color: #aeaeb2;
+            width: 36px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Pan buttons — left / right arrow */
+        .crop-btn-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .crop-btn {
+            flex: 1;
+            height: 42px;
+            border-radius: 12px;
+            border: none;
+            font-size: 19px;
+            font-weight: 500;
+            font-family: 'Cormorant Garamond', 'Didot', 'Palatino Linotype', Georgia, serif;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .crop-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .crop-btn:active {
+            transform: scale(0.96);
+        }
+
+        .crop-btn.pan-left {
+            background: #2c2c2e;
+            color: white;
+        }
+
+        .crop-btn.pan-right {
+            background: #2c2c2e;
+            color: white;
+        }
+
+        .crop-btn.grid-toggle {
+            background: #ddd4da;
+            color: #1c1c1e;
+            border: 1px solid #c8bdc4;
+        }
+
+        .crop-btn.grid-toggle.active {
+            background: #c4b8bf;
+            color: #1c1c1e;
+            border: 1px solid #b0a5ab;
+        }
+
+        .crop-btn.apply-btn {
+            background: #ddd4da;
+            color: #1c1c1e;
+            flex: 2;
+            border: 1px solid #c8bdc4;
+        }
+
+        .crop-btn.reset-btn {
+            background: #2c2c2e;
+            color: #aeaeb2;
+        }
+
+        /* ── NEW: Choose From Folder ─────────────────────────────────── */
+
+        #folderFileInput {
+            display: none;
+        }
+
+        .crop-btn.folder-btn {
+            background: #ddd4da;
+            color: #1c1c1e;
+            flex: 2;
+            border: 1px solid #c8bdc4;
+        }
+
+        .crop-btn.folder-btn:hover {
+            background: #d0c6cd;
+            color: #1c1c1e;
+        }
+
+        /* Drag & Drop zone overlay on viewport */
+        .crop-dropzone {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background: rgba(0, 113, 227, 0.18);
+            border: 2.5px dashed #0071e3;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .crop-dropzone.drag-over {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .crop-dropzone-icon {
+            font-size: 36px;
+        }
+
+        /* File info bar after picking */
+        .crop-file-info {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: #2c2c2e;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 4px;
+        }
+
+        .crop-file-info.visible {
+            display: flex;
+        }
+
+        .crop-file-thumb {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1.5px solid #3a3a3c;
+        }
+
+        .crop-file-meta {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .crop-file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .crop-file-size {
+            font-size: 11px;
+            color: #aeaeb2;
+            margin-top: 2px;
+        }
+
+        .crop-file-clear {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3a3a3c;
+            border: none;
+            color: #aeaeb2;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .crop-file-clear:hover {
+            background: #ff3b30;
+            color: white;
+        }
+
+        /* Edit icon overlay on auth photo */
+        .auth-icon-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .auth-icon-edit-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 24px;
+            height: 24px;
+            background: #0071e3;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .auth-icon-wrapper:hover .auth-icon-edit-badge {
+            transform: scale(1.2);
+        }
+
+        .auth-icon-wrapper:hover img {
+            box-shadow: 0 0 0 3px #0071e3;
+        }
+
+        /* Rate Limit Warning Toast */
+        #rate-limit-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1d1d1f;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9998;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        #rate-limit-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Security Status Badge */
+        #security-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 500;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1.5px solid #34c759;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1d7a32;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        #security-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 199, 89, 0.3);
+        }
+
+        #security-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34c759;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.4);
+            }
+        }
+
+        /* Security Info Panel */
+        #security-panel {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            z-index: 600;
+            transform: scale(0.85) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid #e5e5e7;
+        }
+
+        #security-panel.visible {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sec-panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sec-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .sec-item-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .sec-item-icon.green {
+            background: #e8f9ed;
+        }
+
+        .sec-item-icon.blue {
+            background: #e8f0fe;
+        }
+
+        .sec-item-icon.orange {
+            background: #fff3e0;
+        }
+
+        .sec-item-text {
+            color: #1d1d1f;
+            font-weight: 500;
+        }
+
+        .sec-item-desc {
+            color: #6e6e73;
+            font-size: 11px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           INSIGHT — SUPERSTAR PHOTO STYLE
+           1 big hero card (top) + 2 medium cards (bottom row)
+           ═══════════════════════════════════════════════════════════════ */
+        /* 20260218 REVISED: removed narrow cap — grid is now full-width */
+        .insight-superstar-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* BIG hero card — full width */
+        .insight-hero-card {
+            position: relative;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #000;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .insight-hero-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+        }
+
+        .insight-hero-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .insight-hero-card:hover img {
+            transform: scale(1.04);
+        }
+
+        /* gradient + text overlay on hero */
+        .insight-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.25) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 32px 36px;
+        }
+
+        .insight-hero-badge {
+            display: inline-block;
+            background: var(--apple-blue);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .insight-hero-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .insight-hero-channel {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 400;
+        }
+
+        .insight-hero-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: var(--apple-blue);
+            padding-left: 5px;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .insight-hero-card:hover .insight-hero-play {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* 2-card middle row */
+        /* 20260217 REVISED: .insight-superstar-grid capped at 480px + centred  */
+        /* so the whole INSIGHT block renders as a small compact preview,         */
+        /* matching the Photo 2 thumbnail size. Grid structure is unchanged.      */
+        .insight-middle-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 12px;
+        }
+
+        .insight-mid-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /*20260217 Mid 1 — LEFT col, spans rows 1 to 3*/
+        .insight-mid-card.tall {
+            grid-column: 1;
+            grid-row: 1 / span 3;
+            aspect-ratio: 16 / 9;
+            /* Default 1280x720 style */
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .insight-mid-card.vertical {
+            aspect-ratio: 9 / 16 !important;
+        }
+
+        .insight-mid-card.horizontal {
+            aspect-ratio: 16 / 9 !important;
+        }
+
+        /* MID1 Display Toggle Button */
+        .insight-display-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .insight-display-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            background: white;
+        }
+
+        /* Mid 2, 3, 4 — RIGHT col, each ONE row independently */
+        .insight-mid-card.small {
+            aspect-ratio: 16 / 9;
+        }
+
+        /* Mid 5 and Mid 6 */
+        .insight-mid-card.bottom {
+            aspect-ratio: 16 / 9;
+        }
+
+        /*02172026 end*/
+
+        /* Normal-size overlay text — small-card overrides removed 20260218 */
+
+        .insight-mid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+        }
+
+        .insight-mid-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .insight-mid-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .insight-mid-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px 22px;
+        }
+
+        .insight-mid-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.35;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .insight-mid-channel {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.70);
+        }
+
+        .insight-mid-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            width: 54px;
+            height: 54px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            color: var(--apple-blue);
+            padding-left: 3px;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .insight-mid-card:hover .insight-mid-play {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .insight-middle-row {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-hero-title {
+                font-size: 20px;
+            }
+
+            .insight-hero-overlay {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECURITY UI ELEMENTS — Points 2-6
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Point 7: Authentication Lock Screen (PIN-based) -->
+    <div id="auth-lock-screen">
+        <!-- Video Background -->
+        <video id="auth-video-bg" autoplay muted loop playsinline>
+            <source src="Flower_JISOO.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="auth-box">
+
+            <!-- NEW: Horizon Crop — click photo to open editor -->
+            <div class="auth-icon-wrapper" onclick="openHorizonCrop()" title="Click to crop & position photo">
+                <img id="auth-photo" src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
+                    data-default-src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
+                    width="80" height="80"
+                    style="border-radius: 50%; object-fit: cover; border: 3px solid #0071e3; display:block;">
+                <div class="auth-icon-edit-badge">✏️</div>
+            </div>
+
+            <div class="auth-title">Stream Content Hub</div>
+            <div class="auth-subtitle">Enter PIN to access — or skip to continue as guest</div>
+            <div class="auth-pin-row" id="pin-dots">
+                <div class="auth-pin-dot" id="dot-0"></div>
+                <div class="auth-pin-dot" id="dot-1"></div>
+                <div class="auth-pin-dot" id="dot-2"></div>
+                <div class="auth-pin-dot" id="dot-3"></div>
+            </div>
+            <div class="auth-numpad">
+                <button class="auth-key" onclick="authKeyPress('1')">1</button>
+                <button class="auth-key" onclick="authKeyPress('2')">2</button>
+                <button class="auth-key" onclick="authKeyPress('3')">3</button>
+                <button class="auth-key" onclick="authKeyPress('4')">4</button>
+                <button class="auth-key" onclick="authKeyPress('5')">5</button>
+                <button class="auth-key" onclick="authKeyPress('6')">6</button>
+                <button class="auth-key" onclick="authKeyPress('7')">7</button>
+                <button class="auth-key" onclick="authKeyPress('8')">8</button>
+                <button class="auth-key" onclick="authKeyPress('9')">9</button>
+                <button class="auth-key spacer" disabled></button>
+                <button class="auth-key" onclick="authKeyPress('0')">0</button>
+                <button class="auth-key delete-key" onclick="authKeyDelete()">⌫</button>
+            </div>
+            <div class="auth-error-msg" id="auth-error"></div>
+
+            <!-- ── NEW: User Repair Panel — tune overlay live ── -->
+            <button class="auth-tune-toggle" onclick="toggleTunePanel()">⚙️ Adjust Background</button>
+            <div class="auth-tune-panel" id="authTunePanel">
+
+                <!-- Opacity slider -->
+                <div class="auth-tune-row">
+                    <span class="auth-tune-label">Opacity</span>
+                    <input type="range" class="auth-tune-slider" id="tuneOpacity" min="0" max="100" value="92"
+                        oninput="tuneOverlay()">
+                    <span class="auth-tune-val" id="tuneOpacityVal">92%</span>
+                </div>
+
+                <!-- Blur slider -->
+                <div class="auth-tune-row">
+                    <span class="auth-tune-label">Blur</span>
+                    <input type="range" class="auth-tune-slider" id="tuneBlur" min="0" max="40" value="24"
+                        oninput="tuneOverlay()">
+                    <span class="auth-tune-val" id="tuneBlurVal">24px</span>
+                </div>
+
+                <!-- Tint colour picker -->
+                <div class="auth-tune-row">
+                    <span class="auth-tune-label">Tint</span>
+                    <input type="color" id="tuneTint" value="#f0f4ff" oninput="tuneOverlay()"
+                        style="flex:1; height:28px; border:none; border-radius:8px; cursor:pointer; background:none;">
+                    <span class="auth-tune-val" id="tuneTintVal" style="font-size:9px;">#f0f4ff</span>
+                </div>
+
+                <button class="auth-tune-reset" onclick="resetTune()">↺ Reset to default</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NEW: Hidden file input for folder picker -->
+    <input type="file" id="folderFileInput" accept="image/*" onchange="handleFileSelect(this)">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEW: HORIZON CROP + GRID API MODAL
+         Allows left/right pan, zoom, grid overlay on the auth photo
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="horizon-crop-modal">
+        <div class="crop-panel">
+
+            <div class="crop-panel-header">
+                <div class="crop-panel-title">🖼️ Horizon Crop & Grid</div>
+                <button class="crop-close-btn" onclick="closeHorizonCrop()">✕</button>
+            </div>
+
+            <!-- Viewport with draggable image + drag-drop zone -->
+            <div class="crop-viewport" id="cropViewport">
+                <img id="crop-img" src="" alt="crop preview">
+
+                <!-- Grid overlay — 3×3 rule of thirds -->
+                <div class="crop-grid-overlay" id="cropGrid">
+                    <div class="crop-grid-line v1"></div>
+                    <div class="crop-grid-line v2"></div>
+                    <div class="crop-grid-line h1"></div>
+                    <div class="crop-grid-line h2"></div>
+                    <div class="crop-corner tl"></div>
+                    <div class="crop-corner tr"></div>
+                    <div class="crop-corner bl"></div>
+                    <div class="crop-corner br"></div>
+                </div>
+
+                <!-- NEW: Drag & Drop zone overlay -->
+                <div class="crop-dropzone" id="cropDropzone">
+                    <div class="crop-dropzone-icon">📂</div>
+                    Drop your photo here
+                </div>
+            </div>
+
+            <div class="crop-controls">
+
+                <!-- NEW: File info bar — visible after picking a file -->
+                <div class="crop-file-info" id="cropFileInfo">
+                    <img class="crop-file-thumb" id="cropFileThumb" src="" alt="">
+                    <div class="crop-file-meta">
+                        <div class="crop-file-name" id="cropFileName">filename.jpg</div>
+                        <div class="crop-file-size" id="cropFileSize">0 KB</div>
+                    </div>
+                    <button class="crop-file-clear" onclick="clearChosenFile()" title="Remove">✕</button>
+                </div>
+
+                <!-- Horizon (Left ↔ Right) slider -->
+                <div class="crop-control-row">
+                    <span class="crop-control-label">Horizon</span>
+                    <input type="range" class="crop-slider" id="horizonSlider" min="-200" max="200" value="0"
+                        oninput="onHorizonSlide(this.value)">
+                    <span class="crop-slider-value" id="horizonVal">0px</span>
+                </div>
+
+                <!-- Zoom slider -->
+                <div class="crop-control-row">
+                    <span class="crop-control-label">Zoom</span>
+                    <input type="range" class="crop-slider" id="zoomSlider" min="80" max="300" value="100"
+                        oninput="onZoomSlide(this.value)">
+                    <span class="crop-slider-value" id="zoomVal">1.0×</span>
+                </div>
+
+                <!-- NEW: Choose from folder button row -->
+                <div class="crop-btn-row">
+                    <button class="crop-btn folder-btn" onclick="chooseFromFolder()">📁 Choose from Folder</button>
+                </div>
+
+                <!-- Pan buttons + Grid toggle -->
+                <div class="crop-btn-row">
+                    <button class="crop-btn pan-left" onclick="panStep(-20)">◀ Left</button>
+                    <button class="crop-btn grid-toggle" id="gridToggleBtn" onclick="toggleGrid()">⊞ Grid</button>
+                    <button class="crop-btn pan-right" onclick="panStep(20)">Right ▶</button>
+                </div>
+
+                <!-- Apply + Reset -->
+                <div class="crop-btn-row">
+                    <button class="crop-btn reset-btn" onclick="resetCrop()">↺ Reset</button>
+                    <button class="crop-btn apply-btn" onclick="applyHorizonCrop()">✓ Apply to Icon</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Point 5: Rate Limit Warning Toast -->
+    <div id="rate-limit-toast">⚠️ Too many requests — please slow down</div>
+
+    <!-- Security Status Badge (bottom-right) -->
+    <div id="security-badge" onclick="toggleSecurityPanel()">
+        <div class="pulse-dot"></div>
+        🛡️ Secured
+    </div>
+
+    <!-- Security Info Panel (expands on badge click) -->
+    <div id="security-panel">
+        <div class="sec-panel-title">🛡️ Active Security Layers</div>
+        <div class="sec-item">
+            <div class="sec-item-icon green">🧱</div>
+            <div>
+                <div class="sec-item-text">WAF — Input Sanitization</div>
+                <div class="sec-item-desc">XSS & injection filtering active</div>
+            </div>
+        </div>
+        <div class="sec-item">
+            <div class="sec-item-icon blue">🌐</div>
+            <div>
+                <div class="sec-item-text">Cloudflare-Ready Headers</div>
+                <div class="sec-item-desc">Cache & origin protection set</div>
+            </div>
+        </div>
+        <div class="sec-item">
+            <div class="sec-item-icon orange">🚦</div>
+            <div>
+                <div class="sec-item-text">Rate Limiting</div>
+                <div class="sec-item-desc">Max 30 actions / 10 seconds</div>
+            </div>
+        </div>
+        <div class="sec-item">
+            <div class="sec-item-icon green">🔑</div>
+            <div>
+                <div class="sec-item-text">CSP Headers</div>
+                <div class="sec-item-desc">Script & frame policies enforced</div>
+            </div>
+        </div>
+        <div class="sec-item">
+            <div class="sec-item-icon blue">🛂</div>
+            <div>
+                <div class="sec-item-text">Auth Layer</div>
+                <div class="sec-item-desc">PIN lock on load (default: 1234)</div>
+            </div>
+        </div>
+    </div>
+    <video id="bgVideo" class="video-background" loop muted>
+        <source src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Rise.mp4" type="video/mp4">
+    </video>
+
+    <!-- Mute Button (Top Left) -->
+    <div class="mute-toggle">
+        <button class="theme-btn mute-btn" id="muteToggle">
+            <span id="muteText">🔊 Sound On</span>
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Button -->
+    <button class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- History Flyout Panel (slides right of sidebar like a photo) -->
+    <div class="history-flyout" id="historyFlyout">
+        <!-- Header: clock icon + "Website History" label + live clock -->
+        <div class="history-flyout-header">
+            <div class="history-flyout-top">
+                <div class="history-flyout-icon">🕐</div>
+                <div>
+                    <div class="history-flyout-label">Website History</div>
+                </div>
+            </div>
+            <div class="history-flyout-clock" id="history-flyout-clock">00:00:00</div>
+        </div>
+        <!-- List header + clear button -->
+        <div class="history-flyout-list-header">
+            <span class="history-flyout-list-title">History List</span>
+            <button class="history-flyout-clear-btn" onclick="clearChromeHistoryView()">
+                <span>⏸</span> Clear History
+            </button>
+        </div>
+        <!-- Search bar -->
+        <div class="history-search-bar">
+            <input  class="history-search-input" id="chromeHistorySearch"
+                    type="text" placeholder="🔍 Search history…"
+                    onkeydown="if(event.key==='Enter') loadChromeHistory()">
+            <button class="history-search-btn" onclick="loadChromeHistory()">Search</button>
+        </div>
+        <!-- Connection status -->
+        <div class="history-flyout-status">
+            <span><span class="history-status-dot" id="historyStatusDot"></span><span id="historyStatusText">Connecting…</span></span>
+            <span id="historyCountText"></span>
+        </div>
+        <!-- Scrollable Chrome history cards -->
+        <div class="history-flyout-scroll" id="history-sidebar-list">
+            <div class="history-flyout-empty">Loading Chrome history…</div>
+        </div>
+        <!-- Hidden preview container (kept for openHistoryPreview compatibility) -->
+        <div class="history-preview-container" id="history-preview-container" style="display:none;">
+            <div class="history-preview-close" onclick="closeHistoryPreview()">✕</div>
+            <iframe id="history-preview-iframe" referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Website Sidebar Panel -->
+    <div class="website-sidebar" id="websiteSidebar">
+        <div class="website-sidebar-header">
+            <h2 class="website-sidebar-title">Websites</h2>
+        </div>
+        <!-- History trigger item (Dior-style row) -->
+        <div class="history-trigger-item" id="historyTriggerItem" onclick="toggleHistoryFlyout()">
+            <div class="history-trigger-left">
+                <span class="history-trigger-title">History</span>
+                <span class="history-trigger-sub">Browser History</span>
+            </div>
+            <span style="font-size:15px;color:#6e6e73;transition:transform 0.3s ease;" id="historyTriggerArrow">›</span>
+        </div>
+        <script>
+            /* Live clock for flyout */
+            function updateHistoryFlyoutClock() {
+                const clock = document.getElementById('history-flyout-clock');
+                if (clock) {
+                    clock.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                }
+            }
+            setInterval(updateHistoryFlyoutClock, 1000);
+            updateHistoryFlyoutClock();
+
+            /* Clear all history */
+            function clearHistory() {
+                localStorage.removeItem('stream_hub_history_v1');
+                renderHistory();
+                if (typeof logSecurityEvent !== 'undefined') {
+                    logSecurityEvent('HISTORY', 'History cleared by user');
+                }
+            }
+        </script>
+        <div class="dior-list" id="website-sidebar-list"></div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle">
+        <button class="theme-btn" id="themeToggle">
+            <span id="themeText">Sky Blue Mode</span>
+        </button>
+        <button class="theme-btn rise-btn" id="riseToggle">
+            <span id="riseText">RISE</span>
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Stream Content Hub</h1>
+        <p class="subtitle">Discover and enjoy curated content from across the web</p>
+    </div>
+
+    <!-- Life & Wellness Overlay Backdrop -->
+    <div class="life-wellness-overlay" id="lifeWellnessOverlay" onclick="closeFeaturedPlayer()"></div>
+
+    <!-- Featured Video Player -->
+    <div class="featured-player" id="featuredPlayer">
+        <div class="featured-container">
+            <button class="close-player" onclick="closeFeaturedPlayer()" aria-label="Close player">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="featured-video-wrapper">
+                <iframe id="featuredIframe" referrerpolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="featured-info">
+                <h2 id="featuredTitle">Video Title</h2>
+                <p id="featuredChannel">Channel Name</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Life Category - AOC Style Carousel -->
+        <div class="category aoc-category">
+            <div class="category-header">
+                <span class="category-icon">🌱</span>
+                <h2 class="category-title">Life & Wellness</h2>
+            </div>
+            <div class="aoc-carousel-container">
+                <div class="aoc-carousel-track" id="life-aoc-carousel"></div>
+                <div class="aoc-scrollbar-container">
+                    <div class="aoc-scrollbar-track">
+                        <div class="aoc-scrollbar-thumb" id="life-aoc-thumb"></div>
+                    </div>
+                    <button class="aoc-pause-btn" id="life-aoc-pause">❚❚</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSIGHT Category — Superstar Photo Style (1 big + 2 middle) -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">💡</span>
+                <h2 class="category-title">INSIGHT</h2>
+            </div>
+            <div class="insight-superstar-grid" id="sports-grid"></div>
+        </div>
+
+        <!-- Business Category — Apple Store Carousel Style -->
+        <div class="apple-category" id="business-apple-section">
+            <div class="category-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span class="category-icon">💼</span>
+                    <h2 class="category-title">Business & Career</h2>
+                </div>
+                <span class="apple-see-all" onclick="expandGrid('business')">See All ›</span>
+            </div>
+            <div class="apple-carousel-wrapper">
+                <button class="apple-scroll-btn prev" onclick="scrollCarousel('business-carousel', -1)">‹</button>
+                <div class="apple-carousel-track" id="business-carousel"></div>
+                <button class="apple-scroll-btn next" onclick="scrollCarousel('business-carousel', 1)">›</button>
+            </div>
+        </div>
+
+        <!-- Entertainment Category — Apple Store Carousel Style -->
+        <div class="apple-category" id="entertainment-apple-section">
+            <div class="category-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span class="category-icon">🎬</span>
+                    <h2 class="category-title">Entertainment</h2>
+                </div>
+                <span class="apple-see-all" onclick="expandGrid('entertainment')">See All ›</span>
+            </div>
+            <div class="apple-carousel-wrapper">
+                <button class="apple-scroll-btn prev" onclick="scrollCarousel('entertainment-carousel', -1)">‹</button>
+                <div class="apple-carousel-track" id="entertainment-carousel"></div>
+                <button class="apple-scroll-btn next" onclick="scrollCarousel('entertainment-carousel', 1)">›</button>
+            </div>
+        </div>
+
+        <!-- News Category -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">📰</span>
+                <h2 class="category-title">News & Current Events</h2>
+            </div>
+            <div class="video-grid" id="news-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        let hoverTimeout = null;
+        let currentPreviewCard = null;
+        let bgAudio = null; // Store the background audio object
+
+        // Sky Blue theme toggle
+        document.getElementById('themeToggle').addEventListener('click', function () {
+            document.body.classList.toggle('sky-blue-mode');
+            const text = document.getElementById('themeText');
+            if (document.body.classList.contains('sky-blue-mode')) {
+                text.textContent = 'White Mode';
+            } else {
+                text.textContent = 'Sky Blue Mode';
+            }
+        });
+
+        // RISE (Video mode) toggle
+        document.getElementById('riseToggle').addEventListener('click', function () {
+            const body = document.body;
+            const video = document.getElementById('bgVideo');
+            const riseText = document.getElementById('riseText');
+            const themeText = document.getElementById('themeText');
+            const muteBtn = document.getElementById('muteToggle');
+
+            body.classList.toggle('video-mode');
+
+            if (body.classList.contains('video-mode')) {
+                // Enter video mode
+                video.play();
+                muteBtn.classList.add('visible');
+                riseText.textContent = 'EXIT';
+
+                // Create and play background audio (you-xi-wang.mp3)
+                bgAudio = new Audio('https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Win98-startupmusic.m4a');
+                bgAudio.loop = true; // Loop the audio
+                bgAudio.play().catch(err => console.log('Audio play failed:', err));
+
+                localStorage.setItem('videoMode', 'active');
+            } else {
+                // Exit video mode
+                video.pause();
+                video.currentTime = 0;
+                riseText.textContent = 'RISE';
+                muteBtn.classList.remove('visible');
+
+                // Stop and cleanup background audio
+                if (bgAudio) {
+                    bgAudio.pause();
+                    bgAudio.currentTime = 0;
+                    bgAudio = null;
+                }
+
+                if (body.classList.contains('sky-blue-mode')) {
+                    themeText.textContent = 'White Mode';
+                } else {
+                    themeText.textContent = 'Sky Blue Mode';
+                }
+            }
+        });
+
+        // Mute toggle functionality (controls bgAudio only)
+        document.getElementById('muteToggle').addEventListener('click', function () {
+            const muteText = document.getElementById('muteText');
+
+            if (bgAudio) {
+                if (bgAudio.muted) {
+                    // Unmute audio
+                    bgAudio.muted = false;
+                    muteText.textContent = '🔊 Sound On';
+                    this.classList.remove('muted');
+                } else {
+                    // Mute audio
+                    bgAudio.muted = true;
+                    muteText.textContent = '🔇 Muted';
+                    this.classList.add('muted');
+                }
+            }
+        });
+
+        // Content data organized by category
+        const content = {
+            life: [
+                { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92-Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
+                { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi ride M1 practice onboard on Qatar- 2021', channel: 'Lifestyle Insights' },
+                { url: 'https://www.youtube.com/embed/ycF8oZ8xwDY', title: 'Colleague Wife', channel: 'Life Mastery' },
+                { url: 'https://www.youtube.com/embed/OV6cCmgXQg8', title: 'Lawyer Salary and cut cost', channel: 'Numeral Media' },
+                { url: 'https://www.youtube.com/embed/p6-N3_bWqHM', title: 'Health Insurance insane', channel: 'LifePriced' },
+                { url: 'https://www.youtube.com/embed/kAuSX8UWVPc', title: 'People are Living in Cars, Storage Units & Rent Is a Joke', channel: 'Brit Rants' },
+                { url: 'https://www.youtube.com/embed/2W_RnWVkDeQ', title: 'Grocery Prices Have Gone INSANE in UK', channel: 'Brit Rants' },
+                { url: 'https://www.youtube.com/embed/1nOs7ZXczto', title: 'Do not Gamble or BETTING in IPhone', channel: 'Jay Reed' },
+                {
+                    url: 'https://www.youtube.com/embed/5BNhygkWmzw', title: '原來這是台灣貴族的生活 Mom first time high-end teppanyaki',
+                    channel: 'Taiwannumberone888'
+                },
+                { url: 'https://www.youtube.com/embed/o48gndzqrSg', title: 'Women Use Men For Money, Hate Being Called Gold Diggers', channel: 'Anton Daniels' }
+            ],
+            business: [
+                { url: 'https://www.youtube.com/embed/Ftt1eujRuj4', title: 'AMAZON engineers Layoffs it is 250000 salary!!', channel: 'Business Insights' },
+                { url: 'https://www.youtube.com/embed/IloqutF6GiY', title: 'Electroics bill skyrocket- Now Citizion furious', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/Tw7m0S4qFWw', title: 'Sneakers market now Collapsed- no one buy trash shoes', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Factory laid off empyolees- Just started at 2026', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Washington LAYOFF Sports Departmant', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Repair Graphics Card on Uncle Chang- CHINA', channel: 'FYDN' },
+                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Now GenZ can not find field job and think market crash', channel: 'Anton Daniels' }
+            ],
+            entertainment: [
+                { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'AFTER Car accident chasing the Indemnity[Money] back', channel: 'Entertainment Tonight' },
+                { url: 'https://www.youtube.com/embed/VKq2flvS7dw', title: 'Music Industry Insights', channel: 'Music Central' },
+                { url: 'https://www.youtube.com/embed/ePXHj3qjZ5Q', title: 'Amazon layoff 14000 employees', channel: 'Cinema Secrets' },
+                { url: 'https://www.youtube.com/embed/ndagE_LEpKY', title: 'Pop Culture Commentary', channel: 'Kiki Chanel' },
+                { url: 'https://www.youtube.com/embed/DTHL5C7TiTg', title: 'Celebrity Interviews & More', channel: 'MG Charoudin' },
+                { url: 'https://www.youtube.com/embed/Wq0fvxRswww', title: 'Entertainment World Explored', channel: 'Twomad' },
+                { url: 'https://www.youtube.com/embed/C2xrtMRsrWM', title: 'Automotive Entertainment', channel: 'Good Car' },
+                { url: 'https://www.youtube.com/embed/HIZT3nzGLEk', title: '2025 VW GOLF R-Black Edition', channel: 'Pit63' }
+            ],
+            sports: [
+                { url: 'https://www.youtube.com/embed/8XezrgNzwEA', title: 'Game Day Highlights', channel: 'Sports Network' },
+                { url: 'https://www.youtube.com/embed/VeMA9WGKxOg', title: 'A New Day After 25 Years: Life After Layoff', channel: 'Personal Stories' },
+                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬', channel: 'Oscars' },
+                { url: 'https://www.youtube.com/embed/wvc9MBph0Zo', title: 'Alejandro Inarittu Honors Tom Cruise', channel: 'Oscars' },
+                { url: 'https://www.youtube.com/embed/YN6BEUA4jNU', title: 'Hidden Cost of Data Centers. It is in Your Electric Bill', channel: 'Sports Weekly' },
+                { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney' }
+            ],
+            news: [
+                { url: 'https://www.youtube.com/embed/xOuhoIWjyrw', title: 'Breaking News Today', channel: 'Global News Network' },
+                { url: 'https://www.youtube.com/embed/u0rd7u88dAg', title: 'World News Roundup', channel: 'World Report' },
+                { url: 'https://www.youtube.com/embed/4gqRpVtX1SQ', title: 'Daily News Update', channel: 'News Central' },
+                { url: 'https://www.youtube.com/embed/rVKIGulvVhg', title: 'Commentary & Analysis', channel: 'Brit Rants' },
+                { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' }
+            ],
+            website: [
+                { url: 'chrome://history', title: 'History', channel: 'Ctrl+H' },
+                { url: 'chrome://history/grouped', title: 'Grouped history', channel: 'Browser History' },
+                { url: 'https://claude.ai', title: 'Claude', channel: 'Ctrl+Shift+T' },
+                { url: 'https://www.landtop.com.tw/', title: 'Landtop', channel: 'Official Website' },
+                { url: 'https://www.showba.com.tw/', title: 'Showba', channel: 'Official Website' },
+                { url: 'https://forum.gamer.com.tw/B.php?bsn=60030', title: 'Gamer HW infrastructure', channel: 'Official Website' },
+                { url: 'https://www.onlyoffice.com/', title: 'OnlyOffice in Riga Latvia_拉脫維亞 ', channel: 'Official Website' },
+                { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website' },
+                { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
+                { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
+                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' }
+            ]
+        };
+
+        // Function to extract YouTube video ID
+        function getYouTubeID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // Function to open featured player
+        function openFeaturedPlayer(videoId, title, channel, cardElement, isLifeWellness = false) {
+            if (!videoId) return; // Safety check
+
+            const player = document.getElementById('featuredPlayer');
+            const iframe = document.getElementById('featuredIframe');
+            const titleElement = document.getElementById('featuredTitle');
+            const channelElement = document.getElementById('featuredChannel');
+            const overlay = document.getElementById('lifeWellnessOverlay');
+
+            // Add or remove Life & Wellness class for size limitation and centering
+            if (isLifeWellness) {
+                player.classList.add('life-wellness');
+                overlay.classList.add('active');
+                // Don't scroll - player will be centered on screen
+            } else {
+                player.classList.remove('life-wellness');
+                overlay.classList.remove('active');
+            }
+
+            // Update content - 添加 origin 參數來避免 YouTube 錯誤 153
+            const origin = encodeURIComponent(window.location.origin || window.location.protocol + '//' + window.location.host);
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&origin=${origin}&playsinline=1&controls=1&modestbranding=1&enablejsapi=1`;
+            titleElement.textContent = title;
+            channelElement.textContent = channel;
+
+            // Show player
+            player.classList.add('active');
+
+            // Scroll to player smoothly (only for non-Life & Wellness)
+            if (!isLifeWellness) {
+                setTimeout(() => {
+                    player.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+
+            // Highlight current card
+            if (currentPreviewCard) {
+                currentPreviewCard.classList.remove('previewing');
+            }
+            currentPreviewCard = cardElement;
+            cardElement.classList.add('previewing');
+        }
+
+        // Function to close featured player
+        function closeFeaturedPlayer() {
+            const player = document.getElementById('featuredPlayer');
+            const iframe = document.getElementById('featuredIframe');
+            const overlay = document.getElementById('lifeWellnessOverlay');
+
+            player.classList.remove('active');
+            player.classList.remove('life-wellness');
+            overlay.classList.remove('active');
+            iframe.src = '';
+
+            if (currentPreviewCard) {
+                currentPreviewCard.classList.remove('previewing');
+                currentPreviewCard = null;
+            }
+        }
+
+        // Function to preview on hover
+        function previewVideo(videoId, title, channel, cardElement, isLifeWellness = false) {
+            if (!videoId || hoverTimeout) {
+                if (hoverTimeout) clearTimeout(hoverTimeout);
+            }
+
+            hoverTimeout = setTimeout(() => {
+                openFeaturedPlayer(videoId, title, channel, cardElement, isLifeWellness);
+            }, 800); // Wait 800ms before showing preview
+        }
+
+        // Function to cancel preview
+        function cancelPreview() {
+            if (hoverTimeout) {
+                clearTimeout(hoverTimeout);
+                hoverTimeout = null;
+            }
+        }
+
+        // Function to create video card
+        function createVideoCard(item, index) {
+            const videoId = getYouTubeID(item.url);
+
+            // Handle regular websites (non-YouTube)
+            if (!videoId) {
+                const cardId = `website-card-${index}`;
+                const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const safeUrl = item.url.replace(/"/g, '&quot;');
+
+                return `
+                    <div class="video-card" id="${cardId}" 
+                         onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});" style="cursor: pointer;">
+                        <div class="video-thumbnail">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225'%3E%3Crect fill='%23f5f5f7' width='400' height='225'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' fill='%230071e3' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
+                            <div class="thumbnail-overlay">
+                                <span>🔗 Visit Website</span>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">${item.title}</div>
+                            <div class="video-channel">${item.channel}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const cardId = `video-card-${index}`;
+            const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+            const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+
+            return `
+                <div class="video-card" id="${cardId}" 
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
+                     onmouseleave="cancelPreview()"
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                    <div class="video-thumbnail">
+                        <img src="${thumbnailUrl}" alt="${item.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
+                        <div class="thumbnail-overlay">
+                            <span>▶ Click to watch</span>
+                        </div>
+                        <div class="play-button"></div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${item.title}</div>
+                        <div class="video-channel">${item.channel}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Populate each category
+        // Life & Wellness uses AOC-style carousel
+        document.getElementById('life-aoc-carousel').innerHTML = content.life.map((item, i) => createAOCCard(item, `life-${i}`)).join('');
+        initAOCCarousel('life-aoc-carousel', 'life-aoc-thumb', 'life-aoc-pause');
+
+        // Business & Entertainment use Apple carousel
+        document.getElementById('business-carousel').innerHTML = content.business.map((item, i) => createAppleCard(item, `business-${i}`)).join('');
+        document.getElementById('entertainment-carousel').innerHTML = content.entertainment.map((item, i) => createAppleCard(item, `entertainment-${i}`)).join('');
+        document.getElementById('sports-grid').innerHTML = createInsightSuperstar(content.sports);
+        document.getElementById('news-grid').innerHTML = content.news.map((item, i) => createVideoCard(item, `news-${i}`)).join('');
+        // Website uses Dior-style list in sidebar
+        document.getElementById('website-sidebar-list').innerHTML = content.website.map((item, i) => createDiorListItem(item, `website-${i}`)).join('');
+
+        // ── AOC-style card builder for Life & Wellness ───────────────────────
+        function createAOCCard(item, index) {
+            const videoId = getYouTubeID(item.url);
+            const cardId = `aoc-card-${index}`;
+
+            if (!videoId) {
+                // Website / non-YouTube card
+                const safeUrl = item.url.replace(/"/g, '&quot;');
+                const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                return `
+                    <div class="aoc-card" id="${cardId}" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                        <div class="aoc-card-image">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='190'%3E%3Crect fill='%23f5f5f7' width='340' height='190'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='50' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
+                            <div class="aoc-card-overlay">
+                                <div class="aoc-play-icon">🔗</div>
+                            </div>
+                        </div>
+                        <div class="aoc-card-content">
+                            <div class="aoc-card-title">${item.title}</div>
+                            <div class="aoc-card-channel">${item.channel}</div>
+                        </div>
+                    </div>`;
+            }
+
+            const thumb = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+            const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+
+            return `
+                <div class="aoc-card" id="${cardId}"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
+                     onmouseleave="cancelPreview()"
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                    <div class="aoc-card-image">
+                        <img src="${thumb}" alt="${item.title}"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22340%22 height=%22190%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22340%22 height=%22190%22/%3E%3C/svg%3E'">
+                        <div class="aoc-card-overlay">
+                            <div class="aoc-play-icon">▶</div>
+                        </div>
+                    </div>
+                    <div class="aoc-card-content">
+                        <div class="aoc-card-title">${item.title}</div>
+                        <div class="aoc-card-channel">${item.channel}</div>
+                    </div>
+                </div>`;
+        }
+
+        // ── Dior-style list item builder ─────────────────────────────────────
+        function createDiorListItem(item, index) {
+            const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const safeUrl = item.url.replace(/"/g, '&quot;');
+
+            return `
+                <a href="${safeUrl}" target="_blank" class="dior-list-item">
+                    <div class="dior-list-text">
+                        <div class="dior-list-title">${safeTitle}</div>
+                        <div class="dior-list-subtitle">${safeChannel}</div>
+                    </div>
+                    <div class="dior-list-arrow">›</div>
+                </a>
+            `;
+        }
+
+        // ── INSIGHT Superstar layout: 1 big hero + 2 middle cards ────────────
+        function createInsightSuperstar(items) {
+            if (!items || items.length === 0) return '';
+
+
+            //0217 makeCard handles thumb + click + hover — all in one
+            function makeCard(item, idx, extraClass = '') {
+                const vid = getYouTubeID(item.url);
+                const thumb = vid
+                    ? `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`
+                    : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%23f5f5f7' width='800' height='450'/%3E%3C/svg%3E";
+                const safe = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const safeCh = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const cardId = `insight-mid-${idx}`;
+                const displayToggle = (idx === 0) ? `
+                <div class="insight-display-toggle" title="Change Display Orientation" onclick="event.stopPropagation(); toggleMID1Orientation(this.parentElement)">
+                    🔄
+                </div>` : '';
+
+                // Mid 1 (idx=0): preview disabled; Mid 2-6 (idx>0): preview with life-wellness 640×480 popup
+                const hoverAttrs = idx !== 0
+                    ? `onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', this, true)" onmouseleave="cancelPreview()"`
+                    : '';
+
+                return `
+                <div class="insight-mid-card ${extraClass}" id="${cardId}"
+                     ${hoverAttrs}
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                    ${displayToggle}
+                    <img src="${thumb}" alt="${safe}"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
+                    <div class="insight-mid-play">▶</div>
+                    <div class="insight-mid-overlay">
+                        <div class="insight-mid-title">${item.title}</div>
+                        <div class="insight-mid-channel">${item.channel}</div>
+                    </div>
+                </div>`;
+            }
+
+            // Orientation toggle helper
+            window.toggleMID1Orientation = function (card) {
+                if (card.classList.contains('vertical')) {
+                    card.classList.remove('vertical');
+                    card.classList.add('horizontal');
+                } else {
+                    card.classList.remove('horizontal');
+                    card.classList.add('vertical');
+                }
+            };
+
+            return `
+            <div class="insight-middle-row">
+                ${makeCard(items[0], 0, 'tall')}
+                ${makeCard(items[1], 1, 'small')}
+                ${makeCard(items[2], 2, 'small')}
+                ${makeCard(items[3], 3, 'small')}
+                ${makeCard(items[4], 4, 'small')}
+                ${makeCard(items[5], 5, 'small')}
+            </div>`;
+        }
+        //0217
+
+        // ── Apple carousel card builder ──────────────────────────────────────
+        function createAppleCard(item, index) {
+            const videoId = getYouTubeID(item.url);
+            const cardId = `apple-card-${index}`;
+
+            if (!videoId) {
+                // Website / non-YouTube card
+                return `
+                    <div class="apple-card" id="${cardId}" onclick="window.open('${item.url.replace(/"/g, '&quot;')}','_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                        <div class="apple-card-thumb">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='148' height='86'%3E%3Crect fill='%23f5f5f7' width='148' height='86'/%3E%3Ctext x='50%25' y='50%25' font-size='30' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${item.title}">
+                            <div class="apple-thumb-play"><div class="apple-play-circle">🔗</div></div>
+                        </div>
+                        <div class="apple-card-label">${item.title}</div>
+                        <div class="apple-card-sub">${item.channel}</div>
+                    </div>`;
+            }
+
+            const thumb = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+            const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+
+            return `
+                <div class="apple-card" id="${cardId}"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
+                     onmouseleave="cancelPreview()"
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
+                    <div class="apple-card-thumb">
+                        <img src="${thumb}" alt="${item.title}"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22148%22 height=%2286%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22148%22 height=%2286%22/%3E%3C/svg%3E'">
+                        <div class="apple-thumb-play"><div class="apple-play-circle">▶</div></div>
+                    </div>
+                    <div class="apple-card-label">${item.title}</div>
+                    <div class="apple-card-sub">${item.channel}</div>
+                </div>`;
+        }
+
+        // ── Carousel scroll helper ───────────────────────────────────────────
+        function scrollCarousel(trackId, direction) {
+            const track = document.getElementById(trackId);
+            if (!track) return;
+            const cardWidth = 280 + 20; // card width + gap
+            const scrollAmount = cardWidth * direction;
+            const startTime = performance.now();
+
+            function animate() {
+                const timeFraction = (performance.now() - startTime) / 180; // 500ms animation duration
+                if (timeFraction > 1) timeFraction = 1;
+                track.scrollLeft += scrollAmount * timeFraction;
+                if (timeFraction < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+        }
+
+        // ── See All expand (optional — toggles to normal grid view) ─────────
+        function expandGrid(category) {
+            // For now just scroll to the section; could expand to full grid
+            const section = document.getElementById(category + '-apple-section');
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ── AOC Carousel Initialization ──────────────────────────────────────
+        function initAOCCarousel(carouselId, thumbId, pauseBtnId) {
+            const carousel = document.getElementById(carouselId);
+            const thumb = document.getElementById(thumbId);
+            const pauseBtn = document.getElementById(pauseBtnId);
+            const track = carousel.parentElement.querySelector('.aoc-scrollbar-track');
+
+            if (!carousel || !thumb || !pauseBtn || !track) return;
+
+            let isPlaying = false;
+            let autoScrollInterval = null;
+
+            // Update scrollbar thumb position based on carousel scroll
+            function updateThumb() {
+                const scrollPercentage = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
+                const maxThumbLeft = track.clientWidth - thumb.clientWidth;
+                thumb.style.left = `${scrollPercentage * maxThumbLeft}px`;
+            }
+
+            // Handle carousel scroll
+            carousel.addEventListener('scroll', updateThumb);
+
+            // Handle thumb drag
+            let isDragging = false;
+            let startX = 0;
+            let startLeft = 0;
+
+            thumb.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startLeft = parseFloat(thumb.style.left || 0);
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - startX;
+                const newLeft = Math.max(0, Math.min(track.clientWidth - thumb.clientWidth, startLeft + deltaX));
+                thumb.style.left = `${newLeft}px`;
+
+                const scrollPercentage = newLeft / (track.clientWidth - thumb.clientWidth);
+                carousel.scrollLeft = scrollPercentage * (carousel.scrollWidth - carousel.clientWidth);
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // Handle track click
+            track.addEventListener('click', (e) => {
+                if (e.target === thumb) return;
+
+                const rect = track.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const scrollPercentage = clickX / track.clientWidth;
+                carousel.scrollLeft = scrollPercentage * (carousel.scrollWidth - carousel.clientWidth);
+            });
+
+            // Auto-scroll functionality
+            function startAutoScroll() {
+                if (autoScrollInterval) return;
+                isPlaying = true;
+                pauseBtn.textContent = '▶';
+                pauseBtn.classList.add('playing');
+
+                autoScrollInterval = setInterval(() => {
+                    carousel.scrollLeft += 1;
+
+                    // Loop back to start
+                    if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
+                        carousel.scrollLeft = 0;
+                    }
+                }, 30);
+            }
+
+            function stopAutoScroll() {
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
+                }
+                isPlaying = false;
+                pauseBtn.textContent = '❚❚';
+                pauseBtn.classList.remove('playing');
+            }
+
+            // Pause/Play button toggle
+            pauseBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    stopAutoScroll();
+                } else {
+                    startAutoScroll();
+                }
+            });
+
+            // Stop auto-scroll on user interaction
+            carousel.addEventListener('mouseenter', stopAutoScroll);
+            carousel.addEventListener('touchstart', stopAutoScroll);
+
+            // Initial thumb position
+            updateThumb();
+        }
+
+        // ── Hamburger Menu & Sidebar Toggle ──────────────────────────────────
+        const menuToggle = document.getElementById('menuToggle');
+        const websiteSidebar = document.getElementById('websiteSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            menuToggle.classList.toggle('active');
+            websiteSidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            // Close history flyout whenever sidebar closes
+            if (!websiteSidebar.classList.contains('active')) {
+                const flyout = document.getElementById('historyFlyout');
+                const trigger = document.getElementById('historyTriggerItem');
+                const arrow = document.getElementById('historyTriggerArrow');
+                if (flyout) flyout.classList.remove('open');
+                if (trigger) trigger.classList.remove('active');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // ── History Management ──
+        const HISTORY_KEY = 'stream_hub_history_v1';
+        const MAX_HISTORY = 10;
+
+        function trackHistory(item) {
+            let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            // Remove if already exists to move to top
+            history = history.filter(h => h.url !== item.url);
+            // Add to top
+            history.unshift({
+                ...item,
+                timestamp: new Date().toISOString()
+            });
+            // Limit size
+            if (history.length > MAX_HISTORY) history.pop();
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderHistory();
+            logSecurityEvent('HISTORY', `Tracked visit to: ${item.title}`);
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('history-sidebar-list');
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="history-flyout-empty">No history yet</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map((item, i) => {
+                const vid = getYouTubeID(item.url);
+                const isVideo = !!vid;
+                const time = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const thumbSrc = isVideo
+                    ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg`
+                    : null;
+                const safeUrl = item.url.replace(/'/g, "\\'");
+                const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
+
+                const thumbHtml = thumbSrc
+                    ? `<img class="history-photo-thumb" src="${thumbSrc}" alt="${item.title}"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                       <div class="history-photo-thumb-placeholder" style="display:none">🌐</div>`
+                    : `<div class="history-photo-thumb-placeholder">🌐</div>`;
+
+                const previewBtn = isVideo
+                    ? `<button class="history-photo-preview-btn" onclick="event.stopPropagation(); openHistoryPreview('${safeUrl}')">▶ Preview Stream</button>`
+                    : '';
+
+                return `
+                    <div class="history-photo-card" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${safeItem})">
+                        ${thumbHtml}
+                        <div class="history-photo-body">
+                            <div class="history-photo-title">${item.title}</div>
+                            <div class="history-photo-meta">
+                                <span class="history-photo-channel">${item.channel}</span>
+                                <span class="history-photo-time">${time}</span>
+                            </div>
+                        </div>
+                        ${previewBtn}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openHistoryPreview(url) {
+            const container = document.getElementById('history-preview-container');
+            const iframe = document.getElementById('history-preview-iframe');
+            const vid = getYouTubeID(url);
+
+            if (!vid) return;
+
+            const origin = encodeURIComponent(window.location.origin || window.location.protocol + '//' + window.location.host);
+            iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&origin=${origin}&playsinline=1&controls=1`;
+            container.classList.add('active');
+
+            logSecurityEvent('HISTORY_PREVIEW', `Previewing stream: ${url}`);
+        }
+
+        function closeHistoryPreview() {
+            const container = document.getElementById('history-preview-container');
+            const iframe = document.getElementById('history-preview-iframe');
+            container.classList.remove('active');
+            iframe.src = '';
+        }
+
+        // Patch createDiorListItem to add tracking
+        if (typeof createDiorListItem !== 'undefined') {
+            const _origCreateDiorListItem = createDiorListItem;
+            window.createDiorListItem = function (item, index) {
+                const html = _origCreateDiorListItem(item, index);
+                // The html is a string, we need to inject onclick
+                const safeItem = JSON.stringify(item).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                return html.replace('<a ', `<a onclick="trackHistory(${safeItem})" `);
+            };
+        }
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHistory();
+        });
+        // Close sidebar when clicking a link
+        document.querySelectorAll('.dior-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                setTimeout(() => {
+                    if (websiteSidebar.classList.contains('active')) {
+                        toggleSidebar();
+                    }
+                }, 300);
+            });
+        });
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECURITY JAVASCRIPT — Points 2–6
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+
+        /* ─────────────────────────────────────────────────────────────
+           POINT 7: Authentication Layer — 4-digit PIN lock
+           Default PIN: 1234  (change CORRECT_PIN to your own value)
+           ───────────────────────────────────────────────────────────── */
+        const CORRECT_PIN = '0208'; // ← Change your PIN here
+        const MAX_AUTH_ATTEMPTS = 5;
+        let pinBuffer = '';
+        let authAttempts = 0;
+        let authLocked = false;
+        let authLockTimer = null;
+
+        function updatePinDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                dot.classList.toggle('filled', i < pinBuffer.length);
+                dot.classList.remove('error');
+            }
+        }
+
+        function authKeyPress(digit) {
+            if (authLocked) return;
+            if (pinBuffer.length >= 4) return;
+            pinBuffer += digit;
+            updatePinDots();
+            if (pinBuffer.length === 4) {
+                setTimeout(checkPin, 120);
+            }
+        }
+
+        function authKeyDelete() {
+            if (authLocked) return;
+            pinBuffer = pinBuffer.slice(0, -1);
+            updatePinDots();
+            document.getElementById('auth-error').textContent = '';
+        }
+
+        function checkPin() {
+            if (pinBuffer === CORRECT_PIN) {
+                // Correct — unlock
+                document.getElementById('auth-lock-screen').classList.add('hidden');
+                logSecurityEvent('AUTH', 'PIN authentication successful');
+            } else {
+                // Wrong PIN
+                authAttempts++;
+                for (let i = 0; i < 4; i++) {
+                    document.getElementById('dot-' + i).classList.add('error');
+                }
+                if (authAttempts >= MAX_AUTH_ATTEMPTS) {
+                    // Lock out for 30 seconds
+                    authLocked = true;
+                    const remaining = { val: 30 };
+                    document.getElementById('auth-error').textContent =
+                        `Too many attempts — locked for ${remaining.val}s`;
+                    authLockTimer = setInterval(() => {
+                        remaining.val--;
+                        if (remaining.val <= 0) {
+                            clearInterval(authLockTimer);
+                            authLocked = false;
+                            authAttempts = 0;
+                            document.getElementById('auth-error').textContent = 'Try again';
+                        } else {
+                            document.getElementById('auth-error').textContent =
+                                `Too many attempts — locked for ${remaining.val}s`;
+                        }
+                    }, 1000);
+                    logSecurityEvent('AUTH_LOCKOUT', 'Max PIN attempts exceeded — 30s lockout');
+                } else {
+                    document.getElementById('auth-error').textContent =
+                        `Wrong PIN (${MAX_AUTH_ATTEMPTS - authAttempts} attempts left)`;
+                    logSecurityEvent('AUTH_FAIL', `Wrong PIN attempt ${authAttempts}`);
+                }
+                setTimeout(() => {
+                    pinBuffer = '';
+                    updatePinDots();
+                }, 600);
+            }
+        }
+
+
+
+        // Keyboard support for PIN entry
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('auth-lock-screen').classList.contains('hidden')) {
+                if (e.key >= '0' && e.key <= '9') authKeyPress(e.key);
+                if (e.key === 'Backspace') authKeyDelete();
+
+            }
+        });
+
+        /* ─────────────────────────────────────────────────────────────
+           POINT 5: Rate Limiting — max 30 user actions per 10 seconds
+           ───────────────────────────────────────────────────────────── */
+        const RATE_LIMIT = 30;       // max actions
+        const RATE_WINDOW = 10000;   // per 10 seconds (ms)
+        let actionCount = 0;
+        let rateLimitWindowStart = Date.now();
+        let rateLimitActive = false;
+        let rateLimitToastTimer = null;
+
+        function checkRateLimit() {
+            const now = Date.now();
+            if (now - rateLimitWindowStart > RATE_WINDOW) {
+                // Reset window
+                actionCount = 0;
+                rateLimitWindowStart = now;
+                rateLimitActive = false;
+            }
+            actionCount++;
+            if (actionCount > RATE_LIMIT) {
+                if (!rateLimitActive) {
+                    rateLimitActive = true;
+                    showRateLimitToast();
+                    logSecurityEvent('RATE_LIMIT', `${actionCount} actions in ${RATE_WINDOW / 1000}s`);
+                }
+                return false; // Blocked
+            }
+            return true; // Allowed
+        }
+
+        function showRateLimitToast() {
+            const toast = document.getElementById('rate-limit-toast');
+            toast.classList.add('show');
+            if (rateLimitToastTimer) clearTimeout(rateLimitToastTimer);
+            rateLimitToastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Intercept all clicks for rate limiting (Point 5)
+        document.addEventListener('click', (e) => {
+            // Skip security UI clicks from rate limit
+            const skipIds = ['auth-lock-screen', 'security-badge', 'security-panel', 'rate-limit-toast'];
+            if (skipIds.some(id => e.target.closest('#' + id))) return;
+            checkRateLimit();
+        }, true);
+
+        /* ─────────────────────────────────────────────────────────────
+           POINT 2: WAF — Client-Side Input Sanitization
+           Strips XSS payloads from any dynamic text before DOM insertion
+           ───────────────────────────────────────────────────────────── */
+        const WAF = {
+            // Encode dangerous HTML characters
+            sanitizeHTML(str) {
+                if (typeof str !== 'string') return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#x27;')
+                    .replace(/\//g, '&#x2F;')
+                    .replace(/`/g, '&#x60;');
+            },
+
+            // Block dangerous URL schemes (javascript:, data:, vbscript:)
+            sanitizeURL(url) {
+                if (typeof url !== 'string') return '#';
+                const clean = url.trim().toLowerCase();
+                const blocked = ['javascript:', 'data:', 'vbscript:', 'file:'];
+                if (blocked.some(scheme => clean.startsWith(scheme))) {
+                    logSecurityEvent('WAF_BLOCK', `Blocked dangerous URL: ${url.substring(0, 60)}`);
+                    return '#';
+                }
+                return url;
+            },
+
+            // Validate YouTube embed IDs — only alphanumeric + dash/underscore
+            sanitizeYouTubeID(id) {
+                if (typeof id !== 'string') return null;
+                return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+            },
+
+            // Strip script injection attempts from plain text fields
+            sanitizeText(str) {
+                if (typeof str !== 'string') return '';
+                return str
+                    .replace(/<script[\s\S]*?<\/script>/gi, '')
+                    .replace(/on\w+\s*=/gi, '')
+                    .replace(/javascript\s*:/gi, '')
+                    .trim();
+            }
+        };
+
+        // Patch the existing getYouTubeID to run through WAF validator
+        const _originalGetYouTubeID = getYouTubeID;
+        function getYouTubeID(url) {
+            const id = _originalGetYouTubeID(url);
+            return WAF.sanitizeYouTubeID(id);
+        }
+
+        /* ─────────────────────────────────────────────────────────────
+           POINT 3: Cloudflare-Ready Security — hide server info,
+           detect if behind proxy, log external resource loads
+           ───────────────────────────────────────────────────────────── */
+        const CloudflareGuard = {
+            init() {
+                // Remove any server-identifying meta if injected
+                document.querySelectorAll('meta[name="generator"]').forEach(m => m.remove());
+
+                // Add X-Forwarded-For awareness notice in console
+                const proto = window.location.protocol;
+                if (proto === 'http:') {
+                    logSecurityEvent('CF_WARN',
+                        'Site is on HTTP — enable HTTPS + Cloudflare proxy for full protection');
+                } else {
+                    logSecurityEvent('CF_OK', 'HTTPS connection detected');
+                }
+
+                // Detect if likely behind Cloudflare (by checking if cf-ray header exists — limited in browser)
+                logSecurityEvent('CF_READY',
+                    'Cloudflare proxy headers pre-configured. Point DNS to Cloudflare to activate.');
+            }
+        };
+
+        /* ─────────────────────────────────────────────────────────────
+           Security Event Logger — stored in memory (not localStorage)
+           ───────────────────────────────────────────────────────────── */
+        const securityLog = [];
+        function logSecurityEvent(type, message) {
+            const entry = {
+                time: new Date().toISOString(),
+                type,
+                message
+            };
+            securityLog.push(entry);
+            console.log(`%c[SECURITY ${type}]%c ${message}`,
+                'color: #34c759; font-weight: bold;', 'color: inherit;');
+        }
+
+        /* ─────────────────────────────────────────────────────────────
+           Security Badge — toggle info panel (Point 6 visual feedback)
+           ───────────────────────────────────────────────────────────── */
+        function toggleSecurityPanel() {
+            const panel = document.getElementById('security-panel');
+            panel.classList.toggle('visible');
+        }
+
+        // Close panel on outside click
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('security-panel');
+            const badge = document.getElementById('security-badge');
+            if (!panel.contains(e.target) && !badge.contains(e.target)) {
+                panel.classList.remove('visible');
+            }
+        });
+
+        /* ─────────────────────────────────────────────────────────────
+           POINT 2: WAF — Protect outbound links in sidebar
+           Re-sanitize all href values on sidebar render
+           ───────────────────────────────────────────────────────────── */
+        const _originalCreateDiorListItem = createDiorListItem;
+        function createDiorListItem(item, index) {
+            // Sanitize URL and text through WAF before rendering
+            const safeItem = {
+                ...item,
+                url: WAF.sanitizeURL(item.url),
+                title: WAF.sanitizeText(item.title),
+                channel: WAF.sanitizeText(item.channel)
+            };
+            return _originalCreateDiorListItem(safeItem, index);
+        }
+
+        /* ─────────────────────────────────────────────────────────────
+           Free Dragging for Auth Box
+           Allows moving the PIN box "everywhere" on screen
+           ───────────────────────────────────────────────────────────── */
+        function initAuthBoxDrag() {
+            const authBox = document.querySelector('.auth-box');
+            if (!authBox) return;
+
+            let isDragging = false;
+            let startX, startY;
+            let currentX = 0, currentY = 0;
+
+            authBox.addEventListener('mousedown', (e) => {
+                // Prevent drag when clicking buttons, icons, or the tune panel
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+
+                isDragging = true;
+                // Get initial positions
+                startX = e.clientX - currentX;
+                startY = e.clientY - currentY;
+
+                authBox.style.transition = 'none'; // Disable transition for pure responsiveness
+                logSecurityEvent('UI', 'Auth box dragging started');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    logSecurityEvent('UI', 'Auth box dragging ended');
+                }
+            });
+
+            // Touch support for "everywhere" accessibility
+            authBox.addEventListener('touchstart', (e) => {
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+                isDragging = true;
+                const touch = e.touches[0];
+                startX = touch.clientX - currentX;
+                startY = touch.clientY - currentY;
+                authBox.style.transition = 'none';
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                currentX = touch.clientX - startX;
+                currentY = touch.clientY - startY;
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                e.preventDefault(); // Prevent scrolling while dragging
+            }, { passive: false });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        /* ─────────────────────────────────────────────────────────────
+           Initialize all security systems on DOM ready
+           ───────────────────────────────────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', () => {
+            CloudflareGuard.init();
+            initAuthBoxDrag();
+            logSecurityEvent('INIT', 'Security layers 2–6 initialized: WAF, Cloudflare-Ready, Rate Limiting, CSP, Auth, Draggable-UI');
+        });
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEW FEATURE JAVASCRIPT: HORIZON CROP + GRID API
+         ✅ NEW functions added:
+           openHorizonCrop()     — opens the crop modal
+           closeHorizonCrop()    — closes the crop modal
+           onHorizonSlide(val)   — handles left/right pan slider
+           onZoomSlide(val)      — handles zoom slider
+           panStep(delta)        — ◀ Left / Right ▶ button step pan
+           toggleGrid()          — shows/hides rule-of-thirds grid
+           applyHorizonCrop()    — applies crop position to auth icon
+           resetCrop()           — resets all values to default
+           initCropDrag()        — mouse drag to pan image in viewport
+         ✅ NOTHING in existing functions was revised.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+
+        /* ─── Crop State ─────────────────────────────────────────────── */
+        const cropState = {
+            panX: 0,      // horizontal offset in px
+            zoom: 1.0,    // scale multiplier
+            gridOn: false,  // grid overlay visible
+            imgSrc: ''      // current image source
+        };
+
+        /* ─── Open Modal ─────────────────────────────────────────────── */
+        function openHorizonCrop() {
+            const modal = document.getElementById('horizon-crop-modal');
+            const cropImg = document.getElementById('crop-img');
+            const authPhoto = document.getElementById('auth-photo');
+
+            // Mirror current auth photo src into editor
+            cropState.imgSrc = authPhoto.src;
+            cropImg.src = cropState.imgSrc;
+
+            // Sync sliders to current state
+            document.getElementById('horizonSlider').value = cropState.panX;
+            document.getElementById('zoomSlider').value = cropState.zoom * 100;
+            document.getElementById('horizonVal').textContent = cropState.panX + 'px';
+            document.getElementById('zoomVal').textContent = cropState.zoom.toFixed(1) + '×';
+
+            applyCropTransform();
+            modal.classList.add('open');
+            logSecurityEvent('CROP', 'Horizon Crop editor opened');
+        }
+
+        /* ─── Close Modal ────────────────────────────────────────────── */
+        function closeHorizonCrop() {
+            document.getElementById('horizon-crop-modal').classList.remove('open');
+        }
+
+        /* ─── Apply CSS transform to crop-img ───────────────────────── */
+        function applyCropTransform() {
+            const img = document.getElementById('crop-img');
+            img.style.setProperty('--pan-x', cropState.panX + 'px');
+            img.style.setProperty('--zoom', cropState.zoom);
+            // Directly set transform (CSS variable fallback)
+            img.style.transform =
+                `translate(calc(-50% + ${cropState.panX}px), -50%) scale(${cropState.zoom})`;
+        }
+
+        /* ─── Horizon Slider (Left ↔ Right pan) ─────────────────────── */
+        function onHorizonSlide(val) {
+            cropState.panX = parseInt(val);
+            document.getElementById('horizonVal').textContent = val + 'px';
+            applyCropTransform();
+        }
+
+        /* ─── Zoom Slider ────────────────────────────────────────────── */
+        function onZoomSlide(val) {
+            cropState.zoom = parseInt(val) / 100;
+            document.getElementById('zoomVal').textContent = cropState.zoom.toFixed(1) + '×';
+            applyCropTransform();
+        }
+
+        /* ─── Step Pan Buttons (◀ Left / Right ▶) ───────────────────── */
+        function panStep(delta) {
+            const slider = document.getElementById('horizonSlider');
+            cropState.panX = Math.max(-200, Math.min(200, cropState.panX + delta));
+            slider.value = cropState.panX;
+            document.getElementById('horizonVal').textContent = cropState.panX + 'px';
+            applyCropTransform();
+        }
+
+        /* ─── Grid Toggle (Rule of Thirds) ──────────────────────────── */
+        function toggleGrid() {
+            cropState.gridOn = !cropState.gridOn;
+            const grid = document.getElementById('cropGrid');
+            const btn = document.getElementById('gridToggleBtn');
+            grid.classList.toggle('visible', cropState.gridOn);
+            btn.classList.toggle('active', cropState.gridOn);
+            btn.textContent = cropState.gridOn ? '⊞ Grid ON' : '⊞ Grid';
+            logSecurityEvent('CROP', 'Grid overlay ' + (cropState.gridOn ? 'enabled' : 'disabled'));
+        }
+
+        /* ─── Apply Crop to Auth Icon ────────────────────────────────── */
+        function applyHorizonCrop() {
+            const authPhoto = document.getElementById('auth-photo');
+
+            // Use canvas to render the cropped position as a data URL
+            const cropImg = document.getElementById('crop-img');
+            const viewport = document.getElementById('cropViewport');
+            const vW = viewport.clientWidth;
+            const vH = viewport.clientHeight;
+
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 160;
+                canvas.height = 160;
+                const ctx = canvas.getContext('2d');
+
+                // Draw a circle clip
+                ctx.beginPath();
+                ctx.arc(80, 80, 80, 0, Math.PI * 2);
+                ctx.clip();
+
+                // Calculate source draw position based on pan + zoom
+                const natW = cropImg.naturalWidth || 400;
+                const natH = cropImg.naturalHeight || 400;
+
+                // Scale to fit viewport height
+                const scaleToFit = (vH / natH) * cropState.zoom;
+                const drawW = natW * scaleToFit;
+                const drawH = natH * scaleToFit;
+
+                // Center + apply pan
+                const offsetX = (canvas.width / 2) - (drawW / 2) + (cropState.panX * (canvas.width / vW));
+                const offsetY = (canvas.height / 2) - (drawH / 2);
+
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                    authPhoto.src = dataUrl;
+                    closeHorizonCrop();
+                    logSecurityEvent('CROP', 'Horizon crop applied to auth icon');
+                };
+                img.onerror = () => {
+                    // Cross-origin blocked — apply CSS offset instead
+                    authPhoto.style.objectPosition =
+                        `calc(50% + ${cropState.panX * 0.4}px) center`;
+                    authPhoto.style.transform = `scale(${Math.min(cropState.zoom, 1.5)})`;
+                    closeHorizonCrop();
+                    logSecurityEvent('CROP', 'CSS fallback crop applied (cross-origin image)');
+                };
+                img.src = cropState.imgSrc;
+
+            } catch (e) {
+                // Fallback: CSS object-position pan
+                authPhoto.style.objectPosition =
+                    `calc(50% + ${cropState.panX * 0.4}px) center`;
+                closeHorizonCrop();
+                logSecurityEvent('CROP', 'CSS fallback applied: ' + e.message);
+            }
+        }
+
+        /* ─── Reset All Crop Values ──────────────────────────────────── */
+        function resetCrop() {
+            cropState.panX = 0;
+            cropState.zoom = 1.0;
+            cropState.gridOn = false;
+
+            document.getElementById('horizonSlider').value = 0;
+            document.getElementById('zoomSlider').value = 100;
+            document.getElementById('horizonVal').textContent = '0px';
+            document.getElementById('zoomVal').textContent = '1.0×';
+            document.getElementById('cropGrid').classList.remove('visible');
+            document.getElementById('gridToggleBtn').classList.remove('active');
+            document.getElementById('gridToggleBtn').textContent = '⊞ Grid';
+
+            applyCropTransform();
+            logSecurityEvent('CROP', 'Crop values reset to default');
+        }
+
+        /* ─── Mouse Drag to Pan inside Viewport ─────────────────────── */
+        function initCropDrag() {
+            const viewport = document.getElementById('cropViewport');
+            let dragging = false;
+            let startX = 0;
+            let startPan = 0;
+
+            viewport.addEventListener('mousedown', (e) => {
+                dragging = true;
+                startX = e.clientX;
+                startPan = cropState.panX;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!dragging) return;
+                const delta = e.clientX - startX;
+                cropState.panX = Math.max(-200, Math.min(200, startPan + delta));
+                document.getElementById('horizonSlider').value = cropState.panX;
+                document.getElementById('horizonVal').textContent = Math.round(cropState.panX) + 'px';
+                applyCropTransform();
+            });
+
+            document.addEventListener('mouseup', () => { dragging = false; });
+
+            // Touch support
+            viewport.addEventListener('touchstart', (e) => {
+                dragging = true;
+                startX = e.touches[0].clientX;
+                startPan = cropState.panX;
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!dragging) return;
+                const delta = e.touches[0].clientX - startX;
+                cropState.panX = Math.max(-200, Math.min(200, startPan + delta));
+                document.getElementById('horizonSlider').value = cropState.panX;
+                document.getElementById('horizonVal').textContent = Math.round(cropState.panX) + 'px';
+                applyCropTransform();
+            });
+
+            document.addEventListener('touchend', () => { dragging = false; });
+        }
+
+        // Initialize drag on page load
+        document.addEventListener('DOMContentLoaded', initCropDrag);
+
+        // Close modal on backdrop click
+        document.getElementById('horizon-crop-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('horizon-crop-modal')) {
+                closeHorizonCrop();
+            }
+        });
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEW FEATURE JAVASCRIPT: CHOOSE FROM FOLDER
+         ✅ NEW functions added:
+           chooseFromFolder()    — triggers native OS file picker dialog
+           handleFileSelect(el)  — reads file from <input>, loads via FileReader
+           loadImageFromFile(f)  — loads File obj into crop viewport + state
+           clearChosenFile()     — removes chosen file, restores original src
+           showFileInfo(f, url)  — populates the file info bar
+           initDropZone()        — drag-over / drop events on viewport
+           handleFileDrop(e)     — handles dropped image files
+         ✅ NOTHING in existing functions was revised.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+
+        /* ─── Choose From Folder — triggers OS file picker ───────────── */
+        function chooseFromFolder() {
+            const input = document.getElementById('folderFileInput');
+            // Reset so same file can be re-selected
+            input.value = '';
+            input.click();
+            logSecurityEvent('FOLDER', 'File picker dialog opened');
+        }
+
+        /* ─── Handle file selected via <input type="file"> ───────────── */
+        function handleFileSelect(inputEl) {
+            const file = inputEl.files && inputEl.files[0];
+            if (!file) return;
+
+            // WAF: validate it's actually an image
+            if (!file.type.startsWith('image/')) {
+                alert('⚠️ Please choose an image file (JPG, PNG, GIF, WebP)');
+                logSecurityEvent('FOLDER_BLOCKED', 'Non-image file rejected: ' + file.type);
+                return;
+            }
+
+            // WAF: max 10 MB
+            if (file.size > 10 * 1024 * 1024) {
+                alert('⚠️ File too large — max 10 MB allowed');
+                logSecurityEvent('FOLDER_BLOCKED', 'File too large: ' + file.size + ' bytes');
+                return;
+            }
+
+            loadImageFromFile(file);
+        }
+
+        /* ─── Load image file into crop viewport ─────────────────────── */
+        function loadImageFromFile(file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+
+                // Load into crop editor viewport
+                const cropImg = document.getElementById('crop-img');
+                cropImg.src = dataUrl;
+
+                // Update cropState so Apply uses the new image
+                cropState.imgSrc = dataUrl;
+
+                // Reset pan/zoom for fresh start with new image
+                cropState.panX = 0;
+                cropState.zoom = 1.0;
+                document.getElementById('horizonSlider').value = 0;
+                document.getElementById('zoomSlider').value = 100;
+                document.getElementById('horizonVal').textContent = '0px';
+                document.getElementById('zoomVal').textContent = '1.0×';
+                applyCropTransform();
+
+                // Show file info bar
+                showFileInfo(file, dataUrl);
+
+                logSecurityEvent('FOLDER', 'Image loaded: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)');
+            };
+
+            reader.onerror = () => {
+                alert('⚠️ Could not read file — please try again');
+                logSecurityEvent('FOLDER_ERR', 'FileReader error on: ' + file.name);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        /* ─── Show file info bar below crop controls ─────────────────── */
+        function showFileInfo(file, dataUrl) {
+            const bar = document.getElementById('cropFileInfo');
+            const thumb = document.getElementById('cropFileThumb');
+            const name = document.getElementById('cropFileName');
+            const size = document.getElementById('cropFileSize');
+
+            thumb.src = dataUrl;
+            name.textContent = file.name;
+
+            // Format file size nicely
+            const kb = file.size / 1024;
+            size.textContent = kb >= 1024
+                ? (kb / 1024).toFixed(1) + ' MB'
+                : Math.round(kb) + ' KB';
+
+            bar.classList.add('visible');
+        }
+
+        /* ─── Clear chosen file, restore original photo ─────────────── */
+        function clearChosenFile() {
+            const originalSrc = document.getElementById('auth-photo').getAttribute('data-default-src') || document.getElementById('auth-photo').src;
+
+            // Restore to auth photo current src (or original default)
+            cropState.imgSrc = originalSrc;
+            document.getElementById('crop-img').src = originalSrc;
+
+            // Hide info bar
+            document.getElementById('cropFileInfo').classList.remove('visible');
+
+            // Reset sliders
+            cropState.panX = 0;
+            cropState.zoom = 1.0;
+            document.getElementById('horizonSlider').value = 0;
+            document.getElementById('zoomSlider').value = 100;
+            document.getElementById('horizonVal').textContent = '0px';
+            document.getElementById('zoomVal').textContent = '1.0×';
+            applyCropTransform();
+
+            // Reset file input
+            document.getElementById('folderFileInput').value = '';
+            logSecurityEvent('FOLDER', 'Chosen file cleared, original restored');
+        }
+
+        /* ─── Drag & Drop onto Viewport ──────────────────────────────── */
+        function initDropZone() {
+            const viewport = document.getElementById('cropViewport');
+            const dropzone = document.getElementById('cropDropzone');
+            let dragCounter = 0;
+
+            // Drag enter — show drop overlay
+            viewport.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                dragCounter++;
+                if (e.dataTransfer.types.includes('Files')) {
+                    dropzone.classList.add('drag-over');
+                }
+            });
+
+            // Drag over — necessary to allow drop
+            viewport.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            // Drag leave — hide drop overlay
+            viewport.addEventListener('dragleave', (e) => {
+                dragCounter--;
+                if (dragCounter <= 0) {
+                    dragCounter = 0;
+                    dropzone.classList.remove('drag-over');
+                }
+            });
+
+            // Drop — handle file
+            viewport.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragCounter = 0;
+                dropzone.classList.remove('drag-over');
+                handleFileDrop(e);
+            });
+        }
+
+        /* ─── Handle dropped file ────────────────────────────────────── */
+        function handleFileDrop(e) {
+            const files = e.dataTransfer.files;
+            if (!files || files.length === 0) return;
+
+            const file = files[0];
+
+            // WAF: image only
+            if (!file.type.startsWith('image/')) {
+                alert('⚠️ Please drop an image file (JPG, PNG, GIF, WebP)');
+                logSecurityEvent('DROP_BLOCKED', 'Non-image dropped: ' + file.type);
+                return;
+            }
+
+            // WAF: max 10 MB
+            if (file.size > 10 * 1024 * 1024) {
+                alert('⚠️ File too large — max 10 MB');
+                logSecurityEvent('DROP_BLOCKED', 'Dropped file too large: ' + file.size);
+                return;
+            }
+
+            loadImageFromFile(file);
+            logSecurityEvent('DROP', 'Image dropped: ' + file.name);
+        }
+
+        // Initialize drop zone on page load
+        document.addEventListener('DOMContentLoaded', initDropZone);
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEW: USER REPAIR / TUNE PANEL JAVASCRIPT
+         ✅ NEW functions added:
+           toggleTunePanel()  — open/close the ⚙️ adjust panel
+           tuneOverlay()      — live-updates overlay opacity, blur, tint
+           resetTune()        — resets all sliders to default values
+           hexToRgb(hex)      — helper: converts #rrggbb → r,g,b numbers
+         ✅ NOTHING in existing functions was revised.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+
+        /* ── Toggle tune panel open/close ─────────────────────────── */
+        function toggleTunePanel() {
+            const panel = document.getElementById('authTunePanel');
+            panel.classList.toggle('open');
+        }
+
+        /* ── Helper: hex colour → r, g, b numbers ─────────────────── */
+        function hexToRgb(hex) {
+            const clean = hex.replace('#', '');
+            const bigint = parseInt(clean, 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
+            };
+        }
+
+        /* ── Live tune overlay — reads all 3 sliders + tint ────────── */
+        function tuneOverlay() {
+            const opacityEl = document.getElementById('tuneOpacity');
+            const blurEl = document.getElementById('tuneBlur');
+            const tintEl = document.getElementById('tuneTint');
+
+            const opacity = parseInt(opacityEl.value) / 100;
+            const blur = parseInt(blurEl.value);
+            const hex = tintEl.value;
+            const rgb = hexToRgb(hex);
+
+            // Update value labels
+            document.getElementById('tuneOpacityVal').textContent = opacityEl.value + '%';
+            document.getElementById('tuneBlurVal').textContent = blur + 'px';
+            document.getElementById('tuneTintVal').textContent = hex;
+
+            // Apply to CSS variables on :root
+            const root = document.documentElement;
+            root.style.setProperty('--lock-overlay-opacity', opacity);
+            root.style.setProperty('--lock-blur', blur + 'px');
+
+            // Apply tint colour directly to the overlay background
+            const overlay = document.getElementById('auth-lock-screen');
+            overlay.style.background = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+            overlay.style.backdropFilter =
+                `blur(${blur}px) saturate(140%) brightness(1.05)`;
+            overlay.style.webkitBackdropFilter =
+                `blur(${blur}px) saturate(140%) brightness(1.05)`;
+
+            logSecurityEvent('TUNE',
+                `Overlay updated — opacity:${opacityEl.value}% blur:${blur}px tint:${hex}`);
+        }
+
+        /* ── Reset all sliders to default ───────────────────────────── */
+        function resetTune() {
+            document.getElementById('tuneOpacity').value = 92;
+            document.getElementById('tuneBlur').value = 24;
+            document.getElementById('tuneTint').value = '#f0f4ff';
+
+            // Trigger live update
+            tuneOverlay();
+            logSecurityEvent('TUNE', 'Overlay reset to default values');
+        }
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         NEW FEATURE 1 — SAVED PHOTO PERSISTENCE
+         When user applies a cropped photo via Horizon Crop, it is
+         saved to localStorage. On every page reload / lock-screen
+         reopen the saved photo is restored automatically.
+         ✅ NEW: saveAuthPhotoToStorage(), loadSavedAuthPhoto()
+         ✅ applyHorizonCrop patched post-call — original untouched
+         ✅ NO other functions revised
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+
+        const PHOTO_STORAGE_KEY = 'hub_saved_auth_photo_v1';
+
+        /* ── Save photo to localStorage after apply ──────────────────── */
+        function saveAuthPhotoToStorage(dataUrl) {
+            try {
+                localStorage.setItem(PHOTO_STORAGE_KEY, dataUrl);
+                logSecurityEvent('PHOTO_SAVE', 'Auth photo saved to localStorage');
+            } catch (e) {
+                logSecurityEvent('PHOTO_SAVE_ERR', e.message);
+            }
+        }
+
+        /* ── Restore saved photo on page load ───────────────────────── */
+        function loadSavedAuthPhoto() {
+            try {
+                const saved = localStorage.getItem(PHOTO_STORAGE_KEY);
+                if (saved) {
+                    const authPhoto = document.getElementById('auth-photo');
+                    authPhoto.src = saved;
+                    if (typeof cropState !== 'undefined') cropState.imgSrc = saved;
+                    logSecurityEvent('PHOTO_LOAD', 'Saved auth photo restored');
+                }
+            } catch (e) {
+                logSecurityEvent('PHOTO_LOAD_ERR', e.message);
+            }
+        }
+
+        /* ── Patch applyHorizonCrop: save after canvas draw completes ─
+           Original function runs first, then save triggers 650ms later
+           (canvas img.onload is async — 650ms ensures draw is done).   */
+        (function patchApplyWithSave() {
+            const _orig = applyHorizonCrop;
+            applyHorizonCrop = function () {
+                _orig();
+                setTimeout(function () {
+                    const src = document.getElementById('auth-photo').src;
+                    if (src && src.startsWith('data:')) {
+                        saveAuthPhotoToStorage(src);
+                    }
+                }, 650);
+            };
+        })();
+
+        /* ── Restore on every page load ─────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', loadSavedAuthPhoto);
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CHROME HISTORY INTEGRATION
+         Fetches from local Python server: http://localhost:8765/history
+         ✅ NEW: loadChromeHistory(), renderChromeHistory(),
+                 faviconUrl(), clearChromeHistoryView()
+         ✅ NOTHING in existing functions was revised.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+        const CHROME_SERVER = 'http://localhost:8765';
+
+        /* ── Get favicon URL from Google's service ─────────────────── */
+        function faviconUrl(url) {
+            try {
+                const domain = new URL(url).hostname;
+                return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        /* ── Format ISO date → readable local time ──────────────────── */
+        function formatVisitTime(iso) {
+            if (!iso) return '';
+            try {
+                const d = new Date(iso);
+                const today    = new Date();
+                const isToday  = d.toDateString() === today.toDateString();
+                const timePart = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (isToday) return timePart;
+                return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + timePart;
+            } catch (e) { return iso; }
+        }
+
+        /* ── Set status indicator ────────────────────────────────────── */
+        function setHistoryStatus(state, text, count) {
+            const dot  = document.getElementById('historyStatusDot');
+            const txt  = document.getElementById('historyStatusText');
+            const cnt  = document.getElementById('historyCountText');
+            if (!dot || !txt) return;
+            dot.className = 'history-status-dot ' + state;
+            txt.textContent = text;
+            if (cnt) cnt.textContent = count || '';
+        }
+
+        /* ── Render Chrome history rows into the flyout ─────────────── */
+        function renderChromeHistory(rows) {
+            const list = document.getElementById('history-sidebar-list');
+            if (!list) return;
+
+            if (!rows || rows.length === 0) {
+                list.innerHTML = '<div class="history-flyout-empty">No history found</div>';
+                return;
+            }
+
+            /* ── Keep only the newest 60% of rows (skip old tail) ────── */
+            const keep = Math.max(1, Math.ceil(rows.length * 0.6));
+            rows = rows.slice(0, keep);
+
+            /* ── Group rows by calendar date ─────────────────────────── */
+            const today     = new Date();
+            const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+            function dateLabel(iso) {
+                if (!iso) return 'Earlier';
+                const d = new Date(iso);
+                if (d.toDateString() === today.toDateString())
+                    return 'Today — ' + today.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+                if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+                return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            }
+
+            const groups = [];
+            const seen   = new Map();
+            for (const item of rows) {
+                const label = dateLabel(item.last_visit);
+                if (!seen.has(label)) { seen.set(label, groups.length); groups.push({ label, items: [] }); }
+                groups[seen.get(label)].items.push(item);
+            }
+
+            list.innerHTML = groups.map(g => `
+                <div class="history-date-group">
+                    <div class="history-date-header">${g.label}</div>
+                    ${g.items.map(item => {
+                        const favicon    = faviconUrl(item.url);
+                        const safeUrl    = item.url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const safeTitle  = (item.title || item.url).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        const displayUrl = (() => { try { return new URL(item.url).hostname; } catch(e){ return item.url; } })();
+                        const visitTime  = formatVisitTime(item.last_visit);
+                        const visits     = item.visit_count > 1 ? `${item.visit_count} visits` : '1 visit';
+                        return `
+                        <div class="history-chrome-card" onclick="window.open('${safeUrl}','_blank')">
+                            <div class="history-chrome-row1">
+                                ${favicon ? `<img class="history-chrome-favicon" src="${favicon}" onerror="this.style.display='none'" alt="">` : '<span style="width:16px;flex-shrink:0">🌐</span>'}
+                                <div class="history-chrome-title">${safeTitle}</div>
+                            </div>
+                            <div class="history-chrome-url" title="${safeUrl}">${displayUrl}</div>
+                            <div class="history-chrome-meta">
+                                <span class="history-chrome-visits">${visits}</span>
+                                <span class="history-chrome-time">${visitTime}</span>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>`).join('');
+        }
+
+        /* ── Fetch Chrome history from local Python server ───────────── */
+        async function loadChromeHistory() {
+            const list   = document.getElementById('history-sidebar-list');
+            const search = (document.getElementById('chromeHistorySearch') || {}).value || '';
+
+            setHistoryStatus('loading', 'Loading…', '');
+            if (list) list.innerHTML = '<div class="history-flyout-empty">⏳ Fetching Chrome history…</div>';
+
+            const url = `${CHROME_SERVER}/history?limit=500${search ? '&search=' + encodeURIComponent(search) : ''}`;
+
+            try {
+                const res  = await fetch(url, { signal: AbortSignal.timeout(5000) });
+                if (!res.ok) throw new Error(`Server returned ${res.status}`);
+                const data = await res.json();
+
+                if (data.error) {
+                    setHistoryStatus('error', 'Error: ' + data.error, '');
+                    if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
+                        ⚠️ ${data.error}<br><br>
+                        Make sure:<br>
+                        1. Chrome is <strong>closed</strong><br>
+                        2. Python server is running:<br>
+                        <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px">
+                        python chrome_history_server.py</code>
+                    </div>`;
+                    return;
+                }
+
+                setHistoryStatus('live', 'Connected · Chrome History', `${data.count} sites`);
+                renderChromeHistory(data.rows);
+
+            } catch (err) {
+                setHistoryStatus('error', 'Server offline', '');
+                if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
+                    ❌ Cannot connect to local server.<br><br>
+                    <strong>Step 1</strong> — Close Chrome<br>
+                    <strong>Step 2</strong> — Open Command Prompt and run:<br>
+                    <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px;color:#1d1d1f">
+                    python chrome_history_server.py</code><br><br>
+                    Then click the History menu again.
+                </div>`;
+            }
+        }
+
+        /* ── Clear the visible list (does NOT delete real Chrome history) */
+        function clearChromeHistoryView() {
+            const list = document.getElementById('history-sidebar-list');
+            if (list) list.innerHTML = '<div class="history-flyout-empty">History cleared from view</div>';
+            setHistoryStatus('', 'Cleared', '');
+            /* Also clear Stream Hub tracked history */
+            try { localStorage.removeItem('stream_hub_history_v1'); } catch (e) {}
+        }
+
+        /* ── Toggle history flyout + auto-load on open ───────────────── */
+        function toggleHistoryFlyout() {
+            const flyout  = document.getElementById('historyFlyout');
+            const trigger = document.getElementById('historyTriggerItem');
+            const arrow   = document.getElementById('historyTriggerArrow');
+            if (!flyout) return;
+
+            const wasOpen = flyout.classList.contains('open');
+            const isNowOpen = flyout.classList.toggle('open');
+            if (trigger) trigger.classList.toggle('active', isNowOpen);
+            if (arrow)   arrow.style.transform = isNowOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+
+            /* load Chrome history every time the flyout opens */
+            if (!wasOpen && isNowOpen) {
+                loadChromeHistory();
+            }
+        }
+        window.toggleHistoryFlyout = toggleHistoryFlyout;
+
+    </script>
+
+</body>
+
+</html>

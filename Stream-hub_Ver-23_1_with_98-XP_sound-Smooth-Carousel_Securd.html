@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,7 @@
          • Blocks XSS attacks, unauthorized script injection,
            and unwanted resource loading at the browser level.
          ═══════════════════════════════════════════════════════════════ -->
-    <meta http-equiv="Content-Security-Policy"
-          content="
+    <meta http-equiv="Content-Security-Policy" content="
             default-src 'self';
             script-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
@@ -40,7 +40,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -447,7 +447,8 @@
 
         .featured-video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
             height: 0;
             overflow: hidden;
             border-radius: 12px;
@@ -499,7 +500,8 @@
         }
 
         .featured-player.life-wellness .featured-video-wrapper {
-            padding-bottom: 75%; /* 4:3 aspect ratio for 640x480 */
+            padding-bottom: 75%;
+            /* 4:3 aspect ratio for 640x480 */
         }
 
         /* Overlay backdrop for Life & Wellness player */
@@ -688,7 +690,8 @@
         .video-thumbnail {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
             overflow: hidden;
             background: var(--apple-gray);
         }
@@ -850,8 +853,8 @@
             height: 52px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.92);
-            border: 1.5px solid rgba(0,0,0,0.1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.16);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -864,12 +867,17 @@
 
         .apple-scroll-btn:hover {
             background: white;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
             transform: translateY(-50%) scale(1.08);
         }
 
-        .apple-scroll-btn.prev { left: -20px; }
-        .apple-scroll-btn.next { right: -20px; }
+        .apple-scroll-btn.prev {
+            left: -20px;
+        }
+
+        .apple-scroll-btn.next {
+            right: -20px;
+        }
 
         /* Individual apple-style card — iPad portrait size */
         .apple-card {
@@ -892,12 +900,12 @@
         .apple-card:hover {
             background: #eaeaec;
             transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
         }
 
         .apple-card.previewing {
             border-color: var(--apple-blue);
-            box-shadow: 0 0 0 5px rgba(0,113,227,0.14);
+            box-shadow: 0 0 0 5px rgba(0, 113, 227, 0.14);
         }
 
         /* Thumbnail inside apple card — tall portrait ratio */
@@ -930,20 +938,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0);
+            background: rgba(0, 0, 0, 0);
             transition: background 0.2s;
             border-radius: 18px;
         }
 
         .apple-card:hover .apple-thumb-play {
-            background: rgba(0,0,0,0.20);
+            background: rgba(0, 0, 0, 0.20);
         }
 
         .apple-play-circle {
             width: 54px;
             height: 54px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -953,7 +961,7 @@
             font-size: 20px;
             color: var(--apple-blue);
             padding-left: 3px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
         }
 
         .apple-card:hover .apple-play-circle {
@@ -983,15 +991,15 @@
 
         /* Dark mode adaptation for apple cards */
         body.sky-blue-mode .apple-category {
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
         }
 
         body.video-mode .apple-category {
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         body.video-mode .apple-card {
-            background: rgba(255,255,255,0.98);
+            background: rgba(255, 255, 255, 0.98);
         }
 
         @media (max-width: 768px) {
@@ -1041,7 +1049,7 @@
         /* ═══════════════════════════════════════════════════════════════════
            AOC-STYLE CAROUSEL FOR LIFE & WELLNESS
            ═══════════════════════════════════════════════════════════════════ */
-        
+
         .aoc-category {
             background: white !important;
         }
@@ -1060,12 +1068,15 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             padding: 20px 0;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
 
         .aoc-carousel-track::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            display: none;
+            /* Chrome/Safari */
         }
 
         .aoc-card {
@@ -1294,21 +1305,36 @@
         }
 
         .auth-box {
-           background: rgba(255, 255, 255, 0.97);
-           backdrop-filter: blur(40px) saturate(200%);
-           -webkit-backdrop-filter: blur(40px) saturate(200%);
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
             border-radius: 24px;
             padding: 48px 40px 36px;
             width: 360px;
             max-width: 90vw;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
             animation: authSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            z-index: 100;
+        }
+
+        .auth-box:active {
+            cursor: grabbing;
         }
 
         @keyframes authSlideIn {
-            from { transform: translateY(40px) scale(0.9); opacity: 0; }
-            to   { transform: translateY(0) scale(1); opacity: 1; }
+            from {
+                transform: translateY(40px) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
         }
 
         .auth-icon {
@@ -1420,7 +1446,10 @@
             width: 100%;
             text-align: center;
         }
-        .auth-tune-toggle:hover { text-decoration: underline; }
+
+        .auth-tune-toggle:hover {
+            text-decoration: underline;
+        }
 
         .auth-tune-panel {
             max-height: 0;
@@ -1443,7 +1472,10 @@
             gap: 10px;
             margin-bottom: 10px;
         }
-        .auth-tune-row:last-child { margin-bottom: 0; }
+
+        .auth-tune-row:last-child {
+            margin-bottom: 0;
+        }
 
         .auth-tune-label {
             font-size: 11px;
@@ -1465,6 +1497,7 @@
             outline: none;
             cursor: pointer;
         }
+
         .auth-tune-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
@@ -1472,7 +1505,7 @@
             border-radius: 50%;
             background: #0071e3;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,113,227,0.35);
+            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.35);
         }
 
         .auth-tune-val {
@@ -1496,7 +1529,10 @@
             width: 100%;
             text-align: center;
         }
-        .auth-tune-reset:hover { text-decoration: underline; }
+
+        .auth-tune-reset:hover {
+            text-decoration: underline;
+        }
 
         /* ═══════════════════════════════════════════════════════════════
            NEW FEATURE: HORIZON CROP + GRID API
@@ -1530,14 +1566,21 @@
             padding: 28px;
             width: 480px;
             max-width: 95vw;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
             animation: cropSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             color: white;
         }
 
         @keyframes cropSlideIn {
-            from { transform: scale(0.88) translateY(30px); opacity: 0; }
-            to   { transform: scale(1) translateY(0);       opacity: 1; }
+            from {
+                transform: scale(0.88) translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
         }
 
         .crop-panel-header {
@@ -1571,7 +1614,9 @@
             transition: background 0.2s;
         }
 
-        .crop-close-btn:hover { background: #48484a; }
+        .crop-close-btn:hover {
+            background: #48484a;
+        }
 
         /* Viewport — the visible crop window */
         .crop-viewport {
@@ -1586,7 +1631,9 @@
             margin-bottom: 16px;
         }
 
-        .crop-viewport:active { cursor: grabbing; }
+        .crop-viewport:active {
+            cursor: grabbing;
+        }
 
         /* The actual image inside viewport — panned via transform */
         #crop-img {
@@ -1610,7 +1657,9 @@
             transition: opacity 0.3s ease;
         }
 
-        .crop-grid-overlay.visible { opacity: 1; }
+        .crop-grid-overlay.visible {
+            opacity: 1;
+        }
 
         .crop-grid-line {
             position: absolute;
@@ -1618,11 +1667,34 @@
         }
 
         /* Vertical lines at 33% and 66% */
-        .crop-grid-line.v1 { left: 33.33%; top: 0; width: 1px; height: 100%; }
-        .crop-grid-line.v2 { left: 66.66%; top: 0; width: 1px; height: 100%; }
+        .crop-grid-line.v1 {
+            left: 33.33%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+        }
+
+        .crop-grid-line.v2 {
+            left: 66.66%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+        }
+
         /* Horizontal lines at 33% and 66% */
-        .crop-grid-line.h1 { top: 33.33%; left: 0; height: 1px; width: 100%; }
-        .crop-grid-line.h2 { top: 66.66%; left: 0; height: 1px; width: 100%; }
+        .crop-grid-line.h1 {
+            top: 33.33%;
+            left: 0;
+            height: 1px;
+            width: 100%;
+        }
+
+        .crop-grid-line.h2 {
+            top: 66.66%;
+            left: 0;
+            height: 1px;
+            width: 100%;
+        }
 
         /* Corner markers */
         .crop-corner {
@@ -1634,10 +1706,33 @@
             border-width: 0;
         }
 
-        .crop-corner.tl { top: 0; left: 0;  border-top-width: 3px; border-left-width: 3px; }
-        .crop-corner.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
-        .crop-corner.bl { bottom: 0; left: 0;  border-bottom-width: 3px; border-left-width: 3px; }
-        .crop-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
+        .crop-corner.tl {
+            top: 0;
+            left: 0;
+            border-top-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .crop-corner.tr {
+            top: 0;
+            right: 0;
+            border-top-width: 3px;
+            border-right-width: 3px;
+        }
+
+        .crop-corner.bl {
+            bottom: 0;
+            left: 0;
+            border-bottom-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .crop-corner.br {
+            bottom: 0;
+            right: 0;
+            border-bottom-width: 3px;
+            border-right-width: 3px;
+        }
 
         /* Controls section */
         .crop-controls {
@@ -1681,11 +1776,13 @@
             border-radius: 50%;
             background: #0071e3;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,113,227,0.4);
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.4);
             transition: transform 0.15s ease;
         }
 
-        .crop-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .crop-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
 
         .crop-slider-value {
             font-size: 12px;
@@ -1719,19 +1816,53 @@
             gap: 6px;
         }
 
-        .crop-btn:hover { transform: translateY(-2px); }
-        .crop-btn:active { transform: scale(0.96); }
+        .crop-btn:hover {
+            transform: translateY(-2px);
+        }
 
-        .crop-btn.pan-left  { background: #2c2c2e; color: white; }
-        .crop-btn.pan-right { background: #2c2c2e; color: white; }
-        .crop-btn.grid-toggle { background: #ddd4da; color: #1c1c1e; border: 1px solid #c8bdc4; }
-        .crop-btn.grid-toggle.active { background: #c4b8bf; color: #1c1c1e; border: 1px solid #b0a5ab; }
-        .crop-btn.apply-btn { background: #ddd4da; color: #1c1c1e; flex: 2; border: 1px solid #c8bdc4; }
-        .crop-btn.reset-btn { background: #2c2c2e; color: #aeaeb2; }
+        .crop-btn:active {
+            transform: scale(0.96);
+        }
+
+        .crop-btn.pan-left {
+            background: #2c2c2e;
+            color: white;
+        }
+
+        .crop-btn.pan-right {
+            background: #2c2c2e;
+            color: white;
+        }
+
+        .crop-btn.grid-toggle {
+            background: #ddd4da;
+            color: #1c1c1e;
+            border: 1px solid #c8bdc4;
+        }
+
+        .crop-btn.grid-toggle.active {
+            background: #c4b8bf;
+            color: #1c1c1e;
+            border: 1px solid #b0a5ab;
+        }
+
+        .crop-btn.apply-btn {
+            background: #ddd4da;
+            color: #1c1c1e;
+            flex: 2;
+            border: 1px solid #c8bdc4;
+        }
+
+        .crop-btn.reset-btn {
+            background: #2c2c2e;
+            color: #aeaeb2;
+        }
 
         /* ── NEW: Choose From Folder ─────────────────────────────────── */
 
-        #folderFileInput { display: none; }
+        #folderFileInput {
+            display: none;
+        }
 
         .crop-btn.folder-btn {
             background: #ddd4da;
@@ -1739,6 +1870,7 @@
             flex: 2;
             border: 1px solid #c8bdc4;
         }
+
         .crop-btn.folder-btn:hover {
             background: #d0c6cd;
             color: #1c1c1e;
@@ -1764,11 +1896,15 @@
             font-size: 14px;
             font-weight: 600;
         }
+
         .crop-dropzone.drag-over {
             opacity: 1;
             pointer-events: all;
         }
-        .crop-dropzone-icon { font-size: 36px; }
+
+        .crop-dropzone-icon {
+            font-size: 36px;
+        }
 
         /* File info bar after picking */
         .crop-file-info {
@@ -1780,7 +1916,10 @@
             padding: 10px 14px;
             margin-bottom: 4px;
         }
-        .crop-file-info.visible { display: flex; }
+
+        .crop-file-info.visible {
+            display: flex;
+        }
 
         .crop-file-thumb {
             width: 36px;
@@ -1790,7 +1929,12 @@
             flex-shrink: 0;
             border: 1.5px solid #3a3a3c;
         }
-        .crop-file-meta { flex: 1; overflow: hidden; }
+
+        .crop-file-meta {
+            flex: 1;
+            overflow: hidden;
+        }
+
         .crop-file-name {
             font-size: 13px;
             font-weight: 600;
@@ -1799,7 +1943,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .crop-file-size { font-size: 11px; color: #aeaeb2; margin-top: 2px; }
+
+        .crop-file-size {
+            font-size: 11px;
+            color: #aeaeb2;
+            margin-top: 2px;
+        }
 
         .crop-file-clear {
             width: 24px;
@@ -1816,7 +1965,11 @@
             transition: background 0.15s;
             flex-shrink: 0;
         }
-        .crop-file-clear:hover { background: #ff3b30; color: white; }
+
+        .crop-file-clear:hover {
+            background: #ff3b30;
+            color: white;
+        }
 
         /* Edit icon overlay on auth photo */
         .auth-icon-wrapper {
@@ -1869,7 +2022,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         #rate-limit-toast.show {
@@ -1882,7 +2035,7 @@
             bottom: 20px;
             right: 20px;
             z-index: 500;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             border: 1.5px solid #34c759;
             border-radius: 40px;
             padding: 8px 16px;
@@ -1912,8 +2065,17 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.5; transform: scale(1.4); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.4);
+            }
         }
 
         /* Security Info Panel */
@@ -1925,7 +2087,7 @@
             background: white;
             border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             z-index: 600;
             transform: scale(0.85) translateY(10px);
             opacity: 0;
@@ -1968,24 +2130,37 @@
             flex-shrink: 0;
         }
 
-        .sec-item-icon.green { background: #e8f9ed; }
-        .sec-item-icon.blue  { background: #e8f0fe; }
-        .sec-item-icon.orange { background: #fff3e0; }
+        .sec-item-icon.green {
+            background: #e8f9ed;
+        }
 
-        .sec-item-text { color: #1d1d1f; font-weight: 500; }
-        .sec-item-desc { color: #6e6e73; font-size: 11px; }
+        .sec-item-icon.blue {
+            background: #e8f0fe;
+        }
+
+        .sec-item-icon.orange {
+            background: #fff3e0;
+        }
+
+        .sec-item-text {
+            color: #1d1d1f;
+            font-weight: 500;
+        }
+
+        .sec-item-desc {
+            color: #6e6e73;
+            font-size: 11px;
+        }
 
         /* ═══════════════════════════════════════════════════════════════
            INSIGHT — SUPERSTAR PHOTO STYLE
            1 big hero card (top) + 2 medium cards (bottom row)
            ═══════════════════════════════════════════════════════════════ */
-        /* 20260217 REVISED: max-width 480px centres the grid as a small block */
+        /* 20260218 REVISED: removed narrow cap — grid is now full-width */
         .insight-superstar-grid {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-width: 480px;
-            margin: 0 auto;
+            gap: 16px;
         }
 
         /* BIG hero card — full width */
@@ -1996,14 +2171,16 @@
             overflow: hidden;
             cursor: pointer;
             background: #000;
-            aspect-ratio: 16 / 7;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
         }
+
         .insight-hero-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
         }
+
         .insight-hero-card img {
             width: 100%;
             height: 100%;
@@ -2011,18 +2188,22 @@
             display: block;
             transition: transform 0.5s ease;
         }
-        .insight-hero-card:hover img { transform: scale(1.04); }
+
+        .insight-hero-card:hover img {
+            transform: scale(1.04);
+        }
 
         /* gradient + text overlay on hero */
         .insight-hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.25) 50%, transparent 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.25) 50%, transparent 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             padding: 32px 36px;
         }
+
         .insight-hero-badge {
             display: inline-block;
             background: var(--apple-blue);
@@ -2036,27 +2217,30 @@
             margin-bottom: 12px;
             width: fit-content;
         }
+
         .insight-hero-title {
             font-size: 30px;
             font-weight: 700;
             color: #fff;
             line-height: 1.3;
             margin-bottom: 8px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
+
         .insight-hero-channel {
             font-size: 15px;
-            color: rgba(255,255,255,0.75);
+            color: rgba(255, 255, 255, 0.75);
             font-weight: 400;
         }
+
         .insight-hero-play {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0.7);
+            transform: translate(-50%, -50%) scale(0.7);
             width: 72px;
             height: 72px;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2066,11 +2250,12 @@
             padding-left: 5px;
             opacity: 0;
             transition: all 0.25s ease;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
         }
+
         .insight-hero-card:hover .insight-hero-play {
             opacity: 1;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         /* 2-card middle row */
@@ -2079,66 +2264,81 @@
         /* matching the Photo 2 thumbnail size. Grid structure is unchanged.      */
         .insight-middle-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(4, auto);
-            gap: 6px;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 12px;
         }
-        
+
         .insight-mid-card {
             position: relative;
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
             background: #000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-    /*20260217 Mid 1 — LEFT col, spans rows 1 to 3*/ 
-.insight-mid-card.tall {
-    grid-column: 1;
-    grid-row: 1 / span 3;
-    aspect-ratio: 2 / 3;
-}
+        /*20260217 Mid 1 — LEFT col, spans rows 1 to 3*/
+        .insight-mid-card.tall {
+            grid-column: 1;
+            grid-row: 1 / span 3;
+            aspect-ratio: 16 / 9;
+            /* Default 1280x720 style */
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-/* Mid 2, 3, 4 — RIGHT col, each ONE row independently */
-.insight-mid-card.small {
-    grid-column: 2;
-    grid-row: auto;
-    aspect-ratio: 16 / 9;
-}
+        .insight-mid-card.vertical {
+            aspect-ratio: 9 / 16 !important;
+        }
 
-/* Mid 5 and Mid 6 — bottom row, each half width */
-.insight-mid-card.bottom {
-    grid-row: 4;
-    aspect-ratio: 16 / 7;
-}
+        .insight-mid-card.horizontal {
+            aspect-ratio: 16 / 9 !important;
+        }
 
-/* Mid 6 bottom-left */
-.insight-mid-card.bottom-left {
-    grid-column: 1;
-    grid-row: 4;
-    aspect-ratio: 16 / 9;
-}
+        /* MID1 Display Toggle Button */
+        .insight-display-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
 
-/* Mid 5 bottom-right */
-.insight-mid-card.bottom-right {
-    grid-column: 2;
-    grid-row: 4;
-    aspect-ratio: 16 / 9;
-}
-    /*02172026 end*/
+        .insight-display-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            background: white;
+        }
 
-        /* Scale down overlay text to fit small cards */
-        .insight-mid-title   { font-size: 11px; margin-bottom: 2px; }
-        .insight-mid-channel { font-size: 10px; }
-        .insight-mid-overlay { padding: 8px 10px; }
-        .insight-mid-play    { width: 28px; height: 28px; font-size: 10px; }
+        /* Mid 2, 3, 4 — RIGHT col, each ONE row independently */
+        .insight-mid-card.small {
+            aspect-ratio: 16 / 9;
+        }
+
+        /* Mid 5 and Mid 6 */
+        .insight-mid-card.bottom {
+            aspect-ratio: 16 / 9;
+        }
+
+        /*02172026 end*/
+
+        /* Normal-size overlay text — small-card overrides removed 20260218 */
 
         .insight-mid-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
         }
+
         .insight-mid-card img {
             width: 100%;
             height: 100%;
@@ -2146,17 +2346,21 @@
             display: block;
             transition: transform 0.4s ease;
         }
-        .insight-mid-card:hover img { transform: scale(1.05); }
+
+        .insight-mid-card:hover img {
+            transform: scale(1.05);
+        }
 
         .insight-mid-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             padding: 20px 22px;
         }
+
         .insight-mid-title {
             font-size: 17px;
             font-weight: 700;
@@ -2167,20 +2371,22 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
         }
+
         .insight-mid-channel {
             font-size: 13px;
-            color: rgba(255,255,255,0.70);
+            color: rgba(255, 255, 255, 0.70);
         }
+
         .insight-mid-play {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0.7);
+            transform: translate(-50%, -50%) scale(0.7);
             width: 54px;
             height: 54px;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2190,20 +2396,30 @@
             padding-left: 3px;
             opacity: 0;
             transition: all 0.25s ease;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
         }
+
         .insight-mid-card:hover .insight-mid-play {
             opacity: 1;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         @media (max-width: 768px) {
-            .insight-middle-row { grid-template-columns: 1fr; }
-            .insight-hero-title { font-size: 20px; }
-            .insight-hero-overlay { padding: 20px; }
+            .insight-middle-row {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-hero-title {
+                font-size: 20px;
+            }
+
+            .insight-hero-overlay {
+                padding: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ═══════════════════════════════════════════════════════════════
@@ -2217,18 +2433,17 @@
             <source src="Flower_JISOO.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        
+
         <div class="auth-box">
 
-        <!-- NEW: Horizon Crop — click photo to open editor -->
-        <div class="auth-icon-wrapper" onclick="openHorizonCrop()" title="Click to crop & position photo">
-            <img id="auth-photo"
-                 src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
-                 data-default-src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
-                 width="80" height="80"
-                 style="border-radius: 50%; object-fit: cover; border: 3px solid #0071e3; display:block;">
-            <div class="auth-icon-edit-badge">✏️</div>
-        </div>
+            <!-- NEW: Horizon Crop — click photo to open editor -->
+            <div class="auth-icon-wrapper" onclick="openHorizonCrop()" title="Click to crop & position photo">
+                <img id="auth-photo" src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
+                    data-default-src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
+                    width="80" height="80"
+                    style="border-radius: 50%; object-fit: cover; border: 3px solid #0071e3; display:block;">
+                <div class="auth-icon-edit-badge">✏️</div>
+            </div>
 
             <div class="auth-title">Stream Content Hub</div>
             <div class="auth-subtitle">Enter PIN to access — or skip to continue as guest</div>
@@ -2261,33 +2476,30 @@
                 <!-- Opacity slider -->
                 <div class="auth-tune-row">
                     <span class="auth-tune-label">Opacity</span>
-                    <input type="range" class="auth-tune-slider" id="tuneOpacity"
-                           min="0" max="100" value="92"
-                           oninput="tuneOverlay()">
+                    <input type="range" class="auth-tune-slider" id="tuneOpacity" min="0" max="100" value="92"
+                        oninput="tuneOverlay()">
                     <span class="auth-tune-val" id="tuneOpacityVal">92%</span>
                 </div>
 
                 <!-- Blur slider -->
                 <div class="auth-tune-row">
                     <span class="auth-tune-label">Blur</span>
-                    <input type="range" class="auth-tune-slider" id="tuneBlur"
-                           min="0" max="40" value="24"
-                           oninput="tuneOverlay()">
+                    <input type="range" class="auth-tune-slider" id="tuneBlur" min="0" max="40" value="24"
+                        oninput="tuneOverlay()">
                     <span class="auth-tune-val" id="tuneBlurVal">24px</span>
                 </div>
 
                 <!-- Tint colour picker -->
                 <div class="auth-tune-row">
                     <span class="auth-tune-label">Tint</span>
-                    <input type="color" id="tuneTint" value="#f0f4ff"
-                           oninput="tuneOverlay()"
-                           style="flex:1; height:28px; border:none; border-radius:8px; cursor:pointer; background:none;">
+                    <input type="color" id="tuneTint" value="#f0f4ff" oninput="tuneOverlay()"
+                        style="flex:1; height:28px; border:none; border-radius:8px; cursor:pointer; background:none;">
                     <span class="auth-tune-val" id="tuneTintVal" style="font-size:9px;">#f0f4ff</span>
                 </div>
 
                 <button class="auth-tune-reset" onclick="resetTune()">↺ Reset to default</button>
             </div>
-           
+
         </div>
     </div>
 
@@ -2344,18 +2556,16 @@
                 <!-- Horizon (Left ↔ Right) slider -->
                 <div class="crop-control-row">
                     <span class="crop-control-label">Horizon</span>
-                    <input type="range" class="crop-slider" id="horizonSlider"
-                           min="-200" max="200" value="0"
-                           oninput="onHorizonSlide(this.value)">
+                    <input type="range" class="crop-slider" id="horizonSlider" min="-200" max="200" value="0"
+                        oninput="onHorizonSlide(this.value)">
                     <span class="crop-slider-value" id="horizonVal">0px</span>
                 </div>
 
                 <!-- Zoom slider -->
                 <div class="crop-control-row">
                     <span class="crop-control-label">Zoom</span>
-                    <input type="range" class="crop-slider" id="zoomSlider"
-                           min="80" max="300" value="100"
-                           oninput="onZoomSlide(this.value)">
+                    <input type="range" class="crop-slider" id="zoomSlider" min="80" max="300" value="100"
+                        oninput="onZoomSlide(this.value)">
                     <span class="crop-slider-value" id="zoomVal">1.0×</span>
                 </div>
 
@@ -2366,7 +2576,7 @@
 
                 <!-- Pan buttons + Grid toggle -->
                 <div class="crop-btn-row">
-                    <button class="crop-btn pan-left"  onclick="panStep(-20)">◀ Left</button>
+                    <button class="crop-btn pan-left" onclick="panStep(-20)">◀ Left</button>
                     <button class="crop-btn grid-toggle" id="gridToggleBtn" onclick="toggleGrid()">⊞ Grid</button>
                     <button class="crop-btn pan-right" onclick="panStep(20)">Right ▶</button>
                 </div>
@@ -2486,10 +2696,9 @@
                 <span></span>
             </button>
             <div class="featured-video-wrapper">
-                <iframe id="featuredIframe" 
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
+                <iframe id="featuredIframe" referrerpolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
                 </iframe>
             </div>
             <div class="featured-info">
@@ -2516,6 +2725,15 @@
                     <button class="aoc-pause-btn" id="life-aoc-pause">❚❚</button>
                 </div>
             </div>
+        </div>
+
+        <!-- INSIGHT Category — Superstar Photo Style (1 big + 2 middle) -->
+        <div class="category">
+            <div class="category-header">
+                <span class="category-icon">💡</span>
+                <h2 class="category-title">INSIGHT</h2>
+            </div>
+            <div class="insight-superstar-grid" id="sports-grid"></div>
         </div>
 
         <!-- Business Category — Apple Store Carousel Style -->
@@ -2550,15 +2768,6 @@
             </div>
         </div>
 
-        <!-- INSIGHT Category — Superstar Photo Style (1 big + 2 middle) -->
-        <div class="category">
-            <div class="category-header">
-                <span class="category-icon">💡</span>
-                <h2 class="category-title">INSIGHT</h2>
-            </div>
-            <div class="insight-superstar-grid" id="sports-grid"></div>
-        </div>
-
         <!-- News Category -->
         <div class="category">
             <div class="category-header">
@@ -2575,7 +2784,7 @@
         let bgAudio = null; // Store the background audio object
 
         // Sky Blue theme toggle
-        document.getElementById('themeToggle').addEventListener('click', function() {
+        document.getElementById('themeToggle').addEventListener('click', function () {
             document.body.classList.toggle('sky-blue-mode');
             const text = document.getElementById('themeText');
             if (document.body.classList.contains('sky-blue-mode')) {
@@ -2586,7 +2795,7 @@
         });
 
         // RISE (Video mode) toggle
-        document.getElementById('riseToggle').addEventListener('click', function() {
+        document.getElementById('riseToggle').addEventListener('click', function () {
             const body = document.body;
             const video = document.getElementById('bgVideo');
             const riseText = document.getElementById('riseText');
@@ -2594,7 +2803,7 @@
             const muteBtn = document.getElementById('muteToggle');
 
             body.classList.toggle('video-mode');
-            
+
             if (body.classList.contains('video-mode')) {
                 // Enter video mode
                 video.play();
@@ -2605,7 +2814,7 @@
                 bgAudio = new Audio('https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Win98-startupmusic.m4a');
                 bgAudio.loop = true; // Loop the audio
                 bgAudio.play().catch(err => console.log('Audio play failed:', err));
-                
+
                 localStorage.setItem('videoMode', 'active');
             } else {
                 // Exit video mode
@@ -2630,9 +2839,9 @@
         });
 
         // Mute toggle functionality (controls bgAudio only)
-        document.getElementById('muteToggle').addEventListener('click', function() {
+        document.getElementById('muteToggle').addEventListener('click', function () {
             const muteText = document.getElementById('muteText');
-            
+
             if (bgAudio) {
                 if (bgAudio.muted) {
                     // Unmute audio
@@ -2651,30 +2860,31 @@
         // Content data organized by category
         const content = {
             life: [
-                { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92- Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
-                { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi onboard on Qutar, Night on M1', channel: 'Lifestyle Insights' },
+                { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92-Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
+                { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi ride M1 practice onboard on Qatar- 2021', channel: 'Lifestyle Insights' },
                 { url: 'https://www.youtube.com/embed/ycF8oZ8xwDY', title: 'Colleague Wife', channel: 'Life Mastery' },
                 { url: 'https://www.youtube.com/embed/OV6cCmgXQg8', title: 'Lawyer Salary and cut cost', channel: 'Numeral Media' },
-                { url: 'https://www.youtube.com/embed/p6-N3_bWqHM', title: 'Health Insurance insane', channel: 'LifePriced'},
-                { url: 'https://www.youtube.com/embed/kAuSX8UWVPc', title: 'People are Living in Cars, Storage Units & Rent Is a Joke', channel: 'Brit Rants'},
+                { url: 'https://www.youtube.com/embed/p6-N3_bWqHM', title: 'Health Insurance insane', channel: 'LifePriced' },
+                { url: 'https://www.youtube.com/embed/kAuSX8UWVPc', title: 'People are Living in Cars, Storage Units & Rent Is a Joke', channel: 'Brit Rants' },
                 { url: 'https://www.youtube.com/embed/2W_RnWVkDeQ', title: 'Grocery Prices Have Gone INSANE in UK', channel: 'Brit Rants' },
-                { url: 'https://www.youtube.com/embed/1nOs7ZXczto&t=268s', title: 'Do not Gamble or BETTING IN IPhone', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/5BNhygkWmzw&t=50s', title: '原來這是台灣貴族的生活 Mom first time high-end teppanyaki', 
-                  channel: 'Taiwannumberone888'},
-                { url: 'https://www.youtube.com/embed/o48gndzqrSg', title: 'Women Use Men For Money, Hate Being Called Gold Diggers', 
-                  channel: 'Anton Daniels'}
+                { url: 'https://www.youtube.com/embed/1nOs7ZXczto', title: 'Do not Gamble or BETTING in IPhone', channel: 'Jay Reed' },
+                {
+                    url: 'https://www.youtube.com/embed/5BNhygkWmzw', title: '原來這是台灣貴族的生活 Mom first time high-end teppanyaki',
+                    channel: 'Taiwannumberone888'
+                },
+                { url: 'https://www.youtube.com/embed/o48gndzqrSg', title: 'Women Use Men For Money, Hate Being Called Gold Diggers', channel: 'Anton Daniels' }
             ],
             business: [
-                { url: 'https://www.youtube.com/embed/Ftt1eujRuj4', title: 'Navigating Corporate Layoffs', channel: 'Business Insights' },
-                { url: 'https://www.youtube.com/embed/IloqutF6GiY', title: 'Career Transition Strategies', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/Tw7m0S4qFWw', title: 'Life After Layoff: What Next?', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Building Resilience in Uncertain Times', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Job Market Analysis 2025', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Financial Planning After Job Loss', channel: 'FYDN' },
-                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Starting Over: A New Chapter', channel: 'Anton Daniels' }
+                { url: 'https://www.youtube.com/embed/Ftt1eujRuj4', title: 'AMAZON engineers Layoffs it is 250000 salary!!', channel: 'Business Insights' },
+                { url: 'https://www.youtube.com/embed/IloqutF6GiY', title: 'Electroics bill skyrocket- Now Citizion furious', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/Tw7m0S4qFWw', title: 'Sneakers market now Collapsed- no one buy trash shoes', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Factory laid off empyolees- Just started at 2026', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Washington LAYOFF Sports Departmant', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Repair Graphics Card on Uncle Chang- CHINA', channel: 'FYDN' },
+                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Now GenZ can not find field job and think market crash', channel: 'Anton Daniels' }
             ],
             entertainment: [
-                { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'Hollywood News & Updates', channel: 'Entertainment Tonight' },
+                { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'AFTER Car accident chasing the Indemnity[Money] back', channel: 'Entertainment Tonight' },
                 { url: 'https://www.youtube.com/embed/VKq2flvS7dw', title: 'Music Industry Insights', channel: 'Music Central' },
                 { url: 'https://www.youtube.com/embed/ePXHj3qjZ5Q', title: 'Amazon layoff 14000 employees', channel: 'Cinema Secrets' },
                 { url: 'https://www.youtube.com/embed/ndagE_LEpKY', title: 'Pop Culture Commentary', channel: 'Kiki Chanel' },
@@ -2686,28 +2896,27 @@
             sports: [
                 { url: 'https://www.youtube.com/embed/8XezrgNzwEA', title: 'Game Day Highlights', channel: 'Sports Network' },
                 { url: 'https://www.youtube.com/embed/VeMA9WGKxOg', title: 'A New Day After 25 Years: Life After Layoff', channel: 'Personal Stories' },
-                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬', 
-                  channel: 'Oscars' },
+                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/wvc9MBph0Zo', title: 'Alejandro Inarittu Honors Tom Cruise', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/YN6BEUA4jNU', title: 'Hidden Cost of Data Centers. It is in Your Electric Bill', channel: 'Sports Weekly' },
-                { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney'}
+                { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney' }
             ],
             news: [
                 { url: 'https://www.youtube.com/embed/xOuhoIWjyrw', title: 'Breaking News Today', channel: 'Global News Network' },
                 { url: 'https://www.youtube.com/embed/u0rd7u88dAg', title: 'World News Roundup', channel: 'World Report' },
                 { url: 'https://www.youtube.com/embed/4gqRpVtX1SQ', title: 'Daily News Update', channel: 'News Central' },
                 { url: 'https://www.youtube.com/embed/rVKIGulvVhg', title: 'Commentary & Analysis', channel: 'Brit Rants' },
-                { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels'}
+                { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' }
             ],
             website: [
                 { url: 'https://www.landtop.com.tw/', title: 'Landtop', channel: 'Official Website' },
                 { url: 'https://www.showba.com.tw/', title: 'Showba', channel: 'Official Website' },
                 { url: 'https://forum.gamer.com.tw/B.php?bsn=60030', title: 'Gamer HW infrastructure', channel: 'Official Website' },
-                { url: 'https://www.onlyoffice.com/', title: 'OnlyOffice in Riga Latvia_拉脫維亞 ', channel: 'Official Website'},
-                { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website'},
-                { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website'},
-                { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India'},
-                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud'}
+                { url: 'https://www.onlyoffice.com/', title: 'OnlyOffice in Riga Latvia_拉脫維亞 ', channel: 'Official Website' },
+                { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website' },
+                { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
+                { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
+                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' }
             ]
         };
 
@@ -2721,7 +2930,7 @@
         // Function to open featured player
         function openFeaturedPlayer(videoId, title, channel, cardElement, isLifeWellness = false) {
             if (!videoId) return; // Safety check
-            
+
             const player = document.getElementById('featuredPlayer');
             const iframe = document.getElementById('featuredIframe');
             const titleElement = document.getElementById('featuredTitle');
@@ -2767,7 +2976,7 @@
             const player = document.getElementById('featuredPlayer');
             const iframe = document.getElementById('featuredIframe');
             const overlay = document.getElementById('lifeWellnessOverlay');
-            
+
             player.classList.remove('active');
             player.classList.remove('life-wellness');
             overlay.classList.remove('active');
@@ -2801,14 +3010,14 @@
         // Function to create video card
         function createVideoCard(item, index) {
             const videoId = getYouTubeID(item.url);
-            
+
             // Handle regular websites (non-YouTube)
             if (!videoId) {
                 const cardId = `website-card-${index}`;
                 const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const safeUrl = item.url.replace(/"/g, '&quot;');
-                
+
                 return `
                     <div class="video-card" id="${cardId}" 
                          onclick="window.open('${safeUrl}', '_blank');" style="cursor: pointer;">
@@ -2825,7 +3034,7 @@
                     </div>
                 `;
             }
-            
+
             const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
             const cardId = `video-card-${index}`;
             const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
@@ -2833,9 +3042,9 @@
 
             return `
                 <div class="video-card" id="${cardId}" 
-                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'))"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'));">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
                     <div class="video-thumbnail">
                         <img src="${thumbnailUrl}" alt="${item.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
                         <div class="thumbnail-overlay">
@@ -2855,7 +3064,7 @@
         // Life & Wellness uses AOC-style carousel
         document.getElementById('life-aoc-carousel').innerHTML = content.life.map((item, i) => createAOCCard(item, `life-${i}`)).join('');
         initAOCCarousel('life-aoc-carousel', 'life-aoc-thumb', 'life-aoc-pause');
-        
+
         // Business & Entertainment use Apple carousel
         document.getElementById('business-carousel').innerHTML = content.business.map((item, i) => createAppleCard(item, `business-${i}`)).join('');
         document.getElementById('entertainment-carousel').innerHTML = content.entertainment.map((item, i) => createAppleCard(item, `entertainment-${i}`)).join('');
@@ -2894,9 +3103,9 @@
 
             return `
                 <div class="aoc-card" id="${cardId}"
-                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'), true)"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'), true)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
                     <div class="aoc-card-image">
                         <img src="${thumb}" alt="${item.title}"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22340%22 height=%22190%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22340%22 height=%22190%22/%3E%3C/svg%3E'">
@@ -2916,7 +3125,7 @@
             const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const safeUrl = item.url.replace(/"/g, '&quot;');
-            
+
             return `
                 <a href="${safeUrl}" target="_blank" class="dior-list-item">
                     <div class="dior-list-text">
@@ -2932,22 +3141,31 @@
         function createInsightSuperstar(items) {
             if (!items || items.length === 0) return '';
 
-    
-    //0217 makeCard handles thumb + click + hover — all in one
-    function makeCard(item, idx, extraClass = '') {
-            const vid    = getYouTubeID(item.url);
-            const thumb  = vid
-                ? `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`
-                : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%23f5f5f7' width='800' height='450'/%3E%3C/svg%3E";
-            const safe   = item.title.replace(/`/g,'&#96;').replace(/"/g,'&quot;');
-            const safeCh = item.channel.replace(/`/g,'&#96;').replace(/"/g,'&quot;');
-            const cardId = `insight-mid-${idx}`;
 
-            return `
+            //0217 makeCard handles thumb + click + hover — all in one
+            function makeCard(item, idx, extraClass = '') {
+                const vid = getYouTubeID(item.url);
+                const thumb = vid
+                    ? `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`
+                    : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%23f5f5f7' width='800' height='450'/%3E%3C/svg%3E";
+                const safe = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const safeCh = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const cardId = `insight-mid-${idx}`;
+                const displayToggle = (idx === 0) ? `
+                <div class="insight-display-toggle" title="Change Display Orientation" onclick="event.stopPropagation(); toggleMID1Orientation(this.parentElement)">
+                    🔄
+                </div>` : '';
+
+                // Mid 1 (idx=0): preview disabled; Mid 2-6 (idx>0): preview with life-wellness 640×480 popup
+                const hoverAttrs = idx !== 0
+                    ? `onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', this, true)" onmouseleave="cancelPreview()"`
+                    : '';
+
+                return `
                 <div class="insight-mid-card ${extraClass}" id="${cardId}"
-                     onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', document.getElementById('${cardId}'))"
-                     onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', document.getElementById('${cardId}'))">
+                     ${hoverAttrs}
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this, true)">
+                    ${displayToggle}
                     <img src="${thumb}" alt="${safe}"
                          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
                     <div class="insight-mid-play">▶</div>
@@ -2956,19 +3174,30 @@
                         <div class="insight-mid-channel">${item.channel}</div>
                     </div>
                 </div>`;
-        }
+            }
 
-        return `
+            // Orientation toggle helper
+            window.toggleMID1Orientation = function (card) {
+                if (card.classList.contains('vertical')) {
+                    card.classList.remove('vertical');
+                    card.classList.add('horizontal');
+                } else {
+                    card.classList.remove('horizontal');
+                    card.classList.add('vertical');
+                }
+            };
+
+            return `
             <div class="insight-middle-row">
                 ${makeCard(items[0], 0, 'tall')}
                 ${makeCard(items[1], 1, 'small')}
                 ${makeCard(items[2], 2, 'small')}
                 ${makeCard(items[3], 3, 'small')}
-                ${makeCard(items[5], 5, 'bottom-left')}
-                ${makeCard(items[4], 4, 'bottom-right')}
+                ${makeCard(items[4], 4, 'small')}
+                ${makeCard(items[5], 5, 'small')}
             </div>`;
-    }
-    //0217
+        }
+        //0217
 
         // ── Apple carousel card builder ──────────────────────────────────────
         function createAppleCard(item, index) {
@@ -2978,7 +3207,7 @@
             if (!videoId) {
                 // Website / non-YouTube card
                 return `
-                    <div class="apple-card" id="${cardId}" onclick="window.open('${item.url.replace(/"/g,'&quot;')}','_blank')">
+                    <div class="apple-card" id="${cardId}" onclick="window.open('${item.url.replace(/"/g, '&quot;')}','_blank')">
                         <div class="apple-card-thumb">
                             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='148' height='86'%3E%3Crect fill='%23f5f5f7' width='148' height='86'/%3E%3Ctext x='50%25' y='50%25' font-size='30' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${item.title}">
                             <div class="apple-thumb-play"><div class="apple-play-circle">🔗</div></div>
@@ -2989,14 +3218,14 @@
             }
 
             const thumb = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-            const safeTitle = item.title.replace(/`/g,'&#96;').replace(/"/g,'&quot;');
-            const safeChannel = item.channel.replace(/`/g,'&#96;').replace(/"/g,'&quot;');
+            const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+            const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
 
             return `
                 <div class="apple-card" id="${cardId}"
-                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'))"
+                     onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', document.getElementById('${cardId}'))">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
                     <div class="apple-card-thumb">
                         <img src="${thumb}" alt="${item.title}"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22148%22 height=%2286%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22148%22 height=%2286%22/%3E%3C/svg%3E'">
@@ -3039,7 +3268,7 @@
             const thumb = document.getElementById(thumbId);
             const pauseBtn = document.getElementById(pauseBtnId);
             const track = carousel.parentElement.querySelector('.aoc-scrollbar-track');
-            
+
             if (!carousel || !thumb || !pauseBtn || !track) return;
 
             let isPlaying = false;
@@ -3069,11 +3298,11 @@
 
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
-                
+
                 const deltaX = e.clientX - startX;
                 const newLeft = Math.max(0, Math.min(track.clientWidth - thumb.clientWidth, startLeft + deltaX));
                 thumb.style.left = `${newLeft}px`;
-                
+
                 const scrollPercentage = newLeft / (track.clientWidth - thumb.clientWidth);
                 carousel.scrollLeft = scrollPercentage * (carousel.scrollWidth - carousel.clientWidth);
             });
@@ -3085,7 +3314,7 @@
             // Handle track click
             track.addEventListener('click', (e) => {
                 if (e.target === thumb) return;
-                
+
                 const rect = track.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const scrollPercentage = clickX / track.clientWidth;
@@ -3098,10 +3327,10 @@
                 isPlaying = true;
                 pauseBtn.textContent = '▶';
                 pauseBtn.classList.add('playing');
-                
+
                 autoScrollInterval = setInterval(() => {
                     carousel.scrollLeft += 1;
-                    
+
                     // Loop back to start
                     if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
                         carousel.scrollLeft = 0;
@@ -3252,7 +3481,7 @@
             if (!document.getElementById('auth-lock-screen').classList.contains('hidden')) {
                 if (e.key >= '0' && e.key <= '9') authKeyPress(e.key);
                 if (e.key === 'Backspace') authKeyDelete();
-               
+
             }
         });
 
@@ -3279,7 +3508,7 @@
                 if (!rateLimitActive) {
                     rateLimitActive = true;
                     showRateLimitToast();
-                    logSecurityEvent('RATE_LIMIT', `${actionCount} actions in ${RATE_WINDOW/1000}s`);
+                    logSecurityEvent('RATE_LIMIT', `${actionCount} actions in ${RATE_WINDOW / 1000}s`);
                 }
                 return false; // Blocked
             }
@@ -3327,7 +3556,7 @@
                 const clean = url.trim().toLowerCase();
                 const blocked = ['javascript:', 'data:', 'vbscript:', 'file:'];
                 if (blocked.some(scheme => clean.startsWith(scheme))) {
-                    logSecurityEvent('WAF_BLOCK', `Blocked dangerous URL: ${url.substring(0,60)}`);
+                    logSecurityEvent('WAF_BLOCK', `Blocked dangerous URL: ${url.substring(0, 60)}`);
                     return '#';
                 }
                 return url;
@@ -3430,11 +3659,85 @@
         }
 
         /* ─────────────────────────────────────────────────────────────
+           Free Dragging for Auth Box
+           Allows moving the PIN box "everywhere" on screen
+           ───────────────────────────────────────────────────────────── */
+        function initAuthBoxDrag() {
+            const authBox = document.querySelector('.auth-box');
+            if (!authBox) return;
+
+            let isDragging = false;
+            let startX, startY;
+            let currentX = 0, currentY = 0;
+
+            authBox.addEventListener('mousedown', (e) => {
+                // Prevent drag when clicking buttons, icons, or the tune panel
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+
+                isDragging = true;
+                // Get initial positions
+                startX = e.clientX - currentX;
+                startY = e.clientY - currentY;
+
+                authBox.style.transition = 'none'; // Disable transition for pure responsiveness
+                logSecurityEvent('UI', 'Auth box dragging started');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    logSecurityEvent('UI', 'Auth box dragging ended');
+                }
+            });
+
+            // Touch support for "everywhere" accessibility
+            authBox.addEventListener('touchstart', (e) => {
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+                isDragging = true;
+                const touch = e.touches[0];
+                startX = touch.clientX - currentX;
+                startY = touch.clientY - currentY;
+                authBox.style.transition = 'none';
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                currentX = touch.clientX - startX;
+                currentY = touch.clientY - startY;
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                e.preventDefault(); // Prevent scrolling while dragging
+            }, { passive: false });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        /* ─────────────────────────────────────────────────────────────
            Initialize all security systems on DOM ready
            ───────────────────────────────────────────────────────────── */
         document.addEventListener('DOMContentLoaded', () => {
             CloudflareGuard.init();
-            logSecurityEvent('INIT', 'Security layers 2–6 initialized: WAF, Cloudflare-Ready, Rate Limiting, CSP, Auth');
+            initAuthBoxDrag();
+            logSecurityEvent('INIT', 'Security layers 2–6 initialized: WAF, Cloudflare-Ready, Rate Limiting, CSP, Auth, Draggable-UI');
         });
 
     </script>
@@ -3457,16 +3760,16 @@
 
         /* ─── Crop State ─────────────────────────────────────────────── */
         const cropState = {
-            panX:    0,      // horizontal offset in px
-            zoom:    1.0,    // scale multiplier
-            gridOn:  false,  // grid overlay visible
-            imgSrc:  ''      // current image source
+            panX: 0,      // horizontal offset in px
+            zoom: 1.0,    // scale multiplier
+            gridOn: false,  // grid overlay visible
+            imgSrc: ''      // current image source
         };
 
         /* ─── Open Modal ─────────────────────────────────────────────── */
         function openHorizonCrop() {
-            const modal    = document.getElementById('horizon-crop-modal');
-            const cropImg  = document.getElementById('crop-img');
+            const modal = document.getElementById('horizon-crop-modal');
+            const cropImg = document.getElementById('crop-img');
             const authPhoto = document.getElementById('auth-photo');
 
             // Mirror current auth photo src into editor
@@ -3475,9 +3778,9 @@
 
             // Sync sliders to current state
             document.getElementById('horizonSlider').value = cropState.panX;
-            document.getElementById('zoomSlider').value    = cropState.zoom * 100;
+            document.getElementById('zoomSlider').value = cropState.zoom * 100;
             document.getElementById('horizonVal').textContent = cropState.panX + 'px';
-            document.getElementById('zoomVal').textContent    = cropState.zoom.toFixed(1) + '×';
+            document.getElementById('zoomVal').textContent = cropState.zoom.toFixed(1) + '×';
 
             applyCropTransform();
             modal.classList.add('open');
@@ -3493,7 +3796,7 @@
         function applyCropTransform() {
             const img = document.getElementById('crop-img');
             img.style.setProperty('--pan-x', cropState.panX + 'px');
-            img.style.setProperty('--zoom',  cropState.zoom);
+            img.style.setProperty('--zoom', cropState.zoom);
             // Directly set transform (CSS variable fallback)
             img.style.transform =
                 `translate(calc(-50% + ${cropState.panX}px), -50%) scale(${cropState.zoom})`;
@@ -3526,7 +3829,7 @@
         function toggleGrid() {
             cropState.gridOn = !cropState.gridOn;
             const grid = document.getElementById('cropGrid');
-            const btn  = document.getElementById('gridToggleBtn');
+            const btn = document.getElementById('gridToggleBtn');
             grid.classList.toggle('visible', cropState.gridOn);
             btn.classList.toggle('active', cropState.gridOn);
             btn.textContent = cropState.gridOn ? '⊞ Grid ON' : '⊞ Grid';
@@ -3545,7 +3848,7 @@
 
             try {
                 const canvas = document.createElement('canvas');
-                canvas.width  = 160;
+                canvas.width = 160;
                 canvas.height = 160;
                 const ctx = canvas.getContext('2d');
 
@@ -3555,7 +3858,7 @@
                 ctx.clip();
 
                 // Calculate source draw position based on pan + zoom
-                const natW = cropImg.naturalWidth  || 400;
+                const natW = cropImg.naturalWidth || 400;
                 const natH = cropImg.naturalHeight || 400;
 
                 // Scale to fit viewport height
@@ -3564,7 +3867,7 @@
                 const drawH = natH * scaleToFit;
 
                 // Center + apply pan
-                const offsetX = (canvas.width  / 2) - (drawW / 2) + (cropState.panX * (canvas.width / vW));
+                const offsetX = (canvas.width / 2) - (drawW / 2) + (cropState.panX * (canvas.width / vW));
                 const offsetY = (canvas.height / 2) - (drawH / 2);
 
                 const img = new Image();
@@ -3586,7 +3889,7 @@
                 };
                 img.src = cropState.imgSrc;
 
-            } catch(e) {
+            } catch (e) {
                 // Fallback: CSS object-position pan
                 authPhoto.style.objectPosition =
                     `calc(50% + ${cropState.panX * 0.4}px) center`;
@@ -3597,14 +3900,14 @@
 
         /* ─── Reset All Crop Values ──────────────────────────────────── */
         function resetCrop() {
-            cropState.panX  = 0;
-            cropState.zoom  = 1.0;
+            cropState.panX = 0;
+            cropState.zoom = 1.0;
             cropState.gridOn = false;
 
             document.getElementById('horizonSlider').value = 0;
-            document.getElementById('zoomSlider').value    = 100;
+            document.getElementById('zoomSlider').value = 100;
             document.getElementById('horizonVal').textContent = '0px';
-            document.getElementById('zoomVal').textContent    = '1.0×';
+            document.getElementById('zoomVal').textContent = '1.0×';
             document.getElementById('cropGrid').classList.remove('visible');
             document.getElementById('gridToggleBtn').classList.remove('active');
             document.getElementById('gridToggleBtn').textContent = '⊞ Grid';
@@ -3617,12 +3920,12 @@
         function initCropDrag() {
             const viewport = document.getElementById('cropViewport');
             let dragging = false;
-            let startX   = 0;
+            let startX = 0;
             let startPan = 0;
 
             viewport.addEventListener('mousedown', (e) => {
                 dragging = true;
-                startX   = e.clientX;
+                startX = e.clientX;
                 startPan = cropState.panX;
                 e.preventDefault();
             });
@@ -3641,7 +3944,7 @@
             // Touch support
             viewport.addEventListener('touchstart', (e) => {
                 dragging = true;
-                startX   = e.touches[0].clientX;
+                startX = e.touches[0].clientX;
                 startPan = cropState.panX;
             });
 
@@ -3732,15 +4035,15 @@
                 cropState.panX = 0;
                 cropState.zoom = 1.0;
                 document.getElementById('horizonSlider').value = 0;
-                document.getElementById('zoomSlider').value    = 100;
+                document.getElementById('zoomSlider').value = 100;
                 document.getElementById('horizonVal').textContent = '0px';
-                document.getElementById('zoomVal').textContent    = '1.0×';
+                document.getElementById('zoomVal').textContent = '1.0×';
                 applyCropTransform();
 
                 // Show file info bar
                 showFileInfo(file, dataUrl);
 
-                logSecurityEvent('FOLDER', 'Image loaded: ' + file.name + ' (' + Math.round(file.size/1024) + ' KB)');
+                logSecurityEvent('FOLDER', 'Image loaded: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)');
             };
 
             reader.onerror = () => {
@@ -3753,10 +4056,10 @@
 
         /* ─── Show file info bar below crop controls ─────────────────── */
         function showFileInfo(file, dataUrl) {
-            const bar   = document.getElementById('cropFileInfo');
+            const bar = document.getElementById('cropFileInfo');
             const thumb = document.getElementById('cropFileThumb');
-            const name  = document.getElementById('cropFileName');
-            const size  = document.getElementById('cropFileSize');
+            const name = document.getElementById('cropFileName');
+            const size = document.getElementById('cropFileSize');
 
             thumb.src = dataUrl;
             name.textContent = file.name;
@@ -3785,9 +4088,9 @@
             cropState.panX = 0;
             cropState.zoom = 1.0;
             document.getElementById('horizonSlider').value = 0;
-            document.getElementById('zoomSlider').value    = 100;
+            document.getElementById('zoomSlider').value = 100;
             document.getElementById('horizonVal').textContent = '0px';
-            document.getElementById('zoomVal').textContent    = '1.0×';
+            document.getElementById('zoomVal').textContent = '1.0×';
             applyCropTransform();
 
             // Reset file input
@@ -3797,8 +4100,8 @@
 
         /* ─── Drag & Drop onto Viewport ──────────────────────────────── */
         function initDropZone() {
-            const viewport  = document.getElementById('cropViewport');
-            const dropzone  = document.getElementById('cropDropzone');
+            const viewport = document.getElementById('cropViewport');
+            const dropzone = document.getElementById('cropDropzone');
             let dragCounter = 0;
 
             // Drag enter — show drop overlay
@@ -3886,26 +4189,26 @@
             const bigint = parseInt(clean, 16);
             return {
                 r: (bigint >> 16) & 255,
-                g: (bigint >> 8)  & 255,
-                b:  bigint        & 255
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
             };
         }
 
         /* ── Live tune overlay — reads all 3 sliders + tint ────────── */
         function tuneOverlay() {
             const opacityEl = document.getElementById('tuneOpacity');
-            const blurEl    = document.getElementById('tuneBlur');
-            const tintEl    = document.getElementById('tuneTint');
+            const blurEl = document.getElementById('tuneBlur');
+            const tintEl = document.getElementById('tuneTint');
 
             const opacity = parseInt(opacityEl.value) / 100;
-            const blur    = parseInt(blurEl.value);
-            const hex     = tintEl.value;
-            const rgb     = hexToRgb(hex);
+            const blur = parseInt(blurEl.value);
+            const hex = tintEl.value;
+            const rgb = hexToRgb(hex);
 
             // Update value labels
             document.getElementById('tuneOpacityVal').textContent = opacityEl.value + '%';
-            document.getElementById('tuneBlurVal').textContent    = blur + 'px';
-            document.getElementById('tuneTintVal').textContent    = hex;
+            document.getElementById('tuneBlurVal').textContent = blur + 'px';
+            document.getElementById('tuneTintVal').textContent = hex;
 
             // Apply to CSS variables on :root
             const root = document.documentElement;
@@ -3927,8 +4230,8 @@
         /* ── Reset all sliders to default ───────────────────────────── */
         function resetTune() {
             document.getElementById('tuneOpacity').value = 92;
-            document.getElementById('tuneBlur').value    = 24;
-            document.getElementById('tuneTint').value    = '#f0f4ff';
+            document.getElementById('tuneBlur').value = 24;
+            document.getElementById('tuneTint').value = '#f0f4ff';
 
             // Trigger live update
             tuneOverlay();
@@ -3997,4 +4300,5 @@
     </script>
 
 </body>
+
 </html>

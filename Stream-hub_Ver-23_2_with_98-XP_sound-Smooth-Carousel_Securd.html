@@ -668,6 +668,510 @@
             color: #1d1d1f;
         }
 
+        /* History Section in Sidebar */
+        .history-section {
+            padding: 20px 30px;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 10px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .history-item:hover {
+            background: #f0f0f0;
+            border-color: var(--apple-blue);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .history-item-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1d1d1f;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-item-channel {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+
+        .history-preview-btn {
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .history-preview-btn:hover {
+            background: var(--apple-blue-hover);
+        }
+
+        /* Fixed 320x240 Preview Container */
+        .history-preview-container {
+            width: 320px;
+            height: 240px;
+            background: #000;
+            border-radius: 12px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: none;
+        }
+
+        .history-preview-container.active {
+            display: block;
+        }
+
+        .history-preview-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .history-preview-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 14px;
+        }
+
+        .history-summary {
+            font-size: 11px;
+            color: #8e8e93;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* ── History Flyout Panel (extends right of sidebar like a photo) ── */
+        .history-flyout {
+            position: fixed;
+            top: 0;
+            left: -400px; /* hidden behind sidebar */
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.13);
+            z-index: 998;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .history-flyout.open {
+            left: 350px; /* right beside sidebar (sidebar is 350px wide) */
+        }
+
+        .history-flyout-header {
+            padding: 20px 18px 14px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .history-flyout-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .history-flyout-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #f5f5f7;
+            border: 1.5px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .history-flyout-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.3;
+        }
+
+        .history-flyout-clock {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--apple-blue);
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .history-flyout-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 18px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        .history-flyout-list-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            color: #8e8e93;
+            text-transform: uppercase;
+        }
+
+        .history-flyout-clear-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6e6e73;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-flyout-clear-btn:hover {
+            background: #f5f5f7;
+            border-color: #aeaeb2;
+            color: #1d1d1f;
+        }
+
+        .history-flyout-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Photo-style history card */
+        .history-photo-card {
+            background: #f8f8f8;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .history-photo-card:hover {
+            border-color: var(--apple-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .history-photo-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            background: #e0e0e0;
+        }
+
+        .history-photo-thumb-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #e8e8ea, #d2d2d7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .history-photo-body {
+            padding: 10px 12px 10px;
+        }
+
+        .history-photo-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+            margin-bottom: 3px;
+        }
+
+        .history-photo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-photo-channel {
+            font-size: 11px;
+            color: #6e6e73;
+            font-weight: 400;
+        }
+
+        .history-photo-time {
+            font-size: 10px;
+            color: #aeaeb2;
+            font-family: monospace;
+        }
+
+        .history-photo-preview-btn {
+            display: block;
+            width: calc(100% - 24px);
+            margin: 0 12px 10px;
+            padding: 6px 0;
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .history-photo-preview-btn:hover {
+            background: var(--apple-blue-hover);
+        }
+
+        .history-flyout-empty {
+            font-size: 13px;
+            color: #8e8e93;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* History trigger item in sidebar dior-list style */
+        .history-trigger-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        .history-trigger-item:hover {
+            background: #f8f8f8;
+            padding-left: 35px;
+        }
+
+        .history-trigger-item.active {
+            background: #f0f0f0;
+        }
+
+        .history-trigger-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .history-trigger-title {
+            font-size: 16px;
+            font-weight: 400;
+            color: #1d1d1f;
+            letter-spacing: 0.3px;
+        }
+
+        .history-trigger-sub {
+            font-size: 13px;
+            color: #6e6e73;
+            font-weight: 300;
+        }
+
+        /* ── Chrome History real-data styles ─────────────────────────── */
+        .history-search-bar {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f0f0f0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+        }
+
+        .history-search-input {
+            flex: 1;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            outline: none;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            transition: border-color 0.2s;
+        }
+
+        .history-search-input:focus {
+            border-color: var(--apple-blue);
+            background: white;
+        }
+
+        .history-search-input::placeholder { color: #aeaeb2; }
+
+        .history-search-btn {
+            background: var(--apple-blue);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .history-search-btn:hover { background: var(--apple-blue-hover); }
+
+        .history-flyout-status {
+            padding: 6px 14px;
+            font-size: 11px;
+            color: #8e8e93;
+            border-bottom: 1px solid #f5f5f5;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .history-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #8e8e93;
+            display: inline-block;
+            margin-right: 5px;
+            transition: background 0.3s;
+        }
+
+        .history-status-dot.live    { background: #34c759; }
+        .history-status-dot.error   { background: #ff3b30; }
+        .history-status-dot.loading { background: #ff9500; animation: pulse 1s infinite; }
+
+        /* Chrome-history card — list style */
+        .history-chrome-card {
+            background: white;
+            border-radius: 10px;
+            border: 1.5px solid #e5e5e7;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .history-chrome-card:hover {
+            border-color: var(--apple-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,113,227,0.1);
+        }
+
+        .history-chrome-row1 {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .history-chrome-favicon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .history-chrome-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1d1d1f;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .history-chrome-url {
+            font-size: 11px;
+            color: var(--apple-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-left: 24px;
+            margin-bottom: 3px;
+        }
+
+        .history-chrome-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 24px;
+        }
+
+        .history-chrome-visits { font-size: 10px; color: #8e8e93; }
+        .history-chrome-time   { font-size: 10px; color: #aeaeb2; font-family: monospace; }
+
         .video-card {
             background: var(--white);
             border-radius: 16px;
@@ -1315,6 +1819,14 @@
             text-align: center;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
             animation: authSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            z-index: 100;
+        }
+
+        .auth-box:active {
+            cursor: grabbing;
         }
 
         @keyframes authSlideIn {
@@ -2652,11 +3164,102 @@
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- History Flyout Panel (slides right of sidebar like a photo) -->
+    <div class="history-flyout" id="historyFlyout">
+        <!-- Header: clock icon + "Website History" label + live clock -->
+        <div class="history-flyout-header">
+            <div class="history-flyout-top">
+                <div class="history-flyout-icon">🕐</div>
+                <div>
+                    <div class="history-flyout-label">Website History</div>
+                </div>
+            </div>
+            <div class="history-flyout-clock" id="history-flyout-clock">00:00:00</div>
+        </div>
+        <!-- List header + clear button -->
+        <div class="history-flyout-list-header">
+            <span class="history-flyout-list-title">History List</span>
+            <button class="history-flyout-clear-btn" onclick="clearChromeHistoryView()">
+                <span>⏸</span> Clear History
+            </button>
+        </div>
+        <!-- Search bar -->
+        <div class="history-search-bar">
+            <input  class="history-search-input" id="chromeHistorySearch"
+                    type="text" placeholder="🔍 Search history…"
+                    onkeydown="if(event.key==='Enter') loadChromeHistory()">
+            <button class="history-search-btn" onclick="loadChromeHistory()">Search</button>
+        </div>
+        <!-- Connection status -->
+        <div class="history-flyout-status">
+            <span><span class="history-status-dot" id="historyStatusDot"></span><span id="historyStatusText">Connecting…</span></span>
+            <span id="historyCountText"></span>
+        </div>
+        <!-- Scrollable Chrome history cards -->
+        <div class="history-flyout-scroll" id="history-sidebar-list">
+            <div class="history-flyout-empty">Loading Chrome history…</div>
+        </div>
+        <!-- Hidden preview container (kept for openHistoryPreview compatibility) -->
+        <div class="history-preview-container" id="history-preview-container" style="display:none;">
+            <div class="history-preview-close" onclick="closeHistoryPreview()">✕</div>
+            <iframe id="history-preview-iframe" referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
     <!-- Website Sidebar Panel -->
     <div class="website-sidebar" id="websiteSidebar">
         <div class="website-sidebar-header">
             <h2 class="website-sidebar-title">Websites</h2>
         </div>
+        <!-- History trigger item (Dior-style row) -->
+        <div class="history-trigger-item" id="historyTriggerItem" onclick="toggleHistoryFlyout()">
+            <div class="history-trigger-left">
+                <span class="history-trigger-title">History</span>
+                <span class="history-trigger-sub">Browser History</span>
+            </div>
+            <span style="font-size:15px;color:#6e6e73;transition:transform 0.3s ease;" id="historyTriggerArrow">›</span>
+        </div>
+        <script>
+            /* Live clock for flyout */
+            function updateHistoryFlyoutClock() {
+                const clock = document.getElementById('history-flyout-clock');
+                if (clock) {
+                    clock.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                }
+            }
+            setInterval(updateHistoryFlyoutClock, 1000);
+            updateHistoryFlyoutClock();
+
+            /* Toggle history flyout open/close */
+            function toggleHistoryFlyout() {
+                const flyout = document.getElementById('historyFlyout');
+                const trigger = document.getElementById('historyTriggerItem');
+                const arrow = document.getElementById('historyTriggerArrow');
+                const isOpen = flyout.classList.contains('open');
+                if (isOpen) {
+                    flyout.classList.remove('open');
+                    trigger.classList.remove('active');
+                    arrow.style.transform = 'rotate(0deg)';
+                } else {
+                    flyout.classList.add('open');
+                    trigger.classList.add('active');
+                    arrow.style.transform = 'rotate(90deg)';
+                    renderHistory();
+                }
+            }
+
+            /* Clear all history */
+            function clearHistory() {
+                localStorage.removeItem('stream_hub_history_v1');
+                renderHistory();
+                if (typeof logSecurityEvent !== 'undefined') {
+                    logSecurityEvent('HISTORY', 'History cleared by user');
+                }
+            }
+        </script>
         <div class="dior-list" id="website-sidebar-list"></div>
     </div>
 
@@ -2852,34 +3455,31 @@
         // Content data organized by category
         const content = {
             life: [
-                { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92- Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
-                { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi onboard on Qutar, Night on M1', channel: 'Lifestyle Insights' },
+                { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92-Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
+                { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi ride M1 practice onboard on Qatar- 2021', channel: 'Lifestyle Insights' },
                 { url: 'https://www.youtube.com/embed/ycF8oZ8xwDY', title: 'Colleague Wife', channel: 'Life Mastery' },
                 { url: 'https://www.youtube.com/embed/OV6cCmgXQg8', title: 'Lawyer Salary and cut cost', channel: 'Numeral Media' },
                 { url: 'https://www.youtube.com/embed/p6-N3_bWqHM', title: 'Health Insurance insane', channel: 'LifePriced' },
                 { url: 'https://www.youtube.com/embed/kAuSX8UWVPc', title: 'People are Living in Cars, Storage Units & Rent Is a Joke', channel: 'Brit Rants' },
                 { url: 'https://www.youtube.com/embed/2W_RnWVkDeQ', title: 'Grocery Prices Have Gone INSANE in UK', channel: 'Brit Rants' },
-                { url: 'https://www.youtube.com/embed/1nOs7ZXczto&t=268s', title: 'Do not Gamble or BETTING IN IPhone', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/1nOs7ZXczto', title: 'Do not Gamble or BETTING in IPhone', channel: 'Jay Reed' },
                 {
-                    url: 'https://www.youtube.com/embed/5BNhygkWmzw&t=50s', title: '原來這是台灣貴族的生活 Mom first time high-end teppanyaki',
+                    url: 'https://www.youtube.com/embed/5BNhygkWmzw', title: '原來這是台灣貴族的生活 Mom first time high-end teppanyaki',
                     channel: 'Taiwannumberone888'
                 },
-                {
-                    url: 'https://www.youtube.com/embed/o48gndzqrSg', title: 'Women Use Men For Money, Hate Being Called Gold Diggers',
-                    channel: 'Anton Daniels'
-                }
+                { url: 'https://www.youtube.com/embed/o48gndzqrSg', title: 'Women Use Men For Money, Hate Being Called Gold Diggers', channel: 'Anton Daniels' }
             ],
             business: [
-                { url: 'https://www.youtube.com/embed/Ftt1eujRuj4', title: 'Navigating Corporate Layoffs', channel: 'Business Insights' },
-                { url: 'https://www.youtube.com/embed/IloqutF6GiY', title: 'Career Transition Strategies', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/Tw7m0S4qFWw', title: 'Life After Layoff: What Next?', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Building Resilience in Uncertain Times', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Job Market Analysis 2025', channel: 'Jay Reed' },
-                { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Financial Planning After Job Loss', channel: 'FYDN' },
-                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Starting Over: A New Chapter', channel: 'Anton Daniels' }
+                { url: 'https://www.youtube.com/embed/Ftt1eujRuj4', title: 'AMAZON engineers Layoffs it is 250000 salary!!', channel: 'Business Insights' },
+                { url: 'https://www.youtube.com/embed/IloqutF6GiY', title: 'Electroics bill skyrocket- Now Citizion furious', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/Tw7m0S4qFWw', title: 'Sneakers market now Collapsed- no one buy trash shoes', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Factory laid off empyolees- Just started at 2026', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Washington LAYOFF Sports Departmant', channel: 'Jay Reed' },
+                { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Repair Graphics Card on Uncle Chang- CHINA', channel: 'FYDN' },
+                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Now GenZ can not find field job and think market crash', channel: 'Anton Daniels' }
             ],
             entertainment: [
-                { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'Hollywood News & Updates', channel: 'Entertainment Tonight' },
+                { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'AFTER Car accident chasing the Indemnity[Money] back', channel: 'Entertainment Tonight' },
                 { url: 'https://www.youtube.com/embed/VKq2flvS7dw', title: 'Music Industry Insights', channel: 'Music Central' },
                 { url: 'https://www.youtube.com/embed/ePXHj3qjZ5Q', title: 'Amazon layoff 14000 employees', channel: 'Cinema Secrets' },
                 { url: 'https://www.youtube.com/embed/ndagE_LEpKY', title: 'Pop Culture Commentary', channel: 'Kiki Chanel' },
@@ -2891,10 +3491,7 @@
             sports: [
                 { url: 'https://www.youtube.com/embed/8XezrgNzwEA', title: 'Game Day Highlights', channel: 'Sports Network' },
                 { url: 'https://www.youtube.com/embed/VeMA9WGKxOg', title: 'A New Day After 25 Years: Life After Layoff', channel: 'Personal Stories' },
-                {
-                    url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬',
-                    channel: 'Oscars'
-                },
+                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/wvc9MBph0Zo', title: 'Alejandro Inarittu Honors Tom Cruise', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/YN6BEUA4jNU', title: 'Hidden Cost of Data Centers. It is in Your Electric Bill', channel: 'Sports Weekly' },
                 { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney' }
@@ -2907,6 +3504,9 @@
                 { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' }
             ],
             website: [
+                { url: 'chrome://history', title: 'History', channel: 'Ctrl+H' },
+                { url: 'chrome://history/grouped', title: 'Grouped history', channel: 'Browser History' },
+                { url: 'https://claude.ai', title: 'Claude', channel: 'Ctrl+Shift+T' },
                 { url: 'https://www.landtop.com.tw/', title: 'Landtop', channel: 'Official Website' },
                 { url: 'https://www.showba.com.tw/', title: 'Showba', channel: 'Official Website' },
                 { url: 'https://forum.gamer.com.tw/B.php?bsn=60030', title: 'Gamer HW infrastructure', channel: 'Official Website' },
@@ -3018,7 +3618,7 @@
 
                 return `
                     <div class="video-card" id="${cardId}" 
-                         onclick="window.open('${safeUrl}', '_blank');" style="cursor: pointer;">
+                         onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});" style="cursor: pointer;">
                         <div class="video-thumbnail">
                             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225'%3E%3Crect fill='%23f5f5f7' width='400' height='225'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' fill='%230071e3' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
                             <div class="thumbnail-overlay">
@@ -3042,7 +3642,7 @@
                 <div class="video-card" id="${cardId}" 
                      onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                     <div class="video-thumbnail">
                         <img src="${thumbnailUrl}" alt="${item.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
                         <div class="thumbnail-overlay">
@@ -3081,7 +3681,7 @@
                 const safeUrl = item.url.replace(/"/g, '&quot;');
                 const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                 return `
-                    <div class="aoc-card" id="${cardId}" onclick="window.open('${safeUrl}', '_blank')">
+                    <div class="aoc-card" id="${cardId}" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                         <div class="aoc-card-image">
                             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='190'%3E%3Crect fill='%23f5f5f7' width='340' height='190'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='50' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
                             <div class="aoc-card-overlay">
@@ -3103,7 +3703,7 @@
                 <div class="aoc-card" id="${cardId}"
                      onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                     <div class="aoc-card-image">
                         <img src="${thumb}" alt="${item.title}"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22340%22 height=%22190%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22340%22 height=%22190%22/%3E%3C/svg%3E'">
@@ -3162,7 +3762,7 @@
                 return `
                 <div class="insight-mid-card ${extraClass}" id="${cardId}"
                      ${hoverAttrs}
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this, true)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${vid}', \`${safe}\`, '${safeCh}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                     ${displayToggle}
                     <img src="${thumb}" alt="${safe}"
                          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22400%22 height=%22225%22/%3E%3C/svg%3E'">
@@ -3205,7 +3805,7 @@
             if (!videoId) {
                 // Website / non-YouTube card
                 return `
-                    <div class="apple-card" id="${cardId}" onclick="window.open('${item.url.replace(/"/g, '&quot;')}','_blank')">
+                    <div class="apple-card" id="${cardId}" onclick="window.open('${item.url.replace(/"/g, '&quot;')}','_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                         <div class="apple-card-thumb">
                             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='148' height='86'%3E%3Crect fill='%23f5f5f7' width='148' height='86'/%3E%3Ctext x='50%25' y='50%25' font-size='30' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${item.title}">
                             <div class="apple-thumb-play"><div class="apple-play-circle">🔗</div></div>
@@ -3223,7 +3823,7 @@
                 <div class="apple-card" id="${cardId}"
                      onmouseenter="previewVideo('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)"
                      onmouseleave="cancelPreview()"
-                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true)">
+                     onclick="event.stopPropagation(); openFeaturedPlayer('${videoId}', \`${safeTitle}\`, '${safeChannel}', this, true); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                     <div class="apple-card-thumb">
                         <img src="${thumb}" alt="${item.title}"
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22148%22 height=%2286%22%3E%3Crect fill=%22%23f5f5f7%22 width=%22148%22 height=%2286%22/%3E%3C/svg%3E'">
@@ -3372,11 +3972,121 @@
             menuToggle.classList.toggle('active');
             websiteSidebar.classList.toggle('active');
             sidebarOverlay.classList.toggle('active');
+            // Close history flyout whenever sidebar closes
+            if (!websiteSidebar.classList.contains('active')) {
+                const flyout = document.getElementById('historyFlyout');
+                const trigger = document.getElementById('historyTriggerItem');
+                const arrow = document.getElementById('historyTriggerArrow');
+                if (flyout) flyout.classList.remove('open');
+                if (trigger) trigger.classList.remove('active');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
         }
 
         menuToggle.addEventListener('click', toggleSidebar);
         sidebarOverlay.addEventListener('click', toggleSidebar);
 
+        // ── History Management ──
+        const HISTORY_KEY = 'stream_hub_history_v1';
+        const MAX_HISTORY = 10;
+
+        function trackHistory(item) {
+            let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            // Remove if already exists to move to top
+            history = history.filter(h => h.url !== item.url);
+            // Add to top
+            history.unshift({
+                ...item,
+                timestamp: new Date().toISOString()
+            });
+            // Limit size
+            if (history.length > MAX_HISTORY) history.pop();
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderHistory();
+            logSecurityEvent('HISTORY', `Tracked visit to: ${item.title}`);
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('history-sidebar-list');
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="history-flyout-empty">No history yet</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map((item, i) => {
+                const vid = getYouTubeID(item.url);
+                const isVideo = !!vid;
+                const time = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const thumbSrc = isVideo
+                    ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg`
+                    : null;
+                const safeUrl = item.url.replace(/'/g, "\\'");
+                const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
+
+                const thumbHtml = thumbSrc
+                    ? `<img class="history-photo-thumb" src="${thumbSrc}" alt="${item.title}"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                       <div class="history-photo-thumb-placeholder" style="display:none">🌐</div>`
+                    : `<div class="history-photo-thumb-placeholder">🌐</div>`;
+
+                const previewBtn = isVideo
+                    ? `<button class="history-photo-preview-btn" onclick="event.stopPropagation(); openHistoryPreview('${safeUrl}')">▶ Preview Stream</button>`
+                    : '';
+
+                return `
+                    <div class="history-photo-card" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${safeItem})">
+                        ${thumbHtml}
+                        <div class="history-photo-body">
+                            <div class="history-photo-title">${item.title}</div>
+                            <div class="history-photo-meta">
+                                <span class="history-photo-channel">${item.channel}</span>
+                                <span class="history-photo-time">${time}</span>
+                            </div>
+                        </div>
+                        ${previewBtn}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openHistoryPreview(url) {
+            const container = document.getElementById('history-preview-container');
+            const iframe = document.getElementById('history-preview-iframe');
+            const vid = getYouTubeID(url);
+
+            if (!vid) return;
+
+            const origin = encodeURIComponent(window.location.origin || window.location.protocol + '//' + window.location.host);
+            iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&origin=${origin}&playsinline=1&controls=1`;
+            container.classList.add('active');
+
+            logSecurityEvent('HISTORY_PREVIEW', `Previewing stream: ${url}`);
+        }
+
+        function closeHistoryPreview() {
+            const container = document.getElementById('history-preview-container');
+            const iframe = document.getElementById('history-preview-iframe');
+            container.classList.remove('active');
+            iframe.src = '';
+        }
+
+        // Patch createDiorListItem to add tracking
+        if (typeof createDiorListItem !== 'undefined') {
+            const _origCreateDiorListItem = createDiorListItem;
+            window.createDiorListItem = function (item, index) {
+                const html = _origCreateDiorListItem(item, index);
+                // The html is a string, we need to inject onclick
+                const safeItem = JSON.stringify(item).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                return html.replace('<a ', `<a onclick="trackHistory(${safeItem})" `);
+            };
+        }
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHistory();
+        });
         // Close sidebar when clicking a link
         document.querySelectorAll('.dior-list-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -3657,11 +4367,85 @@
         }
 
         /* ─────────────────────────────────────────────────────────────
+           Free Dragging for Auth Box
+           Allows moving the PIN box "everywhere" on screen
+           ───────────────────────────────────────────────────────────── */
+        function initAuthBoxDrag() {
+            const authBox = document.querySelector('.auth-box');
+            if (!authBox) return;
+
+            let isDragging = false;
+            let startX, startY;
+            let currentX = 0, currentY = 0;
+
+            authBox.addEventListener('mousedown', (e) => {
+                // Prevent drag when clicking buttons, icons, or the tune panel
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+
+                isDragging = true;
+                // Get initial positions
+                startX = e.clientX - currentX;
+                startY = e.clientY - currentY;
+
+                authBox.style.transition = 'none'; // Disable transition for pure responsiveness
+                logSecurityEvent('UI', 'Auth box dragging started');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    logSecurityEvent('UI', 'Auth box dragging ended');
+                }
+            });
+
+            // Touch support for "everywhere" accessibility
+            authBox.addEventListener('touchstart', (e) => {
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.closest('.auth-icon-wrapper') ||
+                    e.target.closest('.auth-tune-panel')) {
+                    return;
+                }
+                isDragging = true;
+                const touch = e.touches[0];
+                startX = touch.clientX - currentX;
+                startY = touch.clientY - currentY;
+                authBox.style.transition = 'none';
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                currentX = touch.clientX - startX;
+                currentY = touch.clientY - startY;
+                authBox.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                e.preventDefault(); // Prevent scrolling while dragging
+            }, { passive: false });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        /* ─────────────────────────────────────────────────────────────
            Initialize all security systems on DOM ready
            ───────────────────────────────────────────────────────────── */
         document.addEventListener('DOMContentLoaded', () => {
             CloudflareGuard.init();
-            logSecurityEvent('INIT', 'Security layers 2–6 initialized: WAF, Cloudflare-Ready, Rate Limiting, CSP, Auth');
+            initAuthBoxDrag();
+            logSecurityEvent('INIT', 'Security layers 2–6 initialized: WAF, Cloudflare-Ready, Rate Limiting, CSP, Auth, Draggable-UI');
         });
 
     </script>
@@ -4220,6 +5004,170 @@
 
         /* ── Restore on every page load ─────────────────────────────── */
         document.addEventListener('DOMContentLoaded', loadSavedAuthPhoto);
+
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CHROME HISTORY INTEGRATION
+         Fetches from local Python server: http://localhost:8765/history
+         ✅ NEW: loadChromeHistory(), renderChromeHistory(),
+                 faviconUrl(), clearChromeHistoryView()
+         ✅ NOTHING in existing functions was revised.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+        const CHROME_SERVER = 'http://localhost:8765';
+
+        /* ── Get favicon URL from Google's service ─────────────────── */
+        function faviconUrl(url) {
+            try {
+                const domain = new URL(url).hostname;
+                return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        /* ── Format ISO date → readable local time ──────────────────── */
+        function formatVisitTime(iso) {
+            if (!iso) return '';
+            try {
+                const d = new Date(iso);
+                const today    = new Date();
+                const isToday  = d.toDateString() === today.toDateString();
+                const timePart = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (isToday) return timePart;
+                return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + timePart;
+            } catch (e) { return iso; }
+        }
+
+        /* ── Set status indicator ────────────────────────────────────── */
+        function setHistoryStatus(state, text, count) {
+            const dot  = document.getElementById('historyStatusDot');
+            const txt  = document.getElementById('historyStatusText');
+            const cnt  = document.getElementById('historyCountText');
+            if (!dot || !txt) return;
+            dot.className = 'history-status-dot ' + state;
+            txt.textContent = text;
+            if (cnt) cnt.textContent = count || '';
+        }
+
+        /* ── Render Chrome history rows into the flyout ─────────────── */
+        function renderChromeHistory(rows) {
+            const list = document.getElementById('history-sidebar-list');
+            if (!list) return;
+
+            if (!rows || rows.length === 0) {
+                list.innerHTML = '<div class="history-flyout-empty">No history found</div>';
+                return;
+            }
+
+            list.innerHTML = rows.map(item => {
+                const favicon  = faviconUrl(item.url);
+                const safeUrl  = item.url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeTitle = (item.title || item.url).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const displayUrl = (() => {
+                    try { return new URL(item.url).hostname + new URL(item.url).pathname; }
+                    catch (e) { return item.url; }
+                })();
+                const visitTime = formatVisitTime(item.last_visit);
+                const visits    = item.visit_count > 1 ? `${item.visit_count} visits` : '1 visit';
+
+                return `
+                <div class="history-chrome-card" onclick="window.open('${safeUrl}','_blank')">
+                    <div class="history-chrome-row1">
+                        ${favicon ? `<img class="history-chrome-favicon"
+                                         src="${favicon}"
+                                         onerror="this.style.display='none'"
+                                         alt="">` : '<span style="width:16px;flex-shrink:0">🌐</span>'}
+                        <div class="history-chrome-title">${safeTitle}</div>
+                    </div>
+                    <div class="history-chrome-url" title="${safeUrl}">${displayUrl}</div>
+                    <div class="history-chrome-meta">
+                        <span class="history-chrome-visits">${visits}</span>
+                        <span class="history-chrome-time">${visitTime}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        /* ── Fetch Chrome history from local Python server ───────────── */
+        async function loadChromeHistory() {
+            const list   = document.getElementById('history-sidebar-list');
+            const search = (document.getElementById('chromeHistorySearch') || {}).value || '';
+
+            setHistoryStatus('loading', 'Loading…', '');
+            if (list) list.innerHTML = '<div class="history-flyout-empty">⏳ Fetching Chrome history…</div>';
+
+            const url = `${CHROME_SERVER}/history?limit=500${search ? '&search=' + encodeURIComponent(search) : ''}`;
+
+            try {
+                const res  = await fetch(url, { signal: AbortSignal.timeout(5000) });
+                if (!res.ok) throw new Error(`Server returned ${res.status}`);
+                const data = await res.json();
+
+                if (data.error) {
+                    setHistoryStatus('error', 'Error: ' + data.error, '');
+                    if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
+                        ⚠️ ${data.error}<br><br>
+                        Make sure:<br>
+                        1. Chrome is <strong>closed</strong><br>
+                        2. Python server is running:<br>
+                        <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px">
+                        python chrome_history_server.py</code>
+                    </div>`;
+                    return;
+                }
+
+                setHistoryStatus('live', 'Connected · Chrome History', `${data.count} sites`);
+                renderChromeHistory(data.rows);
+
+            } catch (err) {
+                setHistoryStatus('error', 'Server offline', '');
+                if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
+                    ❌ Cannot connect to local server.<br><br>
+                    <strong>Step 1</strong> — Close Chrome<br>
+                    <strong>Step 2</strong> — Open Command Prompt and run:<br>
+                    <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px;color:#1d1d1f">
+                    python chrome_history_server.py</code><br><br>
+                    Then click the History menu again.
+                </div>`;
+            }
+        }
+
+        /* ── Clear the visible list (does NOT delete real Chrome history) */
+        function clearChromeHistoryView() {
+            const list = document.getElementById('history-sidebar-list');
+            if (list) list.innerHTML = '<div class="history-flyout-empty">History cleared from view</div>';
+            setHistoryStatus('', 'Cleared', '');
+            /* Also clear Stream Hub tracked history */
+            try { localStorage.removeItem('stream_hub_history_v1'); } catch (e) {}
+        }
+
+        /* ── Auto-load when flyout opens ─────────────────────────────── */
+        const _origToggleHistoryFlyout = window.toggleHistoryFlyout;
+        window.toggleHistoryFlyout = function () {
+            const flyout   = document.getElementById('historyFlyout');
+            const wasOpen  = flyout && flyout.classList.contains('open');
+
+            /* call original toggle */
+            if (typeof _origToggleHistoryFlyout === 'function') {
+                _origToggleHistoryFlyout();
+            } else {
+                /* fallback inline toggle */
+                const trigger = document.getElementById('historyTriggerItem');
+                const arrow   = document.getElementById('historyTriggerArrow');
+                if (flyout) {
+                    const isNowOpen = flyout.classList.toggle('open');
+                    if (trigger) trigger.classList.toggle('active', isNowOpen);
+                    if (arrow)   arrow.style.transform = isNowOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+                }
+            }
+
+            /* if we just opened it, load data */
+            if (!wasOpen) {
+                loadChromeHistory();
+            }
+        };
 
     </script>
 
