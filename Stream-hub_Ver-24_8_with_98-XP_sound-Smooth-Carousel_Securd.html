@@ -17,10 +17,10 @@
             script-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
             font-src 'self' https://fonts.gstatic.com;
-            img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google.com https://www.gstatic.com;
-            frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+            img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google.com https://www.gstatic.com https://api.microlink.io https://*.microlink.io;
+            frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.twitch.tv;
             media-src 'self' https://github.com https://raw.githubusercontent.com;
-            connect-src 'self' http://localhost:8765;
+            connect-src 'self' http://localhost:8765 https://api.microlink.io;
             object-src 'none';
             base-uri 'self';
             form-action 'self';
@@ -803,7 +803,7 @@
             transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible; /* FIXED: was hidden — that was clipping the 1440px preview panel */
         }
 
         .history-flyout.open {
@@ -896,6 +896,7 @@
         .history-flyout-scroll {
             flex: 1;
             overflow-y: auto;
+            overflow-x: visible; /* allow hover panel to escape horizontally */
             padding: 0;
             display: flex;
             flex-direction: column;
@@ -1112,6 +1113,242 @@
         .history-status-dot.loading { background: #ff9500; animation: pulse 1s infinite; }
 
         /* Chrome-history card — list style */
+        /* ── Hover Preview Panel 1440×900 ──────────────────────────────── */
+        .history-hover-preview {
+            position: fixed;            /* body-level fixed — never clipped */
+            width: 1440px;
+            height: 900fpx;
+            background: #000;
+            border-radius: 14px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1.5px rgba(255,255,255,0.10);
+            overflow: hidden;
+            z-index: 99999;             /* above everything */
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.96) translateY(8px);
+            transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+            left: -9999px;             /* off-screen until positioned */
+            top: 0;
+        }
+        .history-hover-preview.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+        .hover-preview-topbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+        }
+        .history-hover-preview iframe,
+        .history-hover-preview img.hover-preview-img {
+            width: 100%;
+            flex: 1;
+            border: none;
+            object-fit: cover;
+            display: block;
+            min-height: 0;
+        }
+        .hover-preview-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.82));
+            color: white;
+            padding: 28px 14px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            pointer-events: none;
+        }
+        .hover-preview-badge {
+            background: rgba(0,113,227,0.88);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .hover-preview-site {
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            font-weight: 400;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .hover-preview-close-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .hover-preview-close-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* ── History Popup Player Modal ──────────────────────────────────── */
+        .history-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.82);
+            backdrop-filter: blur(6px);
+            z-index: 199998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+        .history-popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .history-popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.94);
+            width: min(1280px, 96vw);
+            height: min(780px, 90vh);
+            background: #000;
+            border-radius: 18px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(255,255,255,0.08);
+            z-index: 199999;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1), visibility 0.28s ease;
+        }
+        .history-popup-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .history-popup-topbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            background: rgba(18,18,20,0.95);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .history-popup-titleblock {
+            flex: 1;
+            overflow: hidden;
+        }
+        .history-popup-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .history-popup-site {
+            font-size: 11px;
+            color: rgba(255,255,255,0.45);
+            margin-top: 2px;
+        }
+        .history-popup-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .history-popup-close:hover {
+            background: rgba(255,59,48,0.75);
+            transform: scale(1.1);
+        }
+        .history-popup-player {
+            flex: 1;
+            background: #000;
+            position: relative;
+        }
+        .history-popup-player iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* Stream-capable chrome history cards — subtle blue tint */
+        .history-chrome-card.stream-card {
+            border-color: rgba(0,113,227,0.30) !important;
+        }
+        .history-chrome-card.stream-card:hover {
+            border-color: rgba(0,113,227,0.70) !important;
+            box-shadow: 0 4px 16px rgba(0,113,227,0.18) !important;
+        }
+        .stream-play-badge {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            background: rgba(0,0,0,0.72);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            pointer-events: none;
+            letter-spacing: 0.4px;
+        }
+        /* Blocked-site cards — grey tint, 🔗 badge, no blue hover */
+        .history-chrome-card.blocked-card {
+            border-color: rgba(142,142,147,0.20) !important;
+            opacity: 0.88;
+        }
+        .history-chrome-card.blocked-card:hover {
+            border-color: rgba(142,142,147,0.50) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+            opacity: 1;
+        }
+        /* 🔗 badge is grey-orange to signal "opens outside" */
+        .stream-play-badge.blocked-badge {
+            background: rgba(142,142,147,0.82);
+            letter-spacing: 0.2px;
+        }
+            color: #ffffffcc;
+            font-size: 10px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        /* ── Chrome History Card ──────────────────────────────────────── */
         .history-chrome-card {
             background: white;
             border-radius: 10px;
@@ -1174,6 +1411,31 @@
 
         .history-chrome-visits { font-size: 10px; color: #8e8e93; }
         .history-chrome-time   { font-size: 10px; color: #aeaeb2; font-family: monospace; }
+
+        /* ── OG / Microlink Preview Thumbnail in Chrome History Card ── */
+        .history-chrome-og-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            background: #e8e8ea;
+            margin-bottom: 8px;
+            transition: opacity 0.3s ease;
+        }
+        .history-chrome-og-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f0f0f2, #e0e0e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #aeaeb2;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
 
         /* Date group header (matches screenshot "Today - Friday, February 20, 2026") */
         .history-date-group { margin-bottom: 6px; }
@@ -3228,6 +3490,7 @@
                 allowfullscreen>
             </iframe>
         </div>
+
     </div>
 
     <!-- Website Sidebar Panel -->
@@ -3620,12 +3883,14 @@
                 const safeTitle = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const safeChannel = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const safeUrl = item.url.replace(/"/g, '&quot;');
+                const microlinkThumb = `https://api.microlink.io/?url=${encodeURIComponent(item.url)}&screenshot=true&meta=false&embed=screenshot.url`;
 
                 return `
                     <div class="video-card" id="${cardId}" 
                          onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});" style="cursor: pointer;">
                         <div class="video-thumbnail">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225'%3E%3Crect fill='%23f5f5f7' width='400' height='225'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' fill='%230071e3' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
+                            <img src="${microlinkThumb}" alt="${safeTitle}" loading="lazy"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'225\'%3E%3Crect fill=\'%23f5f5f7\' width=\'400\' height=\'225\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'40\' fill=\'%230071e3\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3E🌐%3C/text%3E%3C/svg%3E'">
                             <div class="thumbnail-overlay">
                                 <span>🔗 Visit Website</span>
                             </div>
@@ -3685,10 +3950,12 @@
                 // Website / non-YouTube card
                 const safeUrl = item.url.replace(/"/g, '&quot;');
                 const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                const microlinkThumb = `https://api.microlink.io/?url=${encodeURIComponent(item.url)}&screenshot=true&meta=false&embed=screenshot.url`;
                 return `
                     <div class="aoc-card" id="${cardId}" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${JSON.stringify(item).replace(/"/g, '&quot;')});">
                         <div class="aoc-card-image">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='190'%3E%3Crect fill='%23f5f5f7' width='340' height='190'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='50' text-anchor='middle' dominant-baseline='middle'%3E🌐%3C/text%3E%3C/svg%3E" alt="${safeTitle}">
+                            <img src="${microlinkThumb}" alt="${safeTitle}" loading="lazy"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'340\' height=\'190\'%3E%3Crect fill=\'%23f5f5f7\' width=\'340\' height=\'190\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'50\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3E🌐%3C/text%3E%3C/svg%3E'">
                             <div class="aoc-card-overlay">
                                 <div class="aoc-play-icon">🔗</div>
                             </div>
@@ -4026,12 +4293,12 @@
                 const time = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const thumbSrc = isVideo
                     ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg`
-                    : null;
+                    : getOGThumbUrl(item.url);
                 const safeUrl = item.url.replace(/'/g, "\\'");
                 const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
 
                 const thumbHtml = thumbSrc
-                    ? `<img class="history-photo-thumb" src="${thumbSrc}" alt="${item.title}"
+                    ? `<img class="history-photo-thumb" src="${thumbSrc}" alt="${item.title}" loading="lazy"
                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                        <div class="history-photo-thumb-placeholder" style="display:none">🌐</div>`
                     : `<div class="history-photo-thumb-placeholder">🌐</div>`;
@@ -4041,7 +4308,10 @@
                     : '';
 
                 return `
-                    <div class="history-photo-card" onclick="window.open('${safeUrl}', '_blank'); trackHistory(${safeItem})">
+                    <div class="history-photo-card hov-preview-card"
+                         data-url="${item.url.replace(/"/g,'&quot;')}"
+                         data-title="${item.title.replace(/"/g,'&quot;')}"
+                         onclick="window.open('${safeUrl}', '_blank'); trackHistory(${safeItem})">
                         ${thumbHtml}
                         <div class="history-photo-body">
                             <div class="history-photo-title">${item.title}</div>
@@ -5022,6 +5292,284 @@
     <script>
         const CHROME_SERVER = 'http://localhost:8765';
 
+        /* ── OG / Microlink thumbnail helper ────────────────────────── */
+        /* Returns a Microlink screenshot URL for any site.            */
+        /* For YouTube, uses the standard thumbnail instead (free/fast)*/
+        function getOGThumbUrl(url) {
+            try {
+                const vid = getYouTubeIDFromUrl(url);
+                if (vid) return `https://img.youtube.com/vi/${vid}/mqdefault.jpg`;
+                // Microlink screenshot embed — no API key needed for basic use
+                const encoded = encodeURIComponent(url);
+                return `https://api.microlink.io/?url=${encoded}&screenshot=true&meta=false&embed=screenshot.url`;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        /* ── Extract YouTube video ID from ANY YouTube URL format ────── */
+        function getYouTubeIDFromUrl(url) {
+            if (!url) return null;
+            try {
+                // Covers watch?v=, youtu.be/, embed/, live/, shorts/, v/
+                const regExp = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|live\/|shorts\/|v\/))([A-Za-z0-9_-]{11})/;
+                const match = url.match(regExp);
+                if (match && match[1].length === 11) return match[1];
+                // Fallback: search params
+                const u = new URL(url);
+                if (u.hostname.includes('youtube.com')) {
+                    const v = u.searchParams.get('v');
+                    if (v && v.length === 11) return v;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        /* ── Twitch detection ─────────────────────────────────────────── */
+        function getTwitchInfo(url) {
+            if (!url) return null;
+            const ch = url.match(/twitch\.tv\/([A-Za-z0-9_]{3,25})(?:[/?#]|$)/);
+            if (ch && ch[1] !== 'directory' && ch[1] !== 'videos')
+                return { type: 'channel', id: ch[1] };
+            const vod = url.match(/twitch\.tv\/videos\/(\d+)/);
+            if (vod) return { type: 'vod', id: vod[1] };
+            return null;
+        }
+
+        /* ── Is this URL playable inline? ─────────────────────────────── */
+        function isStreamUrl(url) {
+            return !!(getYouTubeIDFromUrl(url) || getTwitchInfo(url));
+        }
+
+        /* ── Sites that send X-Frame-Options DENY/SAMEORIGIN ──────────
+           These cannot be embedded in ANY iframe — browser will block.
+           Hover preview falls back to Microlink screenshot (img, not
+           iframe) which still works fine. Click always opens new tab.
+           ─────────────────────────────────────────────────────────────── */
+        const BLOCKED_EMBED_SITES = [
+            /* Streaming / DRM */
+            'netflix.com',
+            'disneyplus.com', 'hotstar.com',
+            'hbomax.com', 'max.com',
+            'hulu.com',
+            'primevideo.com', 'amazon.com/video',
+            'peacocktv.com',
+            'paramountplus.com',
+            'appletv.apple.com',
+            /* Asian streaming */
+            'yfsp.tv',
+            'iqiyi.com',
+            'youku.com',
+            'le.com',
+            'mgtv.com',
+            'bilibili.com',
+            'wetv.vip',
+            'viu.com',
+            /* Social / other */
+            'facebook.com',
+            'instagram.com',
+            'tiktok.com',
+            'twitter.com', 'x.com',
+            'linkedin.com',
+        ];
+
+        function isKnownBlockedSite(url) {
+            if (!url) return false;
+            try {
+                const host = new URL(url).hostname.replace(/^www\./, '');
+                return BLOCKED_EMBED_SITES.some(b => host === b || host.endsWith('.' + b) || url.includes(b));
+            } catch(e) { return false; }
+        }
+
+        /* ── Build embed src (muted for hover preview, unmuted for popup) */
+        function buildEmbedSrc(url, autoplay, muted) {
+            const vid = getYouTubeIDFromUrl(url);
+            if (vid) {
+                const origin = encodeURIComponent(window.location.origin || 'http://localhost');
+                return `https://www.youtube.com/embed/${vid}?autoplay=${autoplay?1:0}&mute=${muted?1:0}&rel=0&controls=1&modestbranding=1&playsinline=1&origin=${origin}&enablejsapi=1`;
+            }
+            const tw = getTwitchInfo(url);
+            if (tw) {
+                const parent = window.location.hostname || 'localhost';
+                if (tw.type === 'channel')
+                    return `https://player.twitch.tv/?channel=${tw.id}&parent=${parent}&autoplay=${autoplay}&muted=${muted}`;
+                return `https://player.twitch.tv/?video=${tw.id}&parent=${parent}&autoplay=${autoplay}&muted=${muted}`;
+            }
+            return null;
+        }
+
+        /* ════════════════════════════════════════════════════════════════
+           POPUP PLAYER — opens on card click
+           ════════════════════════════════════════════════════════════════ */
+        function openHistoryPopup(url, title) {
+            const overlay = document.getElementById('historyPopupOverlay');
+            const modal   = document.getElementById('historyPopupModal');
+            const iframe  = document.getElementById('historyPopupIframe');
+            const titleEl = document.getElementById('historyPopupTitle');
+            const siteEl  = document.getElementById('historyPopupSite');
+            if (!modal) return;
+
+            // Stop hover preview if showing
+            hideHistoryHoverPreview();
+
+            titleEl.textContent = title || url;
+            try { siteEl.textContent = new URL(url).hostname; } catch(e) { siteEl.textContent = ''; }
+
+            const src = buildEmbedSrc(url, true, false);
+            if (!src) { window.open(url, '_blank'); return; }
+
+            iframe.src = src;
+            overlay.classList.add('active');
+            modal.classList.add('active');
+
+            // ESC key to close
+            document.addEventListener('keydown', _popupEscHandler);
+        }
+
+        function closeHistoryPopup() {
+            const overlay = document.getElementById('historyPopupOverlay');
+            const modal   = document.getElementById('historyPopupModal');
+            const iframe  = document.getElementById('historyPopupIframe');
+            if (!modal) return;
+            overlay.classList.remove('active');
+            modal.classList.remove('active');
+            setTimeout(() => { iframe.src = ''; }, 300);
+            document.removeEventListener('keydown', _popupEscHandler);
+        }
+
+        function _popupEscHandler(e) {
+            if (e.key === 'Escape') closeHistoryPopup();
+        }
+
+        /* ════════════════════════════════════════════════════════════════
+           1440×900 HOVER PREVIEW PANEL
+           ════════════════════════════════════════════════════════════════ */
+        let _hoverPreviewTimer   = null;
+        let _hoverPreviewActive  = false;
+        const HOVER_DELAY_MS     = 650;
+        const HOVER_PREVIEW_W    = 1440;
+        const HOVER_PREVIEW_H    = 900;
+
+        function positionHoverPreview(cardEl) {
+            const panel = document.getElementById('historyHoverPreview');
+            const rect  = cardEl.getBoundingClientRect();
+            const vw    = window.innerWidth;
+            const vh    = window.innerHeight;
+
+            // Try right of card first; fall back to left
+            let left = rect.right + 14;
+            let top  = rect.top;
+
+            if (left + HOVER_PREVIEW_W > vw - 10) {
+                left = rect.left - HOVER_PREVIEW_W - 14;
+            }
+            // If still off-screen left, centre on screen
+            if (left < 10) left = Math.max(10, (vw - HOVER_PREVIEW_W) / 2);
+
+            // Vertical clamp
+            if (top + HOVER_PREVIEW_H > vh - 10) top = vh - HOVER_PREVIEW_H - 10;
+            if (top < 10) top = 10;
+
+            panel.style.left = left + 'px';
+            panel.style.top  = top  + 'px';
+        }
+
+        function showHistoryHoverPreview(cardEl, url, title) {
+            clearTimeout(_hoverPreviewTimer);
+            _hoverPreviewActive = true;
+            _hoverPreviewTimer = setTimeout(() => {
+                if (!_hoverPreviewActive) return;
+
+                const panel  = document.getElementById('historyHoverPreview');
+                const iframe = document.getElementById('hoverPreviewIframe');
+                const img    = document.getElementById('hoverPreviewImg');
+                const label  = document.getElementById('hoverPreviewLabel');
+                const badge  = document.getElementById('hoverPreviewBadge');
+                const site   = document.getElementById('hoverPreviewSite');
+
+                // Reset
+                iframe.style.display = 'none';
+                img.style.display    = 'none';
+                iframe.src           = '';
+                img.src              = '';
+
+                try { site.textContent = new URL(url).hostname; } catch(e) { site.textContent = ''; }
+                label.textContent = title || url;
+
+                const src = buildEmbedSrc(url, true, true); // autoplay, muted
+                if (src) {
+                    iframe.src           = src;
+                    iframe.style.display = 'block';
+                    badge.textContent    = '▶ Live Preview';
+                } else if (isKnownBlockedSite(url)) {
+                    // Blocked site — iframe banned, bot-fetch banned too.
+                    // Show a clean "can't preview" placeholder with the favicon.
+                    const host = (() => { try { return new URL(url).hostname.replace(/^www\./,''); } catch(e){ return url; } })();
+                    img.src   = `https://www.google.com/s2/favicons?domain=${host}&sz=128`;
+                    img.style.display    = 'block';
+                    img.style.objectFit  = 'contain';
+                    img.style.background = '#1a1a1a';
+                    img.style.padding    = '80px';
+                    badge.textContent    = '🔒 Blocked — opens in new tab';
+                } else {
+                    // Fallback: microlink screenshot
+                    const mlUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
+                    img.src              = mlUrl;
+                    img.style.display    = 'block';
+                    img.style.objectFit  = 'cover';
+                    img.style.background = '';
+                    img.style.padding    = '';
+                    badge.textContent    = '🌐 Page Preview';
+                }
+
+                positionHoverPreview(cardEl);
+                panel.classList.add('visible');
+            }, HOVER_DELAY_MS);
+        }
+
+        function hideHistoryHoverPreview() {
+            clearTimeout(_hoverPreviewTimer);
+            _hoverPreviewActive = false;
+            const panel  = document.getElementById('historyHoverPreview');
+            const iframe = document.getElementById('hoverPreviewIframe');
+            if (panel) panel.classList.remove('visible');
+            setTimeout(() => {
+                if (!_hoverPreviewActive && iframe) iframe.src = '';
+            }, 280);
+        }
+
+        /* ── Event delegation on scroll container ────────────────────── */
+        /* Use mouseover/mouseout but guard against child-element churn:   */
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollEl = document.getElementById('history-sidebar-list');
+            if (!scrollEl) return;
+
+            scrollEl.addEventListener('mouseover', e => {
+                const card = e.target.closest('.hov-preview-card');
+                if (!card) return;
+                // Ignore if we're just moving between children of the same card
+                if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+                const url   = card.dataset.url   || '';
+                const title = card.dataset.title || '';
+                if (url) showHistoryHoverPreview(card, url, title);
+            });
+
+            scrollEl.addEventListener('mouseout', e => {
+                const card = e.target.closest('.hov-preview-card');
+                if (!card) return;
+                // Only hide when cursor leaves card (not moving to a child)
+                const related = e.relatedTarget;
+                if (related && card.contains(related)) return;
+                hideHistoryHoverPreview();
+            });
+
+            // Also hide hover preview when cursor enters the preview panel itself
+            const panel = document.getElementById('historyHoverPreview');
+            if (panel) {
+                panel.addEventListener('mouseleave', () => hideHistoryHoverPreview());
+            }
+        });
+
         /* ── Get favicon URL from Google's service ─────────────────── */
         function faviconUrl(url) {
             try {
@@ -5100,8 +5648,51 @@
                         const displayUrl = (() => { try { return new URL(item.url).hostname; } catch(e){ return item.url; } })();
                         const visitTime  = formatVisitTime(item.last_visit);
                         const visits     = item.visit_count > 1 ? `${item.visit_count} visits` : '1 visit';
+                        const ogThumb    = getOGThumbUrl(item.url);
+                        const ytVid      = getYouTubeIDFromUrl(item.url);
+                        const blocked    = isKnownBlockedSite(item.url);
+                        const streamable = !blocked && isStreamUrl(item.url);
+
+                        // YouTube cards: real YT thumbnail; others: OG/Microlink screenshot
+                        const thumbSrc   = ytVid && !blocked
+                            ? `https://img.youtube.com/vi/${ytVid}/mqdefault.jpg`
+                            : ogThumb;
+
+                        // Badge: ▶ YouTube/Twitch for playable, 🔗 Open Site for blocked
+                        const badgeHtml = streamable
+                            ? `<div class="stream-play-badge">▶ ${ytVid ? 'YouTube' : 'Twitch'}</div>`
+                            : blocked
+                                ? `<div class="stream-play-badge blocked-badge">🔗 Open Site</div>`
+                                : '';
+
+                        const thumbHtml  = thumbSrc
+                            ? `<div style="position:relative;">
+                                   <img class="history-chrome-og-thumb" src="${thumbSrc}" alt="${safeTitle}" loading="lazy"
+                                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                   <div class="history-chrome-og-placeholder" style="display:none">🌐 No preview</div>
+                                   ${badgeHtml}
+                               </div>`
+                            : `<div style="position:relative;">
+                                   <div class="history-chrome-og-placeholder">🌐 No preview</div>
+                                   ${badgeHtml}
+                               </div>`;
+
+                        // Click routing:
+                        //   streamable  → popup player (iframe embed)
+                        //   blocked     → new tab (can't iframe, open directly)
+                        //   everything else → new tab
+                        const clickHandler = streamable
+                            ? `event.stopPropagation(); openHistoryPopup('${safeUrl}', '${safeTitle.replace(/'/g,"&#39;")}')`
+                            : `window.open('${safeUrl}','_blank')`;
+
+                        const cardClass = streamable ? ' stream-card' : blocked ? ' blocked-card' : '';
+
                         return `
-                        <div class="history-chrome-card" onclick="window.open('${safeUrl}','_blank')">
+                        <div class="history-chrome-card hov-preview-card${cardClass}"
+                             data-url="${item.url.replace(/"/g,'&quot;')}"
+                             data-title="${safeTitle}"
+                             onclick="${clickHandler}">
+                            ${thumbHtml}
                             <div class="history-chrome-row1">
                                 ${favicon ? `<img class="history-chrome-favicon" src="${favicon}" onerror="this.style.display='none'" alt="">` : '<span style="width:16px;flex-shrink:0">🌐</span>'}
                                 <div class="history-chrome-title">${safeTitle}</div>
@@ -5189,6 +5780,50 @@
         window.toggleHistoryFlyout = toggleHistoryFlyout;
 
     </script>
+    <!-- ══════════════════════════════════════════════════════════════
+         HISTORY HOVER PREVIEW 720×480
+         Placed at body level — NOT inside flyout — so overflow:hidden
+         on the flyout can never clip it.
+         ══════════════════════════════════════════════════════════════ -->
+    <div class="history-hover-preview" id="historyHoverPreview">
+        <div class="hover-preview-topbar">
+            <span class="hover-preview-badge" id="hoverPreviewBadge">▶ Preview</span>
+            <span class="hover-preview-site" id="hoverPreviewSite"></span>
+            <button class="hover-preview-close-btn" id="hoverPreviewCloseBtn" onclick="hideHistoryHoverPreview()" title="Close preview">✕</button>
+        </div>
+        <iframe id="hoverPreviewIframe"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin"
+            style="display:none; width:100%; flex:1; border:none;">
+        </iframe>
+        <img id="hoverPreviewImg" class="hover-preview-img" src="" alt=""
+             style="display:none; width:100%; flex:1; object-fit:cover;">
+        <div class="hover-preview-label" id="hoverPreviewLabel"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         HISTORY POPUP PLAYER MODAL
+         Centred fullscreen modal — opens when user CLICKS a
+         YouTube / Twitch card in the Chrome history list.
+         ══════════════════════════════════════════════════════════════ -->
+    <div class="history-popup-overlay" id="historyPopupOverlay" onclick="closeHistoryPopup()"></div>
+    <div class="history-popup-modal" id="historyPopupModal">
+        <div class="history-popup-topbar">
+            <div class="history-popup-titleblock">
+                <div class="history-popup-title" id="historyPopupTitle">Loading…</div>
+                <div class="history-popup-site" id="historyPopupSite"></div>
+            </div>
+            <button class="history-popup-close" onclick="closeHistoryPopup()" title="Close">✕</button>
+        </div>
+        <div class="history-popup-player">
+            <iframe id="historyPopupIframe"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                style="width:100%;height:100%;border:none;">
+            </iframe>
+        </div>
+    </div>
 
 </body>
 

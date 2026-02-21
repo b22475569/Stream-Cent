@@ -1,0 +1,11 @@
+Windows Registry Editor Version 5.00
+
+; ============================================================
+;  Chrome History Server — Auto-Start on Windows Login
+;  Double-click this file to install, then restart or log off/on
+;  The server will start silently in the background every time
+;  Windows starts.
+; ============================================================
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run]
+"ChromeHistoryServer"="pythonw.exe \"C:\\Users\\Administrator\\chrome_history_server.py\""
