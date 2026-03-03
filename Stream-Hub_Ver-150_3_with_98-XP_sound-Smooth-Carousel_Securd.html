@@ -3236,7 +3236,7 @@
         .insight-middle-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            grid-template-rows: auto auto;
+            grid-template-rows: auto auto auto auto;
             gap: 12px;
         }
 
@@ -3250,12 +3250,19 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /*20260217 Mid 1 — LEFT col, spans rows 1 to 3*/
+        /* MID1 — LEFT col, spans rows 1 to 3 */
         .insight-mid-card.tall {
             grid-column: 1;
             grid-row: 1 / span 3;
             aspect-ratio: 16 / 9;
-            /* Default 1280x720 style */
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* MID8 — LEFT col, row 4 only (same features as MID1) */
+        .insight-mid-card.tall2 {
+            grid-column: 1;
+            grid-row: 4;
+            aspect-ratio: 16 / 9;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -3267,7 +3274,7 @@
             aspect-ratio: 16 / 9 !important;
         }
 
-        /* MID1 Display Toggle Button */
+        /* MID1 / MID8 Display Toggle Button */
         .insight-display-toggle {
             position: absolute;
             top: 15px;
@@ -3291,14 +3298,51 @@
             background: white;
         }
 
-        /* Mid 2, 3, 4 — RIGHT col, each ONE row independently */
+        /* Mid 2–7 and TBD cards */
         .insight-mid-card.small {
             aspect-ratio: 16 / 9;
         }
 
-        /* Mid 5 and Mid 6 */
-        .insight-mid-card.bottom {
+        /* Mid TBD placeholder style */
+        .insight-mid-card.tbd {
             aspect-ratio: 16 / 9;
+            background: #1a1a2e;
+        }
+
+        /* ── Slots 8 & 9: pinned to row 4, same height as tall2 (MID8) ── */
+        /* Remove aspect-ratio so they stretch to match the tall2 row height  */
+        .insight-mid-card.mid8 {
+            grid-column: 2;
+            grid-row: 4;
+            aspect-ratio: unset;
+            align-self: stretch;
+        }
+
+        .insight-mid-card.mid9 {
+            grid-column: 3;
+            grid-row: 4;
+            aspect-ratio: unset;
+            align-self: stretch;
+        }
+
+        .insight-tbd-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .insight-tbd-label span {
+            font-size: 28px;
+            opacity: 0.4;
         }
 
         /*02172026 end*/
@@ -3387,6 +3431,72 @@
             .insight-hero-overlay {
                 padding: 20px;
             }
+        }
+
+        /* ── AUTO-CYCLING card (Mid9 slot — DISABLED) ──────────────── */
+        .insight-auto-card { overflow: hidden; }
+
+        /* Two stacked image layers for cross-fade transition */
+        .insight-auto-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            pointer-events: none;
+        }
+        .insight-auto-img.active { opacity: 1; }
+
+        /* Progress dots bar */
+        .insight-auto-dots {
+            position: absolute;
+            bottom: 38px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            z-index: 12;
+            pointer-events: none;
+        }
+        .insight-auto-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: background 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+        .insight-auto-dot.active {
+            background: #fff;
+            transform: scale(1.4);
+        }
+
+        /* "AUTO" badge top-left */
+        .insight-auto-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 15;
+            background: rgba(0,113,227,0.88);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Paused state — dim badge when hovered */
+        .insight-auto-card:hover .insight-auto-badge {
+            background: rgba(142,142,147,0.88);
+        }
+        .insight-auto-card:hover .insight-auto-badge::after {
+            content: ' ⏸';
         }
     </style>
 </head>
@@ -3960,7 +4070,8 @@
                 { url: 'https://www.youtube.com/embed/P4bP-Mz-ARc', title: 'Factory laid off empyolees- Just started at 2026', channel: 'Jay Reed' },
                 { url: 'https://www.youtube.com/embed/glns6GssyxM', title: 'Washington LAYOFF Sports Departmant', channel: 'Jay Reed' },
                 { url: 'https://www.youtube.com/embed/2rsBLyB3BWk', title: 'Repair Graphics Card on Uncle Chang- CHINA', channel: 'FYDN' },
-                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Now GenZ can not find field job and think market crash', channel: 'Anton Daniels' }
+                { url: 'https://www.youtube.com/embed/3R9qaiNshZo', title: 'Now GenZ can not find field job and think market crash', channel: 'Anton Daniels' },
+                { url: 'https://www.youtube.com/embed/v9aniSQZZZ4', title: 'People Are Waking Up — Strange Things Are Happening', channel: 'A Homestead Journey'}
             ],
             entertainment: [
                 { url: 'https://www.youtube.com/embed/UpYkvW56E9Q', title: 'AFTER Car accident chasing the Indemnity[Money] back', channel: 'Entertainment Tonight' },
@@ -3977,17 +4088,21 @@
                 { url: 'https://www.youtube.com/embed/DajWBfIdjPA', title: 'People That Get Repo Love The Lottery and Smoking... Latino Man Breaks Down Why People Can not afford to Pay Bills',
                   channel: 'AntonDaniels'},
                 { url: 'https://www.youtube.com/embed/VeMA9WGKxOg', title: 'A New Day After 25 Years: Life After Layoff', channel: 'Personal Stories' },
-                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX‬', channel: 'Oscars' },
+                { url: 'https://www.youtube.com/embed/NWZKuueumJE', title: 'Tom Cruise Receives an Honorary Oscar Award_The 16th Governors Awards Presented By ROLEX', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/wvc9MBph0Zo', title: 'Alejandro Inarittu Honors Tom Cruise', channel: 'Oscars' },
                 { url: 'https://www.youtube.com/embed/YN6BEUA4jNU', title: 'Hidden Cost of Data Centers. It is in Your Electric Bill', channel: 'Sports Weekly' },
-                { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney' }
+                { url: 'https://www.youtube.com/embed/pvwzF6iDfe8', title: 'Americans Can not Afford Their Electric Bills & Are Getting Angry', channel: 'ahomesteadjourney' },
+                { url: 'https://www.youtube.com/embed/jYUXK-cl9II', title: 'I am Done Teaching, These Kids Do not Want To Learn', channel: 'AntonDaniels'},
+                { url: 'https://www.youtube.com/embed/rvZgXWMC0cg', title: 'After Homes, Cars Are Now Unaffordable in Britain', channel: 'Brit Rants'},
+                { url: 'https://www.youtube.com/embed/8Nj-k4qgd7o', title: 'Barbershops Got GREEDY With Prices', channel: 'Jay Reed'}
             ],
             news: [
                 { url: 'https://www.youtube.com/embed/xOuhoIWjyrw', title: 'Breaking News Today', channel: 'Global News Network' },
                 { url: 'https://www.youtube.com/embed/u0rd7u88dAg', title: 'World News Roundup', channel: 'World Report' },
                 { url: 'https://www.youtube.com/embed/4gqRpVtX1SQ', title: 'Daily News Update', channel: 'News Central' },
                 { url: 'https://www.youtube.com/embed/rVKIGulvVhg', title: 'Commentary & Analysis', channel: 'Brit Rants' },
-                { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' }
+                { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' },
+                { url: 'https://www.youtube.com/embed/SD6to7hzv8Q', title: 'DisplayPort™ PHY Compliance Test-Sink-TxRx', channel: 'Teledyne LeCroy'}
             ],
             website: [
                 { url: 'chrome://history', title: 'History', channel: 'Ctrl+H' },
@@ -4225,27 +4340,37 @@
             `;
         }
 
-        // ── INSIGHT Superstar layout: 1 big hero + 2 middle cards ────────────
+        // ── INSIGHT Superstar layout ──────────────────────────────────────────
+        // Grid:  Col1 = MID1 (tall, rows 1-3) + MID8 (tall2, row 4)
+        //        Col2-3 = [Mid2 Mid3] / [Mid4 Mid5] / [Mid6 Mid7] / [Mid8  Mid9]
+        //
+        // FIX: items[8] (9th item in sports array) was silently dropped — it now
+        //      populates Mid8 as a normal small card.
+        // Mid9: renders items[9] as a plain card; auto-replay disabled.
+        //      every 5 s with a smooth cross-fade, matching the Mid 2-7 style.
+        // ─────────────────────────────────────────────────────────────────────
         function createInsightSuperstar(items) {
             if (!items || items.length === 0) return '';
 
-
-            //0217 makeCard handles thumb + click + hover — all in one
+            // ── makeCard: builds a real video card ───────────────────────────
+            // isTallCard (idx 0 or 7) → 🔄 toggle, NO hover-preview
+            // small cards (idx 1-6, 8) → hover-preview enabled
             function makeCard(item, idx, extraClass = '') {
-                const vid = getYouTubeID(item.url);
-                const thumb = vid
+                const vid    = getYouTubeID(item.url);
+                const thumb  = vid
                     ? `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`
                     : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%23f5f5f7' width='800' height='450'/%3E%3C/svg%3E";
-                const safe = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
+                const safe   = item.title.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const safeCh = item.channel.replace(/`/g, '&#96;').replace(/"/g, '&quot;');
                 const cardId = `insight-mid-${idx}`;
-                const displayToggle = (idx === 0) ? `
-                <div class="insight-display-toggle" title="Change Display Orientation" onclick="event.stopPropagation(); toggleMID1Orientation(this.parentElement)">
-                    🔄
-                </div>` : '';
 
-                // Mid 1 (idx=0): preview disabled; Mid 2-6 (idx>0): preview with life-wellness 640×480 popup
-                const hoverAttrs = idx !== 0
+                const isTallCard    = (idx === 0 || idx === 7);
+                const displayToggle = isTallCard ? `
+                    <div class="insight-display-toggle" title="Change Display Orientation"
+                         onclick="event.stopPropagation(); toggleInsightOrientation(this.parentElement)">🔄</div>` : '';
+
+                // hover-preview only on small cards; vid may be null for non-YouTube
+                const hoverAttrs = (!isTallCard && vid)
                     ? `onmouseenter="previewVideo('${vid}', \`${safe}\`, '${safeCh}', this, true)" onmouseleave="cancelPreview()"`
                     : '';
 
@@ -4264,8 +4389,26 @@
                 </div>`;
             }
 
-            // Orientation toggle helper
-            window.toggleMID1Orientation = function (card) {
+            // ── Mid8 slot: render items[8] if it exists, else placeholder ──
+            // Uses class 'mid8' — pinned to grid-row 4 col 2, height = tall2
+            function makeMid8() {
+                if (items[8]) return makeCard(items[8], 8, 'mid8');
+                return `<div class="insight-mid-card mid8 tbd" id="insight-mid-8">
+                    <div class="insight-tbd-label"><span>🎬</span>Mid TBD</div></div>`;
+            }
+
+            // ── Mid9 slot: plain card (no auto-cycling) ──────────────────────
+            // The card shows a different item from the pool every 5 s.
+            // ── Mid9 slot: render items[9] if it exists, else placeholder ──
+            // Auto-replay disabled; renders as a plain card like Mid8.
+            function makeMid9() {
+                if (items[9]) return makeCard(items[9], 9, 'mid9');
+                return `<div class="insight-mid-card mid9 tbd" id="insight-mid-9">
+                    <div class="insight-tbd-label"><span>🎬</span>Mid TBD</div></div>`;
+            }
+
+            // ── Orientation toggle (MID1 / MID8) ────────────────────────────
+            window.toggleInsightOrientation = function(card) {
                 if (card.classList.contains('vertical')) {
                     card.classList.remove('vertical');
                     card.classList.add('horizontal');
@@ -4274,7 +4417,9 @@
                     card.classList.add('vertical');
                 }
             };
+            window.toggleMID1Orientation = window.toggleInsightOrientation;
 
+            // ── Build grid HTML ──────────────────────────────────────────────
             return `
             <div class="insight-middle-row">
                 ${makeCard(items[0], 0, 'tall')}
@@ -4283,8 +4428,14 @@
                 ${makeCard(items[3], 3, 'small')}
                 ${makeCard(items[4], 4, 'small')}
                 ${makeCard(items[5], 5, 'small')}
+                ${makeCard(items[6], 6, 'small')}
+                ${makeCard(items[7], 7, 'tall2')}
+                ${makeMid8()}
+                ${makeMid9()}
             </div>`;
         }
+
+        // ── Mid9 auto-replay disabled ────────────────────────────────────────
         //0217
 
         // ── Apple carousel card builder ──────────────────────────────────────

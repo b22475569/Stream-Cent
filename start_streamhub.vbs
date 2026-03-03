@@ -26,5 +26,5 @@ End If
 If CreateObject("Scripting.FileSystemObject").FileExists(chromePath) Then
     WshShell.Run """" & chromePath & """ http://localhost:8000/Stream-hub_Ver-149_2_with_98-XP_sound-Smooth-Carousel_Securd.html"
 Else
-    WshShell.Run "http://localhost:8000/Stream-hub_Ver-24_1_with_98-XP_sound-Smooth-Slide-bar.html"
+    WshShell.Run "http://localhost:8000/Stream-Hub_Ver-161_1_with_98-XP_sound-Smooth-Slide-bar.html"
 End If
