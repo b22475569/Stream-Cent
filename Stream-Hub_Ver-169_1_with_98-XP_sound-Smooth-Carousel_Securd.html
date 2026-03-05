@@ -4413,9 +4413,56 @@
         <div class="category">
             <div class="category-header">
                 <span class="category-icon">📰</span>
-                <h2 class="category-title">News & Current Events</h2>
+                <h2 class="category-title">News &amp; Current Events</h2>
             </div>
-            <div class="video-grid" id="news-grid"></div>
+
+            <!-- News Channel Switcher: table-style layout avoids flexbox % padding bug -->
+            <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:nowrap;">
+
+                <!-- LEFT: vertical channel buttons -->
+                <div id="news-channel-list" style="flex-shrink:0; width:200px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">📺 Select Channel</div>
+                    <button id="news-btn-0" style="background:#0071e3;color:#fff;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;box-shadow:0 2px 8px rgba(0,113,227,0.35);">▶ Youtube 1</button>
+                    <button id="news-btn-1" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 2</button>
+                    <button id="news-btn-2" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 3</button>
+                    <button id="news-btn-3" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 4</button>
+                    <button id="news-btn-4" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 5</button>
+                    <button id="news-btn-5" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 6</button>
+                    <!-- Dot indicators -->
+                    <div style="display:flex;justify-content:center;gap:7px;margin-top:6px;">
+                        <span id="news-dot-0" style="width:9px;height:9px;border-radius:50%;background:#0071e3;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 1"></span>
+                        <span id="news-dot-1" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 2"></span>
+                        <span id="news-dot-2" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 3"></span>
+                        <span id="news-dot-3" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 4"></span>
+                        <span id="news-dot-4" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 5"></span>
+                        <span id="news-dot-5" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 6"></span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: player column — block element, not flex child, so aspect-ratio works correctly -->
+                <div style="flex:1; min-width:0;">
+                    <!-- Now playing label -->
+                    <div style="font-size:13px;color:#6e6e73;font-weight:500;margin-bottom:8px;">
+                        Now playing: <span id="news-now-title" style="color:#0071e3;font-weight:700;">—</span>
+                    </div>
+                    <!-- Player: aspect-ratio:16/9 works in all modern browsers, no padding-% hack needed -->
+                    <div style="width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#111;box-shadow:0 6px 28px rgba(0,0,0,0.22);">
+                        <iframe id="news-stream-iframe"
+                            src="about:blank"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                            allowfullscreen
+                            style="width:100%;height:100%;border:none;display:block;">
+                        </iframe>
+                    </div>
+                    <!-- Slider bar -->
+                    <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                        <span style="font-size:11px;color:#6e6e73;white-space:nowrap;">Ch 1</span>
+                        <input type="range" id="news-channel-slider" min="0" max="5" step="1" value="0"
+                            style="flex:1;accent-color:#0071e3;cursor:pointer;height:4px;">
+                        <span style="font-size:11px;color:#6e6e73;white-space:nowrap;">Ch 6</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -4729,7 +4776,80 @@
         document.getElementById('business-carousel').innerHTML = content.business.map((item, i) => createAppleCard(item, `business-${i}`)).join('');
         document.getElementById('entertainment-carousel').innerHTML = content.entertainment.map((item, i) => createAppleCard(item, `entertainment-${i}`)).join('');
         document.getElementById('sports-grid').innerHTML = createInsightSuperstar(content.sports);
-        document.getElementById('news-grid').innerHTML = content.news.map((item, i) => createVideoCard(item, `news-${i}`)).join('');
+        // ── News & Current Events: Channel Switcher ─────────────────────────
+        var _newsChannels = (content.news || []).slice(0, 6);
+        while (_newsChannels.length < 6) {
+            _newsChannels.push({ url: 'https://www.youtube.com/embed/xOuhoIWjyrw', title: 'Breaking News', channel: 'News' });
+        }
+
+        // Populate button labels from real data
+        _newsChannels.forEach(function(item, i) {
+            var btn = document.getElementById('news-btn-' + i);
+            if (!btn) return;
+            var short = item.title.length > 30 ? item.title.substring(0, 28) + '…' : item.title;
+            btn.innerHTML = '<small style="opacity:0.65;display:block;font-size:10px;margin-bottom:2px;">▶ Youtube ' + (i+1) + ' — ' + item.channel + '</small>' + short;
+            btn.title = item.title;
+        });
+
+        function _newsSwitch(index) {
+            if (index < 0 || index > 5) return;
+            var item = _newsChannels[index];
+            if (!item) return;
+
+            // Get video ID
+            var vid = null;
+            var m = item.url.match(/(?:embed\/|watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+            if (m) vid = m[1];
+
+            // Build clean embed URL — autoplay=1 fires on user click (browser allows it)
+            var src = vid
+                ? 'https://www.youtube.com/embed/' + vid + '?autoplay=1&rel=0&playsinline=1&controls=1&modestbranding=1&enablejsapi=0'
+                : item.url;
+
+            // Swap iframe
+            var fr = document.getElementById('news-stream-iframe');
+            if (fr) {
+                fr.src = 'about:blank';           // reset first — forces clean reload
+                setTimeout(function(){ fr.src = src; }, 80);
+            }
+
+            // Update label
+            var lbl = document.getElementById('news-now-title');
+            if (lbl) lbl.textContent = 'Youtube ' + (index+1) + ': ' + item.title;
+
+            // Sync slider
+            var sl = document.getElementById('news-channel-slider');
+            if (sl) sl.value = index;
+
+            // Update button + dot highlights
+            for (var j = 0; j < 6; j++) {
+                var b = document.getElementById('news-btn-' + j);
+                var d = document.getElementById('news-dot-' + j);
+                if (b) {
+                    b.style.background = j === index ? '#0071e3' : '#f0f0f5';
+                    b.style.color      = j === index ? '#ffffff' : '#1d1d1f';
+                    b.style.boxShadow  = j === index ? '0 2px 8px rgba(0,113,227,0.35)' : 'none';
+                }
+                if (d) d.style.background = j === index ? '#0071e3' : '#d2d2d7';
+            }
+        }
+
+        // Wire up buttons
+        for (var _ni = 0; _ni < 6; _ni++) {
+            (function(idx){
+                var b = document.getElementById('news-btn-' + idx);
+                var d = document.getElementById('news-dot-' + idx);
+                if (b) b.onclick = function(){ _newsSwitch(idx); };
+                if (d) d.onclick = function(){ _newsSwitch(idx); };
+            })(_ni);
+        }
+
+        // Wire up slider
+        var _newsSl = document.getElementById('news-channel-slider');
+        if (_newsSl) _newsSl.oninput = function(){ _newsSwitch(parseInt(this.value, 10)); };
+
+        // Auto-load channel 1 on start
+        _newsSwitch(0);
         // Website uses Dior-style list in sidebar
         document.getElementById('website-sidebar-list').innerHTML = content.website.map((item, i) => createDiorListItem(item, `website-${i}`)).join('');
 

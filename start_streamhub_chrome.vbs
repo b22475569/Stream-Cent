@@ -36,7 +36,7 @@ Next
 
 ' 開啟瀏覽器
 Dim url
-url = "http://localhost:8000/Stream-Hub_Ver-161_2_with_98-XP_sound-Smooth-Carousel_Securd.html"
+url = "http://localhost:8000/Stream-Hub_Ver-169_1_with_98-XP_sound-Smooth-Carousel_Securd.html"
 
 If found Then
     ' 使用 Chrome 開啟（加入 --new-window 參數開新視窗）

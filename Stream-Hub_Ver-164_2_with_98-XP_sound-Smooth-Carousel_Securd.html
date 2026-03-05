@@ -18,7 +18,7 @@
             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
             font-src 'self' https://fonts.gstatic.com;
             img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google.com https://www.gstatic.com https://api.microlink.io https://*.microlink.io;
-            frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.twitch.tv;
+            frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.twitch.tv https://youtube-nocookie.com;
             media-src 'self' https://github.com https://raw.githubusercontent.com;
             connect-src 'self' http://localhost:8765 https://api.microlink.io https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com;
             object-src 'none';
@@ -465,7 +465,7 @@
         }
 
         .featured-info h2 {
-            font-size: 28px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--text-primary);
@@ -593,6 +593,299 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
+        }
+
+        /* ── News & Current Events — MacBook-style: stream left, info right ── */
+        /* ══ News & Current Events ══════════════════════════════════════════════
+           Layout: [ 320×240 iframe player LEFT ] [ scrollable playlist RIGHT ]
+           Both on ONE horizontal line. Playlist drag-scrollable horizontally.
+        ═══════════════════════════════════════════════════════════════════════ */
+
+        /* Outer wrapper: player LEFT + playlist RIGHT, single row */
+        .news-player-wrap {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 0;
+            width: 100%;
+            background: #f5f5f7;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.09);
+        }
+
+        /* LEFT: fixed 640×480 player */
+        .news-player-left {
+            flex-shrink: 0;
+            width: 640px;
+            background: #000;
+            border-radius: 16px 0 0 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-player-left iframe {
+            width: 640px;
+            height: 480px;
+            border: none;
+            display: block;
+        }
+
+        .news-player-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #000;
+            padding: 8px 12px 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .news-player-channel {
+            font-size: 18px;
+            color: #aaaaaa;
+            background: #000;
+            padding: 0 12px 10px;
+        }
+
+        /* RIGHT: vertically scrollable playlist */
+        .news-playlist {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 540px;
+            gap: 0;
+            cursor: default;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #0071e3 #e0e0e0;
+            background: #f5f5f7;
+            border-radius: 0 16px 16px 0;
+        }
+
+        .news-playlist::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .news-playlist::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 3px;
+        }
+
+        .news-playlist::-webkit-scrollbar-thumb {
+            background: #0071e3;
+            border-radius: 3px;
+        }
+
+        .news-playlist:active {
+            cursor: grabbing;
+        }
+
+        /* Each playlist card — horizontal: thumb LEFT, text RIGHT */
+        .news-card {
+            flex-shrink: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .news-card:last-child {
+            border-bottom: none;
+        }
+
+        .news-card:hover {
+            background: #eef4ff;
+        }
+
+        .news-card.active-news-card {
+            background: #dceeff;
+            border-left: 4px solid #0071e3;
+        }
+
+        body.sky-blue-mode .news-card {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Thumbnail inside card — small, left side */
+        .news-card-thumb {
+            width: 120px;
+            min-width: 120px;
+            height: 68px;
+            object-fit: cover;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        /* Text info inside card — pushed right 5cm (190px) from card left edge */
+        .news-card-info {
+            padding: 8px 8px 8px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .news-card-badge {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #0071e3;
+        }
+
+        .news-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        .news-card-channel {
+            font-size: 18px;
+            color: #6e6e73;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 900px) {
+            .news-player-wrap {
+                flex-direction: column;
+            }
+
+            .news-player-left {
+                width: 100%;
+                border-radius: 16px 16px 0 0;
+            }
+
+            .news-player-left iframe {
+                width: 100%;
+                height: 300px;
+            }
+
+            .news-player-title {
+                font-size: 12px;
+            }
+
+            .news-playlist {
+                max-height: 300px;
+                border-radius: 0 0 16px 16px;
+            }
+        }
+
+        /* ══ News Stream Selector — Excel-style table layout ══════════════════
+           Matches the wireframe: header row, then 3 Stream rows each with
+           a label cell (left) and 6 channel buttons (right).
+        ═══════════════════════════════════════════════════════════════════════ */
+        .news-stream-selector {
+            width: 100%;
+            margin-bottom: 18px;
+            border-collapse: collapse;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            background: #fff;
+            table-layout: fixed;
+        }
+
+        .news-stream-selector th {
+            background: #f0f4ff;
+            color: #1d1d1f;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px 8px;
+            border-bottom: 2px solid #d2d2d7;
+            letter-spacing: 0.5px;
+        }
+
+        .news-stream-selector td {
+            border: 1px solid #e5e5ea;
+            padding: 6px 8px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Stream label cell — left column */
+        .news-stream-label-cell {
+            width: 110px;
+            min-width: 90px;
+            background: #f5f5f7;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d1d1f;
+            text-align: center !important;
+            line-height: 1.4;
+        }
+
+        /* Each channel button */
+        .news-ch-btn {
+            display: block;
+            width: 100%;
+            padding: 7px 4px;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 7px;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1d1d1f;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .news-ch-btn:hover {
+            background: #eef4ff;
+            border-color: #0071e3;
+            color: #0071e3;
+            transform: translateY(-1px);
+        }
+
+        .news-ch-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Active / playing button — yellow highlight like the wireframe */
+        .news-ch-btn.news-ch-active {
+            background: #FFE600;
+            border-color: #d4b800;
+            color: #1a1200;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255, 230, 0, 0.4);
+        }
+
+        /* Stream label when its stream is active */
+        .news-stream-label-cell.stream-active-label {
+            background: #fff9cc;
+            color: #0071e3;
+        }
+
+        @media (max-width: 900px) {
+            .news-stream-label-cell {
+                width: 70px;
+                font-size: 12px;
+            }
+
+            .news-ch-btn {
+                font-size: 11px;
+                padding: 5px 2px;
+            }
         }
 
         /* Dior-style list for Website section */
@@ -3462,7 +3755,7 @@
         }
 
         .insight-tbd-label span {
-            font-size: 28px;
+            font-size: 18px;
             opacity: 0.4;
         }
 
@@ -4415,7 +4708,32 @@
                 <span class="category-icon">📰</span>
                 <h2 class="category-title">News & Current Events</h2>
             </div>
-            <div class="video-grid" id="news-grid"></div>
+
+            <!-- ══ Stream Selector Table ══════════════════════════════════════
+                 3 Stream rows × 6 channel buttons each.
+                 Clicking any button INSTANTLY loads that YouTube channel/video.
+            ═══════════════════════════════════════════════════════════════ -->
+            <table class="news-stream-selector" id="news-stream-table">
+                <thead>
+                    <tr>
+                        <th colspan="7">News &amp; Current Events</th>
+                    </tr>
+                </thead>
+                <tbody id="news-stream-tbody">
+                    <!-- Rows injected by JS -->
+                </tbody>
+            </table>
+
+            <div class="news-player-wrap">
+                <div class="news-player-left"><iframe id="news-main-iframe" width="640" height="480" src=""
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"
+                        style="border:none;border-radius:10px;display:block;background:#000;"></iframe>
+                    <div class="news-player-title" id="news-player-title">Select a stream above &uarr;</div>
+                    <div class="news-player-channel" id="news-player-channel"></div>
+                </div>
+                <div class="news-playlist" id="news-grid"></div>
+            </div>
         </div>
     </div>
 
@@ -4556,7 +4874,7 @@
                 { url: 'https://www.youtube.com/embed/4gqRpVtX1SQ', title: 'Daily News Update', channel: 'News Central' },
                 { url: 'https://www.youtube.com/embed/rVKIGulvVhg', title: 'Commentary & Analysis', channel: 'Brit Rants' },
                 { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' },
-                { url: 'https://www.youtube.com/embed/Zc35z9-1GzI', title: 'FLOYD MAYWEATHER ENJOY SHOPING IN MONACO', channel: 'Carspotterdailymonaco'},
+                { url: 'https://www.youtube.com/embed/Zc35z9-1GzI', title: 'FLOYD MAYWEATHER ENJOY SHOPING IN MONACO', channel: 'Carspotterdailymonaco' },
                 { url: 'https://www.youtube.com/embed/SD6to7hzv8Q', title: 'DisplayPort™ PHY Compliance Test-Sink-TxRx', channel: 'Teledyne LeCroy' }
             ],
             website: [
@@ -4571,10 +4889,12 @@
                 { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
                 { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
                 { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' },
-                { url: 'https://hamivideo.hinet.net/hamivideo/main/736.do?utm_source=google&utm_medium=pmax&utm_campaign=hamivideo2026_wbc&gad_source=1&gad_campaignid=23538967918&gbraid=0AAAAApI2kVztepyqdSXpsfP5iYGiKm87i&gclid=CjwKCAiAzZ_NBhAEEiwAMtqKy0Arkjdq-6LfOncRRTUPAglOa4be8GfI5IzbrdqdPFY7p8Rdaa4kXhoCB_cQAvD_BwE#tab_2',
-                title: 'Hami', channel: 'Hami Taiwan' },
-                { url: 'https://www.youtube.com/@vlsports', title: 'vlsports', channel: '緯來體育台-vlsport'},
-                { url: 'https://eltaott.tv/purchase/buy#3month', title: 'ELTA', channel: '愛爾達ELTA TV影視'}
+                {
+                    url: 'https://hamivideo.hinet.net/hamivideo/main/736.do?utm_source=google&utm_medium=pmax&utm_campaign=hamivideo2026_wbc&gad_source=1&gad_campaignid=23538967918&gbraid=0AAAAApI2kVztepyqdSXpsfP5iYGiKm87i&gclid=CjwKCAiAzZ_NBhAEEiwAMtqKy0Arkjdq-6LfOncRRTUPAglOa4be8GfI5IzbrdqdPFY7p8Rdaa4kXhoCB_cQAvD_BwE#tab_2',
+                    title: 'Hami', channel: 'Hami Taiwan'
+                },
+                { url: 'https://www.youtube.com/@vlsports', title: 'vlsports', channel: '緯來體育台-vlsport' },
+                { url: 'https://eltaott.tv/purchase/buy#3month', title: 'ELTA', channel: '愛爾達ELTA TV影視' }
             ]
         };
 
@@ -4605,9 +4925,12 @@
                 overlay.classList.remove('active');
             }
 
-            // Update content - 添加 origin 參數來避免 YouTube 錯誤 153
-            const origin = encodeURIComponent(window.location.origin || window.location.protocol + '//' + window.location.host);
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&origin=${origin}&playsinline=1&controls=1&modestbranding=1&enablejsapi=1`;
+            // Build embed src — drop origin on file:// to avoid YouTube Error 153
+            const isHttp = location.protocol === 'http:' || location.protocol === 'https:';
+            const originParam = isHttp
+                ? `&origin=${encodeURIComponent(window.location.origin)}&enablejsapi=1`
+                : '';
+            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&controls=1&modestbranding=1${originParam}`;
             titleElement.textContent = title;
             channelElement.textContent = channel;
 
@@ -4729,7 +5052,223 @@
         document.getElementById('business-carousel').innerHTML = content.business.map((item, i) => createAppleCard(item, `business-${i}`)).join('');
         document.getElementById('entertainment-carousel').innerHTML = content.entertainment.map((item, i) => createAppleCard(item, `entertainment-${i}`)).join('');
         document.getElementById('sports-grid').innerHTML = createInsightSuperstar(content.sports);
-        document.getElementById('news-grid').innerHTML = content.news.map((item, i) => createVideoCard(item, `news-${i}`)).join('');
+        document.getElementById('news-grid').innerHTML = content.news.map((item, i) => createNewsCard(item, i)).join('');
+        // Auto-load first item into player
+        if (content.news.length > 0) loadNewsPlayer(0);
+        // Enable drag-to-scroll on playlist
+        initNewsPlaylistDrag();
+
+        // ── News & Current Events — card builder ─────────────────────────────
+        function createNewsCard(item, index) {
+            const videoId = getYouTubeID(item.url);
+            const safeTitle = item.title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const thumbUrl = videoId
+                ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+                : `https://api.microlink.io/?url=${encodeURIComponent(item.url)}&screenshot=true&meta=false&embed=screenshot.url`;
+            const badge = videoId ? '&#9654; YouTube' : '&#128279; Website';
+            return `
+            <div class="news-card" id="news-card-${index}"
+                 onclick="loadNewsPlayer(${index})">
+                <img class="news-card-thumb" src="${thumbUrl}" alt="${safeTitle}"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22101%22%3E%3Crect fill=%22%23f0f0f5%22 width=%22180%22 height=%22101%22/%3E%3C/svg%3E'">
+                <div class="news-card-info">
+                    <div class="news-card-badge">${badge}</div>
+                    <div class="news-card-title">${item.title}</div>
+                    <div class="news-card-channel">${safeChannel}</div>
+                </div>
+            </div>`;
+        }
+
+        // ── Load a news item into the LEFT player ────────────────────────────
+        function loadNewsPlayer(index) {
+            const item = content.news[index];
+            if (!item) return;
+            const videoId = getYouTubeID(item.url);
+            const iframe = document.getElementById('news-main-iframe');
+            const titleEl = document.getElementById('news-player-title');
+            const channelEl = document.getElementById('news-player-channel');
+
+            if (videoId) {
+                // Drop origin param entirely on file:// — passing ANY origin value
+                // (including 'https://www.youtube.com') causes YouTube Error 153.
+                const isHttp = location.protocol === 'http:' || location.protocol === 'https:';
+                const originParam = isHttp
+                    ? '&origin=' + encodeURIComponent(window.location.origin) + '&enablejsapi=1'
+                    : '';
+                iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoId
+                    + '?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=1' + originParam;
+            } else {
+                iframe.src = item.url;
+            }
+            if (titleEl) titleEl.textContent = item.title;
+            if (channelEl) channelEl.textContent = item.channel;
+            if (typeof trackHistory === 'function') trackHistory(item);
+
+            document.querySelectorAll('.news-card').forEach(function (c) { c.classList.remove('active-news-card'); });
+            const active = document.getElementById('news-card-' + index);
+            if (active) {
+                active.classList.add('active-news-card');
+                active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+        window.loadNewsPlayer = loadNewsPlayer;
+
+        // ══════════════════════════════════════════════════════════════════════
+        //  NEWS STREAM SELECTOR — 3 Streams × 6 YouTube channels each
+        //  Uses the SAME video IDs already proven to work in this hub.
+        //  Clicking any button INSTANTLY loads that video in the main player.
+        // ══════════════════════════════════════════════════════════════════════
+
+        const newsStreams = [
+            {
+                streamLabel: 'Stream\nYoutube 1',
+                channels: [
+                    { label: 'Youtube 1', videoId: 'xOuhoIWjyrw', title: 'Breaking News Today', channel: 'Global News Network' },
+                    { label: 'Youtube 2', videoId: 'u0rd7u88dAg', title: 'World News Roundup', channel: 'World Report' },
+                    { label: 'Youtube 3', videoId: '4gqRpVtX1SQ', title: 'Daily News Update', channel: 'News Central' },
+                    { label: 'Youtube 4', videoId: 'rVKIGulvVhg', title: 'Commentary & Analysis', channel: 'Brit Rants' },
+                    { label: 'Youtube 5', videoId: '_HDI_8EInYQ', title: 'Current Affairs', channel: 'AntonDaniels' },
+                    { label: 'Youtube 6', videoId: 'SD6to7hzv8Q', title: 'DisplayPort PHY Test', channel: 'Teledyne LeCroy' }
+                ]
+            },
+            {
+                streamLabel: 'Stream\nYoutube 2',
+                channels: [
+                    { label: 'Youtube 1', videoId: 'Ftt1eujRuj4', title: 'AMAZON Layoffs $250K Salary', channel: 'Business Insights' },
+                    { label: 'Youtube 2', videoId: 'IloqutF6GiY', title: 'Electric Bill Skyrocket', channel: 'Jay Reed' },
+                    { label: 'Youtube 3', videoId: 'Tw7m0S4qFWw', title: 'Sneaker Market Collapsed', channel: 'Jay Reed' },
+                    { label: 'Youtube 4', videoId: 'P4bP-Mz-ARc', title: 'Factory Layoffs 2026', channel: 'Jay Reed' },
+                    { label: 'Youtube 5', videoId: 'glns6GssyxM', title: 'Washington Layoffs', channel: 'Jay Reed' },
+                    { label: 'Youtube 6', videoId: '2rsBLyB3BWk', title: 'Repair Graphics Card CHINA', channel: 'FYDN' }
+                ]
+            },
+            {
+                streamLabel: 'Stream\nYoutube 3',
+                channels: [
+                    { label: 'Youtube 1', videoId: '8XezrgNzwEA', title: 'Downsizing is Worth It', channel: 'Sports Network' },
+                    { label: 'Youtube 2', videoId: 'DajWBfIdjPA', title: 'Repo & Bills Story', channel: 'AntonDaniels' },
+                    { label: 'Youtube 3', videoId: 'VeMA9WGKxOg', title: 'Life After Layoff 25 Years', channel: 'Personal Stories' },
+                    { label: 'Youtube 4', videoId: 'NWZKuueumJE', title: 'Tom Cruise Honorary Oscar', channel: 'Oscars' },
+                    { label: 'Youtube 5', videoId: 'YN6BEUA4jNU', title: 'Hidden Cost of Data Centers', channel: 'Sports Weekly' },
+                    { label: 'Youtube 6', videoId: 'pvwzF6iDfe8', title: 'Electric Bills Anger', channel: 'HomesteadJourney' }
+                ]
+            }
+        ];
+
+        // Track active selection
+        let newsActiveStream = -1, newsActiveCh = -1;
+
+        // Build the selector table rows
+        (function buildNewsStreamTable() {
+            const tbody = document.getElementById('news-stream-tbody');
+            if (!tbody) return;
+            newsStreams.forEach(function (stream, si) {
+                const tr = document.createElement('tr');
+
+                // Label cell
+                const labelTd = document.createElement('td');
+                labelTd.className = 'news-stream-label-cell';
+                labelTd.id = 'news-stream-label-' + si;
+                labelTd.style.whiteSpace = 'pre-line';
+                labelTd.textContent = stream.streamLabel;
+                tr.appendChild(labelTd);
+
+                // 6 channel button cells
+                stream.channels.forEach(function (ch, ci) {
+                    const td = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.className = 'news-ch-btn';
+                    btn.id = 'news-ch-btn-' + si + '-' + ci;
+                    btn.textContent = ch.label;
+                    btn.title = ch.title + ' — ' + ch.channel;
+                    btn.onclick = function () { loadNewsStream(si, ci); };
+                    td.appendChild(btn);
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        })();
+
+        // Load a specific stream channel into the player INSTANTLY
+        function loadNewsStream(streamIdx, chIdx) {
+            const stream = newsStreams[streamIdx];
+            if (!stream) return;
+
+            // Randomly pick Youtube 4, 5, or 6 if Youtube 4 is clicked
+            if (chIdx === 3) {
+                const randomChoices = [3, 4, 5];
+                chIdx = randomChoices[Math.floor(Math.random() * randomChoices.length)];
+            }
+
+            const ch = stream.channels[chIdx];
+            if (!ch) return;
+
+            const iframe = document.getElementById('news-main-iframe');
+            const titleEl = document.getElementById('news-player-title');
+            const channelEl = document.getElementById('news-player-channel');
+
+            // Identical embed URL construction as the working loadNewsPlayer function
+            const isHttp = location.protocol === 'http:' || location.protocol === 'https:';
+            const originVal = window.location.origin;
+            const originParam = (isHttp && originVal && originVal !== 'null')
+                ? '&origin=' + encodeURIComponent(originVal) + '&enablejsapi=1'
+                : '';
+            iframe.src = 'https://www.youtube-nocookie.com/embed/' + ch.videoId
+                + '?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=1' + originParam;
+
+            if (titleEl) titleEl.textContent = ch.title;
+            if (channelEl) channelEl.textContent = '▶ ' + ch.channel + '  ·  ' + stream.streamLabel.replace('\n', ' ');
+
+            // Clear all button highlights
+            document.querySelectorAll('.news-ch-btn').forEach(function (b) { b.classList.remove('news-ch-active'); });
+            document.querySelectorAll('.news-stream-label-cell').forEach(function (l) { l.classList.remove('stream-active-label'); });
+
+            // Highlight active button + label row
+            var activeBtn = document.getElementById('news-ch-btn-' + streamIdx + '-' + chIdx);
+            if (activeBtn) activeBtn.classList.add('news-ch-active');
+            var activeLbl = document.getElementById('news-stream-label-' + streamIdx);
+            if (activeLbl) {
+                activeLbl.classList.add('stream-active-label');
+                // UPDATE: Dynamic label like the wireframe
+                activeLbl.style.whiteSpace = 'pre-line';
+                activeLbl.textContent = 'Stream\n' + ch.label;
+            }
+
+            newsActiveStream = streamIdx;
+            newsActiveCh = chIdx;
+
+            // Clear old playlist active state
+            document.querySelectorAll('.news-card').forEach(function (c) { c.classList.remove('active-news-card'); });
+
+            // Track history
+            if (typeof trackHistory === 'function') {
+                trackHistory({ url: 'https://www.youtube.com/watch?v=' + ch.videoId, title: ch.title, channel: ch.channel });
+            }
+        }
+        window.loadNewsStream = loadNewsStream;
+
+        // ── Drag-to-scroll playlist ──────────────────────────────────────────
+        function initNewsPlaylistDrag() {
+            const playlist = document.getElementById('news-grid');
+            if (!playlist) return;
+            let isDown = false, startX, scrollLeft;
+            playlist.addEventListener('mousedown', e => {
+                isDown = true;
+                startX = e.pageX - playlist.offsetLeft;
+                scrollLeft = playlist.scrollLeft;
+                playlist.style.cursor = 'grabbing';
+            });
+            playlist.addEventListener('mouseleave', () => { isDown = false; playlist.style.cursor = 'grab'; });
+            playlist.addEventListener('mouseup', () => { isDown = false; playlist.style.cursor = 'grab'; });
+            playlist.addEventListener('mousemove', e => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - playlist.offsetLeft;
+                playlist.scrollLeft = scrollLeft - (x - startX);
+            });
+        }
         // Website uses Dior-style list in sidebar
         document.getElementById('website-sidebar-list').innerHTML = content.website.map((item, i) => createDiorListItem(item, `website-${i}`)).join('');
 
@@ -5161,8 +5700,11 @@
 
             if (!vid) return;
 
-            const origin = encodeURIComponent(window.location.origin || window.location.protocol + '//' + window.location.host);
-            iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&origin=${origin}&playsinline=1&controls=1`;
+            const isHttp2 = location.protocol === 'http:' || location.protocol === 'https:';
+            const originParam2 = isHttp2
+                ? `&origin=${encodeURIComponent(window.location.origin)}&enablejsapi=1`
+                : '';
+            iframe.src = `https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&playsinline=1&controls=1${originParam2}`;
             container.classList.add('active');
 
             logSecurityEvent('HISTORY_PREVIEW', `Previewing stream: ${url}`);
