@@ -24,16 +24,16 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     if [ -d "/Applications/Google Chrome.app" ]; then
         open -a "Google Chrome" http://localhost:8000/Stream-Hub_Ver-161_2_with_98-XP_sound-Smooth-Carousel_Securd.html
     else
-        open http://localhost:8000/Stream-Hub_Ver-161_2_with_98-XP_sound-Smooth-Carousel_Securd.html
+        open http://localhost:8000/Stream-Hub_Ver-169_2_with_98-XP_sound-Smooth-Carousel_Securd.html
     fi
 else
     # Linux - 優先使用 Chrome
     if command -v google-chrome &> /dev/null; then
-        google-chrome http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html &
+        google-chrome http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html &
     elif command -v chromium-browser &> /dev/null; then
-        chromium-browser http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html &
+        chromium-browser http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html &
     else
-        xdg-open http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html
+        xdg-open http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html
     fi
 fi
 
