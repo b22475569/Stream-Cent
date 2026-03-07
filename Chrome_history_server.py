@@ -1,155 +1,113 @@
+#!/usr/bin/env python3
 """
-╔══════════════════════════════════════════════════════════════╗
-║   CHROME HISTORY LOCAL SERVER — Stream Content Hub          ║
-║   Reads:  C:\\Users\\Administrator\\AppData\\Local\\Google\\       ║
-║           Chrome\\User Data\\Default\\History                  ║
-║   Serves: http://localhost:8765/history                      ║
-║   Run:    python chrome_history_server.py                    ║
-╚══════════════════════════════════════════════════════════════╝
+chrome_history_server.py  —  Stream Hub Chrome 歷史伺服器
+監聽 Port 8765，提供 /history 端點給 Stream Hub HTML 使用。
+放在與 HTML 相同的資料夾後，由啟動腳本自動執行。
 """
 
-import sqlite3, shutil, json, os, sys, tempfile
+import os
+import re
+import json
+import shutil
+import sqlite3
+import tempfile
+import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
 from datetime import datetime, timezone
 
-# ── Config ────────────────────────────────────────────────────
-CHROME_HISTORY = r"C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Default\History"
-PORT            = 8765
-MAX_RESULTS     = 500          # max rows to return
-# ──────────────────────────────────────────────────────────────
+PORT = 8765
 
-def chrome_time_to_iso(chrome_ts):
-    """Convert Chrome's microseconds-since-1601 to ISO-8601 string."""
-    if not chrome_ts:
-        return ""
+# Chrome History 資料庫位置（Windows）
+CHROME_HISTORY_PATH = os.path.join(
+    os.environ.get("LOCALAPPDATA", ""),
+    "Google", "Chrome", "User Data", "Default", "History"
+)
+
+
+def get_history(limit=500, search=""):
+    """從 Chrome SQLite 資料庫讀取瀏覽歷史。"""
+    if not os.path.exists(CHROME_HISTORY_PATH):
+        return {"error": "找不到 Chrome 歷史資料庫。請確認 Chrome 已安裝。", "rows": [], "count": 0}
+
+    # 複製資料庫（Chrome 鎖定時仍可讀）
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
+    tmp.close()
     try:
-        epoch_diff = 11644473600          # seconds between 1601-01-01 and 1970-01-01
-        ts_sec = (chrome_ts / 1_000_000) - epoch_diff
-        return datetime.fromtimestamp(ts_sec, tz=timezone.utc).astimezone().isoformat()
-    except Exception:
-        return ""
+        shutil.copy2(CHROME_HISTORY_PATH, tmp.name)
+        conn = sqlite3.connect(tmp.name)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
 
-def read_history(limit=MAX_RESULTS, search=""):
-    """Copy DB to temp, query it, return list of dicts."""
-    if not os.path.exists(CHROME_HISTORY):
-        return {"error": f"History file not found: {CHROME_HISTORY}"}
-
-    # Chrome locks the file — copy to temp first
-    tmp = tempfile.mktemp(suffix=".db")
-    try:
-        shutil.copy2(CHROME_HISTORY, tmp)
-    except PermissionError as e:
-        return {"error": f"Cannot copy History file — make sure Chrome is CLOSED. ({e})"}
-
-    rows = []
-    try:
-        con = sqlite3.connect(tmp)
-        con.row_factory = sqlite3.Row
-        cur = con.cursor()
-
+        # Chrome 時間戳：自 1601-01-01 起的微秒數
         if search:
-            sql = """
-                SELECT u.id, u.url, u.title, u.visit_count,
-                       u.last_visit_time, u.typed_count
-                FROM   urls u
-                WHERE  lower(u.url) LIKE lower(?) OR lower(u.title) LIKE lower(?)
-                ORDER  BY u.last_visit_time DESC
-                LIMIT  ?
-            """
-            like = f"%{search}%"
-            cur.execute(sql, (like, like, limit))
+            cursor.execute("""
+                SELECT url, title, visit_count,
+                       datetime((last_visit_time / 1000000) - 11644473600, 'unixepoch') AS last_visit
+                FROM urls
+                WHERE url LIKE ? OR title LIKE ?
+                ORDER BY last_visit_time DESC
+                LIMIT ?
+            """, (f"%{search}%", f"%{search}%", limit))
         else:
-            sql = """
-                SELECT u.id, u.url, u.title, u.visit_count,
-                       u.last_visit_time, u.typed_count
-                FROM   urls u
-                ORDER  BY u.last_visit_time DESC
-                LIMIT  ?
-            """
-            cur.execute(sql, (limit,))
+            cursor.execute("""
+                SELECT url, title, visit_count,
+                       datetime((last_visit_time / 1000000) - 11644473600, 'unixepoch') AS last_visit
+                FROM urls
+                ORDER BY last_visit_time DESC
+                LIMIT ?
+            """, (limit,))
 
-        for r in cur.fetchall():
-            rows.append({
-                "id":           r["id"],
-                "url":          r["url"],
-                "title":        r["title"] or r["url"],
-                "visit_count":  r["visit_count"],
-                "typed_count":  r["typed_count"],
-                "last_visit":   chrome_time_to_iso(r["last_visit_time"]),
-            })
-        con.close()
+        rows = [dict(r) for r in cursor.fetchall()]
+        conn.close()
+        return {"rows": rows, "count": len(rows), "error": None}
+
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e), "rows": [], "count": 0}
     finally:
         try:
-            os.remove(tmp)
+            os.unlink(tmp.name)
         except Exception:
             pass
 
-    return {"count": len(rows), "rows": rows}
 
-
-class Handler(BaseHTTPRequestHandler):
-    def log_message(self, fmt, *args):
-        print(f"[{datetime.now().strftime('%H:%M:%S')}]", fmt % args)
-
-    def send_cors(self):
-        self.send_header("Access-Control-Allow-Origin",  "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+class HistoryHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        pass  # 靜默日誌
 
     def do_OPTIONS(self):
-        self.send_response(204)
-        self.send_cors()
+        self.send_response(200)
+        self._cors()
         self.end_headers()
 
     def do_GET(self):
-        parsed = urlparse(self.path)
-        params = parse_qs(parsed.query)
+        parsed = urllib.parse.urlparse(self.path)
+        params = urllib.parse.parse_qs(parsed.query)
 
         if parsed.path == "/history":
-            limit  = int(params.get("limit",  [MAX_RESULTS])[0])
+            limit = int(params.get("limit", [500])[0])
             search = params.get("search", [""])[0]
-            data   = read_history(limit=limit, search=search)
-            body   = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
-
+            result = get_history(limit=limit, search=search)
+            body = json.dumps(result, ensure_ascii=False).encode("utf-8")
             self.send_response(200)
-            self.send_header("Content-Type",   "application/json; charset=utf-8")
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self._cors()
             self.send_header("Content-Length", str(len(body)))
-            self.send_cors()
             self.end_headers()
             self.wfile.write(body)
-
-        elif parsed.path == "/ping":
-            self.send_response(200)
-            self.send_header("Content-Type", "text/plain")
-            self.send_cors()
-            self.end_headers()
-            self.wfile.write(b"pong")
-
         else:
             self.send_response(404)
             self.end_headers()
-            self.wfile.write(b"Not found")
+
+    def _cors(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
 
 if __name__ == "__main__":
-    if not os.path.exists(CHROME_HISTORY):
-        print(f"\n⚠️  History file not found:\n   {CHROME_HISTORY}")
-        print("   Make sure Chrome is installed and has been opened at least once.\n")
-    else:
-        print(f"\n✅  History file found: {CHROME_HISTORY}")
-
-    print(f"\n🚀  Starting Chrome History Server on http://localhost:{PORT}")
-    print(f"    Endpoints:")
-    print(f"    GET http://localhost:{PORT}/history          — latest {MAX_RESULTS} entries")
-    print(f"    GET http://localhost:{PORT}/history?limit=50 — custom limit")
-    print(f"    GET http://localhost:{PORT}/history?search=google — filter by keyword")
-    print(f"\n    Press Ctrl+C to stop.\n")
-
-    server = HTTPServer(("localhost", PORT), Handler)
+    server = HTTPServer(("localhost", PORT), HistoryHandler)
+    print(f"Chrome 歷史伺服器已啟動：http://localhost:{PORT}/history")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n🛑  Server stopped.")
+        print("伺服器已停止。")
