@@ -4695,7 +4695,7 @@
                 { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website' },
                 { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
                 { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
-                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' }
+                { url: 'https://www.icloud.com/', title: 'PAY$30 on day 10', channel: 'Apple icloud', appleGrid: true }
             ]
         };
 
@@ -4988,8 +4988,94 @@
             const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const safeUrl = item.url.replace(/"/g, '&quot;');
 
+            // Animated iCloud+ icon for iCloud item
+            let appleGridHTML = '';
+            if (item.appleGrid) {
+                appleGridHTML = `<div style="width:52px;height:52px;flex-shrink:0;margin-right:10px;position:relative;display:flex;align-items:center;justify-content:center;">
+                <style>
+                @keyframes icloud-orbit {
+                    from { transform: rotate(0deg) translateX(19px) rotate(0deg); }
+                    to   { transform: rotate(360deg) translateX(19px) rotate(-360deg); }
+                }
+                @keyframes icloud-orbit2 {
+                    from { transform: rotate(120deg) translateX(19px) rotate(-120deg); }
+                    to   { transform: rotate(480deg) translateX(19px) rotate(-480deg); }
+                }
+                @keyframes icloud-orbit3 {
+                    from { transform: rotate(240deg) translateX(19px) rotate(-240deg); }
+                    to   { transform: rotate(600deg) translateX(19px) rotate(-600deg); }
+                }
+                @keyframes icloud-orbit4 {
+                    from { transform: rotate(60deg) translateX(22px) rotate(-60deg); }
+                    to   { transform: rotate(420deg) translateX(22px) rotate(-420deg); }
+                }
+                @keyframes icloud-pulse {
+                    0%,100% { transform: scale(1); }
+                    50% { transform: scale(1.06); }
+                }
+                .icl-wrap { position:relative; width:52px; height:52px; }
+                .icl-center {
+                    position:absolute; top:50%; left:50%;
+                    transform:translate(-50%,-50%);
+                    width:26px; height:26px;
+                    animation: icloud-pulse 3s ease-in-out infinite;
+                }
+                .icl-orb {
+                    position:absolute; top:50%; left:50%;
+                    width:11px; height:11px;
+                    margin:-5.5px 0 0 -5.5px;
+                    border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:7px;
+                }
+                .icl-o1 { animation: icloud-orbit  5s linear infinite; }
+                .icl-o2 { animation: icloud-orbit2 5s linear infinite; }
+                .icl-o3 { animation: icloud-orbit3 5s linear infinite; }
+                .icl-o4 { animation: icloud-orbit4 7s linear infinite; }
+                </style>
+                <div class="icl-wrap">
+                  <!-- Center iCloud SVG cloud -->
+                  <svg class="icl-center" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="cg1" x1="0" y1="0" x2="60" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#70cfff"/>
+                        <stop offset="100%" stop-color="#1a8fff"/>
+                      </linearGradient>
+                      <linearGradient id="cg2" x1="0" y1="0" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a8e6ff" stop-opacity="0.7"/>
+                        <stop offset="100%" stop-color="#5bc8ff" stop-opacity="0.5"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Main cloud body -->
+                    <ellipse cx="30" cy="30" rx="22" ry="14" fill="url(#cg1)"/>
+                    <!-- Left bump -->
+                    <circle cx="14" cy="26" r="10" fill="url(#cg2)"/>
+                    <!-- Right bump -->
+                    <circle cx="38" cy="22" r="13" fill="url(#cg1)" opacity="0.9"/>
+                    <!-- Top center bump -->
+                    <circle cx="24" cy="20" r="11" fill="url(#cg2)"/>
+                    <!-- Shine overlay -->
+                    <ellipse cx="26" cy="18" rx="8" ry="4" fill="white" opacity="0.18"/>
+                  </svg>
+                  <!-- Orbiting icons -->
+                  <div class="icl-orb icl-o1" style="background:linear-gradient(135deg,#4488ff,#2255dd);box-shadow:0 1px 4px rgba(34,85,221,0.4);">
+                    <svg viewBox="0 0 10 8" width="7" height="6" fill="white"><rect x="1" y="2" width="8" height="5" rx="1"/><path d="M3 2V1.5a2 2 0 014 0V2"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o2" style="background:linear-gradient(135deg,#ff6b6b,#ee1111);box-shadow:0 1px 4px rgba(238,17,17,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><circle cx="5" cy="4" r="2.5"/><path d="M1 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="1" fill="none"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o3" style="background:linear-gradient(135deg,#34c759,#248a3d);box-shadow:0 1px 4px rgba(52,199,89,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><rect x="1.5" y="4" width="1.5" height="5" rx="0.5"/><rect x="4.25" y="2" width="1.5" height="7" rx="0.5"/><rect x="7" y="0.5" width="1.5" height="8.5" rx="0.5"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o4" style="background:linear-gradient(135deg,#ff9f0a,#c93400);box-shadow:0 1px 4px rgba(255,159,10,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><path d="M5 1l1.2 2.4L9 3.9 7 5.8l.5 2.7L5 7.2 2.5 8.5 3 5.8 1 3.9l2.8-.5z"/></svg>
+                  </div>
+                </div>
+                </div>`;
+            }
             return `
-                <a href="${safeUrl}" target="_blank" class="dior-list-item">
+                <a href="${safeUrl}" target="_blank" class="dior-list-item" style="${item.appleGrid ? 'align-items:center;' : ''}">
+                    ${appleGridHTML}
                     <div class="dior-list-text">
                         <div class="dior-list-title">${safeTitle}</div>
                         <div class="dior-list-subtitle">${safeChannel}</div>

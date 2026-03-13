@@ -685,6 +685,436 @@
             color: #1d1d1f;
         }
 
+        /* ToolKit Section */
+        .toolkit-section-header {
+            padding: 22px 30px 10px;
+            border-top: 1px solid #e5e5e5;
+            margin-top: 4px;
+        }
+
+        .toolkit-section-title {
+            font-size: 11px;
+            font-weight: 300;
+            color: #1d1d1f;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-section-sub {
+            font-size: 10px;
+            color: #6e6e73;
+            margin-top: 3px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 12px 18px 20px;
+        }
+
+        .toolkit-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f7;
+            border-radius: 14px;
+            padding: 14px 8px 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: background 0.2s ease, transform 0.15s ease;
+            gap: 6px;
+            min-height: 72px;
+        }
+
+        .toolkit-item:hover {
+            background: #e8e8ed;
+            transform: scale(1.04);
+        }
+
+        .toolkit-item:active {
+            transform: scale(0.97);
+            background: #dcdce0;
+        }
+
+        body.sky-blue-mode .toolkit-item,
+        body.video-mode .toolkit-item {
+            background: rgba(235, 235, 240, 0.9);
+        }
+
+        body.sky-blue-mode .toolkit-item:hover,
+        body.video-mode .toolkit-item:hover {
+            background: rgba(215, 215, 225, 0.95);
+        }
+
+        .toolkit-icon {
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .toolkit-label {
+            font-size: 10px;
+            font-weight: 300;
+            color: #1d1d1f;
+            text-align: center;
+            letter-spacing: 3px;
+            line-height: 1.3;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-label-sub {
+            font-size: 8.5px;
+            color: #6e6e73;
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* Claude AI toggle item — active glow */
+        .toolkit-item.ai-toggle-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.ai-toggle-active .toolkit-label,
+        .toolkit-item.ai-toggle-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── AI ASSISTANT Panel ── */
+        #ai-assistant-panel {
+            display: none;
+            overflow: hidden;
+            animation: aiSlideDown 0.28s ease;
+        }
+        #ai-assistant-panel.ai-visible {
+            display: block;
+        }
+        @keyframes aiSlideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ai-panel-inner {
+            padding: 0 18px 16px;
+        }
+        .ai-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(197,160,89,0.35);
+            margin-top: 2px;
+        }
+        .ai-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #c5a059;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .ai-hero-wrap {
+            margin-bottom: 10px;
+            border-radius: 9px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ai-hero-wrap img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+        .ai-hero-caption {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.8);
+            font-size: 8.5px;
+            letter-spacing: 3px;
+            text-align: center;
+            padding: 5px 6px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+        }
+        .ai-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 56px;
+        }
+        .ai-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #c5a059;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(197,160,89,0.2);
+        }
+        .ai-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .ai-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Fashion Toggle Active ── */
+        .toolkit-item.fashion-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.fashion-active .toolkit-label,
+        .toolkit-item.fashion-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Fashion Panel ── */
+        #fashion-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #fashion-panel.fashion-open {
+            display: block;
+            animation: fashionIn 0.25s ease;
+        }
+        @keyframes fashionIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fashion-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(212,115,141,0.35);
+            margin-top: 2px;
+        }
+        .fashion-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #d4738d;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .fashion-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .fashion-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .fashion-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #d4738d;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(212,115,141,0.2);
+        }
+        .fashion-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .fashion-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Tool Toggle Active ── */
+        .toolkit-item.tool-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.tool-active .toolkit-label,
+        .toolkit-item.tool-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Tool Panel ── */
+        #tool-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #tool-panel.tool-open {
+            display: block;
+            animation: toolIn 0.25s ease;
+        }
+        @keyframes toolIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .tool-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(76,175,130,0.35);
+            margin-top: 2px;
+        }
+        .tool-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4caf82;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .tool-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .tool-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #4caf82;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(76,175,130,0.2);
+        }
+        .tool-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .tool-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Social Toggle Active ── */
+        .toolkit-item.social-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.social-active .toolkit-label,
+        .toolkit-item.social-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Social Panel ── */
+        #social-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #social-panel.social-open {
+            display: block;
+            animation: socialIn 0.25s ease;
+        }
+        @keyframes socialIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .social-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(124,140,248,0.35);
+            margin-top: 2px;
+        }
+        .social-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #7c8cf8;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .social-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .social-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #7c8cf8;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(124,140,248,0.2);
+        }
+        .social-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .social-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
         /* History Section in Sidebar */
         .history-section {
             padding: 20px 30px;
@@ -4307,6 +4737,245 @@
             }
         </script>
         <div class="dior-list" id="website-sidebar-list"></div>
+
+        <!-- ToolKit Section -->
+        <div class="toolkit-section-header">
+            <div class="toolkit-section-title">ToolKit</div>
+            <div class="toolkit-section-sub">Quick access tools</div>
+        </div>
+        <div class="toolkit-grid" id="toolkitGrid">
+            <div class="toolkit-item" id="claudeAiToggle" onclick="toggleAIAssistant()" style="cursor:pointer;">
+                <span class="toolkit-icon">🤖</span>
+                <span class="toolkit-label">Claude AI</span>
+                <span class="toolkit-label-sub">Chat</span>
+            </div>
+            <div class="toolkit-item" id="toolToggle" onclick="toggleToolPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">💬</span>
+                <span class="toolkit-label">Tool</span>
+                <span class="toolkit-label-sub">Services</span>
+            </div>
+            <div class="toolkit-item" id="fashionToggle" onclick="toggleFashionPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">🌐</span>
+                <span class="toolkit-label">Fashion</span>
+                <span class="toolkit-label-sub">Brands</span>
+            </div>
+            <div class="toolkit-item" id="socialToggle" onclick="toggleSocialPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">📝</span>
+                <span class="toolkit-label">Social</span>
+                <span class="toolkit-label-sub">Forum</span>
+            </div>
+                        <a href="https://github.com" target="_blank" class="toolkit-item">
+                <span class="toolkit-icon">
+                  <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+                    <defs>
+                      <linearGradient id="apple-icloud" x1="16" y1="2" x2="16" y2="26" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#74D0F8"/>
+                        <stop offset="100%" stop-color="#1B8FE3"/>
+                      </linearGradient>
+                      <filter id="icloud-dropshadow" x="-15%" y="-15%" width="130%" height="150%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+                        <feOffset dx="0" dy="2"/>
+                        <feComposite in2="SourceGraphic" operator="over"/>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.4  0 0 0 0 0.8  0 0 0 0.3 0"/>
+                      </filter>
+                    </defs>
+                    <!-- Apple iCloud exact shape: flat bottom, small left bump, large right bump -->
+                    <path d="
+                      M 7 22
+                      C 3.5 22 1 19.5 1 16.5
+                      C 1 13.8 3 11.6 5.7 11.1
+                      C 5.6 10.8 5.5 10.4 5.5 10
+                      C 5.5 7.2 7.8 5 10.5 5
+                      C 11.6 5 12.6 5.4 13.4 6.0
+                      C 14.4 3.7 16.8 2 19.5 2
+                      C 23.6 2 27 5.4 27 9.5
+                      C 27 9.7 27 9.9 26.9 10.1
+                      C 29.3 10.9 31 13.1 31 15.7
+                      C 31 19.2 28.2 22 24.7 22
+                      Z
+                    " fill="url(#apple-icloud)" filter="url(#icloud-dropshadow)"/>
+                    <!-- Gloss highlight — top left shine -->
+                    <ellipse cx="12" cy="8.5" rx="5.5" ry="2.5" fill="white" opacity="0.45" transform="rotate(-15 12 8.5)"/>
+                  </svg>
+                </span>
+                <span class="toolkit-label">GitHub</span>
+                <span class="toolkit-label-sub">Code</span>
+            </a>
+        </div>
+
+        <!-- ── AI ASSISTANT Panel (toggle via Claude AI icon) ── -->
+        <div id="ai-assistant-panel">
+            <div class="ai-panel-inner">
+                <div class="ai-panel-header">
+                    <div class="ai-panel-title">AI ASSISTANT</div>
+                </div>
+                <div class="ai-hero-wrap">
+                    <img src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/CEO-Chip.JPG" alt="CEO Chip">
+                    <div class="ai-hero-caption">Founder &amp; President – CEO Chip</div>
+                </div>
+                <div class="ai-grid">
+                    <a href="https://claude.ai" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Claude AI</div>
+                        <div class="ai-item-desc">Anthropic's Claude</div>
+                    </a>
+                    <a href="https://www.anthropic.com/" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Host Claude AI</div>
+                        <div class="ai-item-desc">Anthropic's Claude Main</div>
+                    </a>
+                    <a href="https://chatgpt.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">ChatGPT</div>
+                        <div class="ai-item-desc">OpenAI ChatGPT</div>
+                    </a>
+                    <a href="https://grok.x.ai" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Grok3 AI</div>
+                        <div class="ai-item-desc">Elon Musk's Grok</div>
+                    </a>
+                    <a href="https://gemini.google.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Google Gemini</div>
+                        <div class="ai-item-desc">Google's Gemini</div>
+                    </a>
+                    <a href="https://copilot.microsoft.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Microsoft Copilot</div>
+                        <div class="ai-item-desc">Microsoft's Copilot</div>
+                    </a>
+                    <a href="https://groq.com/groqcloud" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Groq AI</div>
+                        <div class="ai-item-desc">AI Agent with program</div>
+                    </a>
+                    <a href="https://base44.com/" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">BASE44 AI</div>
+                        <div class="ai-item-desc">Program, APP Generate</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SOCIAL Panel ── -->
+        <div id="social-panel">
+            <div class="social-panel-header">
+                <div class="social-panel-title">PTT‑01 &amp; FORUM</div>
+            </div>
+            <div class="social-grid">
+                <a href="https://www.mobile01.com/" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">Mobile01 Forum</div>
+                    <div class="social-item-desc">Taiwan tech forum</div>
+                </a>
+                <a href="https://forum.gamer.com.tw/B.php?bsn=60030" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">Bahamut Gamer</div>
+                    <div class="social-item-desc">Gaming discussion</div>
+                </a>
+                <a href="https://www.ptt.cc/bbs/Tech_Job/index.html" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">PTT Tech Job</div>
+                    <div class="social-item-desc">Career board</div>
+                </a>
+                <a href="https://www.ptt.cc/bbs/CheerGirlsTW/index.html" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">CheerGirls Korea on PTT</div>
+                    <div class="social-item-desc">CheerGirls Korea on PTT</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ── TOOL Panel ── -->
+        <div id="tool-panel">
+            <div class="tool-panel-header">
+                <div class="tool-panel-title">TOOLS &amp; SERVICES</div>
+            </div>
+            <div class="tool-grid">
+                <a href="https://www.google.com.tw/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Google</div>
+                    <div class="tool-item-desc">Search Engine</div>
+                </a>
+                <a href="https://YouTube.com/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">YouTube</div>
+                    <div class="tool-item-desc">YouTube Explorer</div>
+                </a>
+                <a href="https://translate.google.com" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Google Translate</div>
+                    <div class="tool-item-desc">Quick translation</div>
+                </a>
+                <a href="https://dictionary.cambridge.org/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Cambridge Dictionary</div>
+                    <div class="tool-item-desc">Dictionary UK</div>
+                </a>
+                <a href="https://www.post.gov.tw/post/internet/Postal/index.jsp?ID=207" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">POST Office</div>
+                    <div class="tool-item-desc">Translate in-TW</div>
+                </a>
+                <a href="https://tw.element14.com/temperature-converter" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Temperature Converter</div>
+                    <div class="tool-item-desc">Unit conversion</div>
+                </a>
+                <a href="https://www.nvidia.com/en-us/geforce/drivers/results/229808/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">GeForce Driver</div>
+                    <div class="tool-item-desc">Nvidia WHQL Driver</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ── FASHION Panel ── -->
+        <div id="fashion-panel">
+            <div class="fashion-panel-header">
+                <div class="fashion-panel-title">FASHION &amp; BRANDS</div>
+            </div>
+            <div class="fashion-grid">
+                <a href="https://www.nike.com/tw/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Nike Taiwan</div>
+                    <div class="fashion-item-desc">Authentic sneakers</div>
+                </a>
+                <a href="https://www.adidas.com.tw/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Adidas Taiwan</div>
+                    <div class="fashion-item-desc">Official Taiwan</div>
+                </a>
+                <a href="https://shop.supreme.com/collections/all" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Supreme Official</div>
+                    <div class="fashion-item-desc">Official website</div>
+                </a>
+                <a href="https://humanmade.jp/zh-hant/collections/human-made-%E6%81%A4" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Human Made</div>
+                    <div class="fashion-item-desc">JP Human Made</div>
+                </a>
+                <a href="https://voostore.com/en-as" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">VOO Store</div>
+                    <div class="fashion-item-desc">Berlin Germany</div>
+                </a>
+                <a href="https://twn.mizuno.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Mizuno</div>
+                    <div class="fashion-item-desc">JP Baseball brand Mizuno</div>
+                </a>
+                <a href="https://shop.travisscott.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Fragment – 藤原浩 | Travis Scott</div>
+                    <div class="fashion-item-desc">JTravisScott</div>
+                </a>
+                <a href="https://yakkun-fashion.jp/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">JP Fashion News</div>
+                    <div class="fashion-item-desc">JP Fashion &amp; Sneakers &amp; clothes</div>
+                </a>
+                <a href="https://launches.endclothing.com/product/air-jordan-cj1-t-rexx-ih7971-001" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">End Clothing UK</div>
+                    <div class="fashion-item-desc">United Kingdom Fashion &amp; Sneakers</div>
+                </a>
+                <a href="https://store.unionlosangeles.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Union LA</div>
+                    <div class="fashion-item-desc">Union LA on USA</div>
+                </a>
+                <a href="https://www.uniontokyo.jp/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Union Tokyo</div>
+                    <div class="fashion-item-desc">Union Tokyo on JP</div>
+                </a>
+                <a href="https://www.solefly.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Solefly</div>
+                    <div class="fashion-item-desc">Solefly on USA</div>
+                </a>
+                <a href="https://store.vatokyo.com/collections/all-items" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">VA-Sneakers</div>
+                    <div class="fashion-item-desc">Store on JP</div>
+                </a>
+                <a href="https://www.sneakersnstuff.com/en-int/collections/jordan" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">SNS-Sneakers</div>
+                    <div class="fashion-item-desc">Sneakers on EU</div>
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Theme Toggle Button -->
@@ -4695,7 +5364,7 @@
                 { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website' },
                 { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
                 { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
-                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' }
+                { url: 'https://www.icloud.com/', title: 'PAY$30 on day 10', channel: 'Apple icloud', appleGrid: true }
             ]
         };
 
@@ -4988,8 +5657,94 @@
             const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const safeUrl = item.url.replace(/"/g, '&quot;');
 
+            // Animated iCloud+ icon for iCloud item
+            let appleGridHTML = '';
+            if (item.appleGrid) {
+                appleGridHTML = `<div style="width:52px;height:52px;flex-shrink:0;margin-right:10px;position:relative;display:flex;align-items:center;justify-content:center;">
+                <style>
+                @keyframes icloud-orbit {
+                    from { transform: rotate(0deg) translateX(19px) rotate(0deg); }
+                    to   { transform: rotate(360deg) translateX(19px) rotate(-360deg); }
+                }
+                @keyframes icloud-orbit2 {
+                    from { transform: rotate(120deg) translateX(19px) rotate(-120deg); }
+                    to   { transform: rotate(480deg) translateX(19px) rotate(-480deg); }
+                }
+                @keyframes icloud-orbit3 {
+                    from { transform: rotate(240deg) translateX(19px) rotate(-240deg); }
+                    to   { transform: rotate(600deg) translateX(19px) rotate(-600deg); }
+                }
+                @keyframes icloud-orbit4 {
+                    from { transform: rotate(60deg) translateX(22px) rotate(-60deg); }
+                    to   { transform: rotate(420deg) translateX(22px) rotate(-420deg); }
+                }
+                @keyframes icloud-pulse {
+                    0%,100% { transform: scale(1); }
+                    50% { transform: scale(1.06); }
+                }
+                .icl-wrap { position:relative; width:52px; height:52px; }
+                .icl-center {
+                    position:absolute; top:50%; left:50%;
+                    transform:translate(-50%,-50%);
+                    width:26px; height:26px;
+                    animation: icloud-pulse 3s ease-in-out infinite;
+                }
+                .icl-orb {
+                    position:absolute; top:50%; left:50%;
+                    width:11px; height:11px;
+                    margin:-5.5px 0 0 -5.5px;
+                    border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:7px;
+                }
+                .icl-o1 { animation: icloud-orbit  5s linear infinite; }
+                .icl-o2 { animation: icloud-orbit2 5s linear infinite; }
+                .icl-o3 { animation: icloud-orbit3 5s linear infinite; }
+                .icl-o4 { animation: icloud-orbit4 7s linear infinite; }
+                </style>
+                <div class="icl-wrap">
+                  <!-- Center iCloud SVG cloud -->
+                  <svg class="icl-center" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="cg1" x1="0" y1="0" x2="60" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#70cfff"/>
+                        <stop offset="100%" stop-color="#1a8fff"/>
+                      </linearGradient>
+                      <linearGradient id="cg2" x1="0" y1="0" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a8e6ff" stop-opacity="0.7"/>
+                        <stop offset="100%" stop-color="#5bc8ff" stop-opacity="0.5"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Main cloud body -->
+                    <ellipse cx="30" cy="30" rx="22" ry="14" fill="url(#cg1)"/>
+                    <!-- Left bump -->
+                    <circle cx="14" cy="26" r="10" fill="url(#cg2)"/>
+                    <!-- Right bump -->
+                    <circle cx="38" cy="22" r="13" fill="url(#cg1)" opacity="0.9"/>
+                    <!-- Top center bump -->
+                    <circle cx="24" cy="20" r="11" fill="url(#cg2)"/>
+                    <!-- Shine overlay -->
+                    <ellipse cx="26" cy="18" rx="8" ry="4" fill="white" opacity="0.18"/>
+                  </svg>
+                  <!-- Orbiting icons -->
+                  <div class="icl-orb icl-o1" style="background:linear-gradient(135deg,#4488ff,#2255dd);box-shadow:0 1px 4px rgba(34,85,221,0.4);">
+                    <svg viewBox="0 0 10 8" width="7" height="6" fill="white"><rect x="1" y="2" width="8" height="5" rx="1"/><path d="M3 2V1.5a2 2 0 014 0V2"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o2" style="background:linear-gradient(135deg,#ff6b6b,#ee1111);box-shadow:0 1px 4px rgba(238,17,17,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><circle cx="5" cy="4" r="2.5"/><path d="M1 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="1" fill="none"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o3" style="background:linear-gradient(135deg,#34c759,#248a3d);box-shadow:0 1px 4px rgba(52,199,89,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><rect x="1.5" y="4" width="1.5" height="5" rx="0.5"/><rect x="4.25" y="2" width="1.5" height="7" rx="0.5"/><rect x="7" y="0.5" width="1.5" height="8.5" rx="0.5"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o4" style="background:linear-gradient(135deg,#ff9f0a,#c93400);box-shadow:0 1px 4px rgba(255,159,10,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><path d="M5 1l1.2 2.4L9 3.9 7 5.8l.5 2.7L5 7.2 2.5 8.5 3 5.8 1 3.9l2.8-.5z"/></svg>
+                  </div>
+                </div>
+                </div>`;
+            }
             return `
-                <a href="${safeUrl}" target="_blank" class="dior-list-item">
+                <a href="${safeUrl}" target="_blank" class="dior-list-item" style="${item.appleGrid ? 'align-items:center;' : ''}">
+                    ${appleGridHTML}
                     <div class="dior-list-text">
                         <div class="dior-list-title">${safeTitle}</div>
                         <div class="dior-list-subtitle">${safeChannel}</div>
@@ -7149,6 +7904,64 @@
         }
         window.toggleHistoryFlyout = toggleHistoryFlyout;
 
+    </script>
+
+    <!-- ── AI ASSISTANT Toggle Script ── -->
+    <script>
+        function toggleAIAssistant() {
+            var panel  = document.getElementById('ai-assistant-panel');
+            var toggle = document.getElementById('claudeAiToggle');
+            var isOpen = panel.classList.contains('ai-visible');
+            if (isOpen) {
+                panel.classList.remove('ai-visible');
+                toggle.classList.remove('ai-toggle-active');
+            } else {
+                panel.classList.add('ai-visible');
+                toggle.classList.add('ai-toggle-active');
+            }
+        }
+
+        function toggleFashionPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('fashion-panel');
+            var toggle = document.getElementById('fashionToggle');
+            var isOpen = panel.classList.contains('fashion-open');
+            if (isOpen) {
+                panel.classList.remove('fashion-open');
+                toggle.classList.remove('fashion-active');
+            } else {
+                panel.classList.add('fashion-open');
+                toggle.classList.add('fashion-active');
+            }
+        }
+
+        function toggleToolPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('tool-panel');
+            var toggle = document.getElementById('toolToggle');
+            var isOpen = panel.classList.contains('tool-open');
+            if (isOpen) {
+                panel.classList.remove('tool-open');
+                toggle.classList.remove('tool-active');
+            } else {
+                panel.classList.add('tool-open');
+                toggle.classList.add('tool-active');
+            }
+        }
+
+        function toggleSocialPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('social-panel');
+            var toggle = document.getElementById('socialToggle');
+            var isOpen = panel.classList.contains('social-open');
+            if (isOpen) {
+                panel.classList.remove('social-open');
+                toggle.classList.remove('social-active');
+            } else {
+                panel.classList.add('social-open');
+                toggle.classList.add('social-active');
+            }
+        }
     </script>
     <!-- ══════════════════════════════════════════════════════════════
          HISTORY HOVER PREVIEW 720×480
