@@ -1,45 +1,53 @@
 #!/bin/bash
-# Stream Hub 快速啟動腳本 (Mac/Linux)
+# Stream Hub Quick Launch Script (Mac/Linux)
 
 echo "================================"
-echo "  Stream Hub 正在啟動..."
+echo "  Stream Hub is starting..."
 echo "================================"
 echo
 
-# 切換到腳本所在目錄
+# Change to the directory where this script is located
 cd "$(dirname "$0")"
 
-# 啟動 Python 伺服器（背景執行）
-echo "正在啟動本地伺服器..."
+# Start Python server (run in background)
+echo "Starting local server..."
 python3 -m http.server 8000 &
 SERVER_PID=$!
 
-# 等待 2 秒讓伺服器完全啟動
+# Wait 2 seconds for the server to fully start
 sleep 2
 
-# 自動開啟瀏覽器 - 優先使用 Chrome
-echo "正在開啟 Chrome 瀏覽器..."
+# Auto-open browser - prefer Chrome
+echo "Opening Chrome browser..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # Mac - 優先使用 Chrome
+    # Mac - prefer Chrome
     if [ -d "/Applications/Google Chrome.app" ]; then
         open -a "Google Chrome" http://localhost:8000/Stream-Hub_Ver-161_2_with_98-XP_sound-Smooth-Carousel_Securd.html
     else
-        open http://localhost:8000/Stream-Hub_Ver-169_2_with_98-XP_sound-Smooth-Carousel_Securd.html
+        open http://localhost:8000/Stream-Hub_Ver-178_1_with_98-XP_sound-Smooth-Carousel_Securd.html
     fi
 else
-    # Linux - 優先使用 Chrome
+    # Linux - prefer Chrome
     if command -v google-chrome &> /dev/null; then
+<<<<<<< HEAD
         google-chrome http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html &
     elif command -v chromium-browser &> /dev/null; then
         chromium-browser http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html &
     else
         xdg-open http://localhost:8000/Stream-hub_Ver-169_2_with_98-XP_sound-Smooth-Slide-bar.html
+=======
+        google-chrome http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html &
+    elif command -v chromium-browser &> /dev/null; then
+        chromium-browser http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html &
+    else
+        xdg-open http://localhost:8000/Stream-hub_Ver-169_1_with_98-XP_sound-Smooth-Slide-bar.html
+>>>>>>> 16ce1063c6b40ca04b26c2b3a7e75f4421cd35f5
     fi
 fi
 
 echo
 echo "================================"
-echo "  Stream Hub 已啟動！"
-echo "  伺服器 PID: $SERVER_PID"
-echo "  要停止伺服器請執行: kill $SERVER_PID"
+echo "  Stream Hub is running!"
+echo "  Server PID: $SERVER_PID"
+echo "  To stop the server, run: kill $SERVER_PID"
 echo "================================"

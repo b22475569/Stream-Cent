@@ -7,4 +7,7 @@ git add Amiral-Maverick.JPG
 git commit -m "Add Admiral Maverick photo for Social category"
 
 # 3. Push to your repository
+
+git pull origin main
+git pull --rebase origin main mean force write
 git push origin main

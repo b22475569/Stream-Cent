@@ -20,7 +20,7 @@
             img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://www.google.com https://www.gstatic.com https://api.microlink.io https://*.microlink.io;
             frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.twitch.tv;
             media-src 'self' https://github.com https://raw.githubusercontent.com;
-            connect-src 'self' http://localhost:8765 https://api.microlink.io https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com;
+            connect-src 'self' https://api.microlink.io https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com;
             object-src 'none';
             base-uri 'self';
             form-action 'self';
@@ -683,6 +683,436 @@
         .dior-list-item:hover .dior-list-arrow {
             transform: translateX(5px);
             color: #1d1d1f;
+        }
+
+        /* ToolKit Section */
+        .toolkit-section-header {
+            padding: 22px 30px 10px;
+            border-top: 1px solid #e5e5e5;
+            margin-top: 4px;
+        }
+
+        .toolkit-section-title {
+            font-size: 11px;
+            font-weight: 300;
+            color: #1d1d1f;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-section-sub {
+            font-size: 10px;
+            color: #6e6e73;
+            margin-top: 3px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 12px 18px 20px;
+        }
+
+        .toolkit-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f7;
+            border-radius: 14px;
+            padding: 14px 8px 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: background 0.2s ease, transform 0.15s ease;
+            gap: 6px;
+            min-height: 72px;
+        }
+
+        .toolkit-item:hover {
+            background: #e8e8ed;
+            transform: scale(1.04);
+        }
+
+        .toolkit-item:active {
+            transform: scale(0.97);
+            background: #dcdce0;
+        }
+
+        body.sky-blue-mode .toolkit-item,
+        body.video-mode .toolkit-item {
+            background: rgba(235, 235, 240, 0.9);
+        }
+
+        body.sky-blue-mode .toolkit-item:hover,
+        body.video-mode .toolkit-item:hover {
+            background: rgba(215, 215, 225, 0.95);
+        }
+
+        .toolkit-icon {
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .toolkit-label {
+            font-size: 10px;
+            font-weight: 300;
+            color: #1d1d1f;
+            text-align: center;
+            letter-spacing: 3px;
+            line-height: 1.3;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .toolkit-label-sub {
+            font-size: 8.5px;
+            color: #6e6e73;
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* Claude AI toggle item — active glow */
+        .toolkit-item.ai-toggle-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.ai-toggle-active .toolkit-label,
+        .toolkit-item.ai-toggle-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── AI ASSISTANT Panel ── */
+        #ai-assistant-panel {
+            display: none;
+            overflow: hidden;
+            animation: aiSlideDown 0.28s ease;
+        }
+        #ai-assistant-panel.ai-visible {
+            display: block;
+        }
+        @keyframes aiSlideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ai-panel-inner {
+            padding: 0 18px 16px;
+        }
+        .ai-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(197,160,89,0.35);
+            margin-top: 2px;
+        }
+        .ai-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #c5a059;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .ai-hero-wrap {
+            margin-bottom: 10px;
+            border-radius: 9px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ai-hero-wrap img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+        .ai-hero-caption {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.8);
+            font-size: 8.5px;
+            letter-spacing: 3px;
+            text-align: center;
+            padding: 5px 6px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+        }
+        .ai-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 56px;
+        }
+        .ai-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #c5a059;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(197,160,89,0.2);
+        }
+        .ai-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .ai-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Fashion Toggle Active ── */
+        .toolkit-item.fashion-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.fashion-active .toolkit-label,
+        .toolkit-item.fashion-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Fashion Panel ── */
+        #fashion-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #fashion-panel.fashion-open {
+            display: block;
+            animation: fashionIn 0.25s ease;
+        }
+        @keyframes fashionIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fashion-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(212,115,141,0.35);
+            margin-top: 2px;
+        }
+        .fashion-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #d4738d;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .fashion-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .fashion-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .fashion-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #d4738d;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(212,115,141,0.2);
+        }
+        .fashion-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .fashion-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Tool Toggle Active ── */
+        .toolkit-item.tool-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.tool-active .toolkit-label,
+        .toolkit-item.tool-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Tool Panel ── */
+        #tool-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #tool-panel.tool-open {
+            display: block;
+            animation: toolIn 0.25s ease;
+        }
+        @keyframes toolIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .tool-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(76,175,130,0.35);
+            margin-top: 2px;
+        }
+        .tool-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4caf82;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .tool-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .tool-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #4caf82;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(76,175,130,0.2);
+        }
+        .tool-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .tool-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
+        }
+
+        /* ── Social Toggle Active ── */
+        .toolkit-item.social-active {
+            background: #ffffff !important;
+            border: 1.5px solid #1d1d1f !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .toolkit-item.social-active .toolkit-label,
+        .toolkit-item.social-active .toolkit-label-sub {
+            color: #1d1d1f !important;
+        }
+
+        /* ── Social Panel ── */
+        #social-panel {
+            display: none;
+            padding: 0 18px 16px;
+        }
+        #social-panel.social-open {
+            display: block;
+            animation: socialIn 0.25s ease;
+        }
+        @keyframes socialIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .social-panel-header {
+            padding: 10px 0 8px;
+            border-top: 1px solid rgba(124,140,248,0.35);
+            margin-top: 2px;
+        }
+        .social-panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #7c8cf8;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .social-grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            padding: 10px 9px 8px;
+            text-decoration: none;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            min-height: 54px;
+        }
+        .social-grid-item:hover {
+            background: #e8e8ed;
+            border-color: #7c8cf8;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 12px rgba(124,140,248,0.2);
+        }
+        .social-item-title {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .social-item-desc {
+            font-size: 8.5px;
+            color: #6e6e73;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+            font-weight: 300;
         }
 
         /* History Section in Sidebar */
@@ -3902,7 +4332,7 @@
         <div class="auth-box">
 
             <!-- NEW: Horizon Crop — click photo to open editor -->
-            <div class="auth-icon-wrapper" onclick="openHorizonCrop()" title="Click to crop & position photo">
+            <div class="auth-icon-wrapper" onclick="openHorizonCrop()">
                 <img id="auth-photo" src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
                     data-default-src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/Chipset.png"
                     width="80" height="80"
@@ -4307,6 +4737,317 @@
             }
         </script>
         <div class="dior-list" id="website-sidebar-list"></div>
+
+        <!-- ToolKit Section -->
+        <div class="toolkit-section-header">
+            <div class="toolkit-section-title">ToolKit</div>
+            <div class="toolkit-section-sub">Quick access tools</div>
+        </div>
+        <div class="toolkit-grid" id="toolkitGrid">
+            <div class="toolkit-item" id="claudeAiToggle" onclick="toggleAIAssistant()" style="cursor:pointer;">
+                <span class="toolkit-icon" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;position:relative;">
+                  <style>
+                  @keyframes tk-icloud-orbit {
+                    from { transform: rotate(0deg) translateX(14px) rotate(0deg); }
+                    to   { transform: rotate(360deg) translateX(14px) rotate(-360deg); }
+                  }
+                  @keyframes tk-icloud-orbit2 {
+                    from { transform: rotate(120deg) translateX(14px) rotate(-120deg); }
+                    to   { transform: rotate(480deg) translateX(14px) rotate(-480deg); }
+                  }
+                  @keyframes tk-icloud-orbit3 {
+                    from { transform: rotate(240deg) translateX(14px) rotate(-240deg); }
+                    to   { transform: rotate(600deg) translateX(14px) rotate(-600deg); }
+                  }
+                  @keyframes tk-icloud-orbit4 {
+                    from { transform: rotate(60deg) translateX(17px) rotate(-60deg); }
+                    to   { transform: rotate(420deg) translateX(17px) rotate(-420deg); }
+                  }
+                  @keyframes tk-icloud-pulse {
+                    0%,100% { transform: translate(-50%,-50%) scale(1); }
+                    50%     { transform: translate(-50%,-50%) scale(1.08); }
+                  }
+                  .tk-icl-wrap { position:relative; width:40px; height:40px; }
+                  .tk-icl-center {
+                    position:absolute; top:50%; left:50%;
+                    transform:translate(-50%,-50%);
+                    width:22px; height:16px;
+                    animation: tk-icloud-pulse 3s ease-in-out infinite;
+                  }
+                  .tk-icl-orb {
+                    position:absolute; top:50%; left:50%;
+                    width:9px; height:9px;
+                    margin:-4.5px 0 0 -4.5px;
+                    border-radius:50%;
+                    display:flex; align-items:center; justify-content:center;
+                  }
+                  .tk-icl-o1 { animation: tk-icloud-orbit  5s linear infinite; }
+                  .tk-icl-o2 { animation: tk-icloud-orbit2 5s linear infinite; }
+                  .tk-icl-o3 { animation: tk-icloud-orbit3 5s linear infinite; }
+                  .tk-icl-o4 { animation: tk-icloud-orbit4 7s linear infinite; }
+                  </style>
+                  <div class="tk-icl-wrap">
+                    <svg class="tk-icl-center" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="tk-cg1" x1="0" y1="0" x2="60" y2="44" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stop-color="#70cfff"/>
+                          <stop offset="100%" stop-color="#1a8fff"/>
+                        </linearGradient>
+                        <linearGradient id="tk-cg2" x1="0" y1="0" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stop-color="#a8e6ff" stop-opacity="0.7"/>
+                          <stop offset="100%" stop-color="#5bc8ff" stop-opacity="0.5"/>
+                        </linearGradient>
+                      </defs>
+                      <ellipse cx="30" cy="30" rx="22" ry="14" fill="url(#tk-cg1)"/>
+                      <circle cx="14" cy="26" r="10" fill="url(#tk-cg2)"/>
+                      <circle cx="38" cy="22" r="13" fill="url(#tk-cg1)" opacity="0.9"/>
+                      <circle cx="24" cy="20" r="11" fill="url(#tk-cg2)"/>
+                      <ellipse cx="26" cy="18" rx="8" ry="4" fill="white" opacity="0.22"/>
+                    </svg>
+                    <div class="tk-icl-orb tk-icl-o1" style="background:linear-gradient(135deg,#4488ff,#2255dd);box-shadow:0 1px 4px rgba(34,85,221,0.4);">
+                      <svg viewBox="0 0 10 8" width="6" height="5" fill="white"><rect x="1" y="2" width="8" height="5" rx="1"/><path d="M3 2V1.5a2 2 0 014 0V2"/></svg>
+                    </div>
+                    <div class="tk-icl-orb tk-icl-o2" style="background:linear-gradient(135deg,#ff6b6b,#ee1111);box-shadow:0 1px 4px rgba(238,17,17,0.4);">
+                      <svg viewBox="0 0 10 10" width="6" height="6" fill="white"><circle cx="5" cy="4" r="2.5"/><path d="M1 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="1" fill="none"/></svg>
+                    </div>
+                    <div class="tk-icl-orb tk-icl-o3" style="background:linear-gradient(135deg,#34c759,#248a3d);box-shadow:0 1px 4px rgba(52,199,89,0.4);">
+                      <svg viewBox="0 0 10 10" width="6" height="6" fill="white"><rect x="1.5" y="4" width="1.5" height="5" rx="0.5"/><rect x="4.25" y="2" width="1.5" height="7" rx="0.5"/><rect x="7" y="0.5" width="1.5" height="8.5" rx="0.5"/></svg>
+                    </div>
+                    <div class="tk-icl-orb tk-icl-o4" style="background:linear-gradient(135deg,#ff9f0a,#c93400);box-shadow:0 1px 4px rgba(255,159,10,0.4);">
+                      <svg viewBox="0 0 10 10" width="6" height="6" fill="white"><path d="M5 1l1.2 2.4L9 3.9 7 5.8l.5 2.7L5 7.2 2.5 8.5 3 5.8 1 3.9l2.8-.5z"/></svg>
+                    </div>
+                  </div>
+                </span>
+                <span class="toolkit-label">Claude AI</span>
+                <span class="toolkit-label-sub">Explore</span>
+            </div>
+            <div class="toolkit-item" id="toolToggle" onclick="toggleToolPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">💬</span>
+                <span class="toolkit-label">Tool</span>
+                <span class="toolkit-label-sub">Services</span>
+            </div>
+            <div class="toolkit-item" id="fashionToggle" onclick="toggleFashionPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">🌐</span>
+                <span class="toolkit-label">Fashion</span>
+                <span class="toolkit-label-sub">Brands</span>
+            </div>
+            <div class="toolkit-item" id="socialToggle" onclick="toggleSocialPanel(event)" style="cursor:pointer;">
+                <span class="toolkit-icon">📝</span>
+                <span class="toolkit-label">Social</span>
+                <span class="toolkit-label-sub">Forum</span>
+            </div>
+                        <a href="https://github.com" target="_blank" class="toolkit-item">
+                <span class="toolkit-icon">
+                  <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+                    <defs>
+                      <linearGradient id="apple-icloud" x1="16" y1="2" x2="16" y2="26" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#74D0F8"/>
+                        <stop offset="100%" stop-color="#1B8FE3"/>
+                      </linearGradient>
+                      <filter id="icloud-dropshadow" x="-15%" y="-15%" width="130%" height="150%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+                        <feOffset dx="0" dy="2"/>
+                        <feComposite in2="SourceGraphic" operator="over"/>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.4  0 0 0 0 0.8  0 0 0 0.3 0"/>
+                      </filter>
+                    </defs>
+                    <!-- Apple iCloud exact shape: flat bottom, small left bump, large right bump -->
+                    <path d="
+                      M 7 22
+                      C 3.5 22 1 19.5 1 16.5
+                      C 1 13.8 3 11.6 5.7 11.1
+                      C 5.6 10.8 5.5 10.4 5.5 10
+                      C 5.5 7.2 7.8 5 10.5 5
+                      C 11.6 5 12.6 5.4 13.4 6.0
+                      C 14.4 3.7 16.8 2 19.5 2
+                      C 23.6 2 27 5.4 27 9.5
+                      C 27 9.7 27 9.9 26.9 10.1
+                      C 29.3 10.9 31 13.1 31 15.7
+                      C 31 19.2 28.2 22 24.7 22
+                      Z
+                    " fill="url(#apple-icloud)" filter="url(#icloud-dropshadow)"/>
+                    <!-- Gloss highlight — top left shine -->
+                    <ellipse cx="12" cy="8.5" rx="5.5" ry="2.5" fill="white" opacity="0.45" transform="rotate(-15 12 8.5)"/>
+                  </svg>
+                </span>
+                <span class="toolkit-label">GitHub</span>
+                <span class="toolkit-label-sub">Code</span>
+            </a>
+        </div>
+
+        <!-- ── AI ASSISTANT Panel (toggle via Claude AI icon) ── -->
+        <div id="ai-assistant-panel">
+            <div class="ai-panel-inner">
+                <div class="ai-panel-header">
+                    <div class="ai-panel-title">AI ASSISTANT</div>
+                </div>
+                <div class="ai-hero-wrap">
+                    <img src="https://github.com/b22475569/Demo-PDG-Pr-sident-de-Chip/raw/main/CEO-Chip.JPG" alt="CEO Chip">
+                    <div class="ai-hero-caption">Founder &amp; President – CEO Chip</div>
+                </div>
+                <div class="ai-grid">
+                    <a href="https://claude.ai" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Claude AI</div>
+                        <div class="ai-item-desc">Anthropic's Claude</div>
+                    </a>
+                    <a href="https://www.anthropic.com/" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Host Claude AI</div>
+                        <div class="ai-item-desc">Anthropic's Claude Main</div>
+                    </a>
+                    <a href="https://chatgpt.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">ChatGPT</div>
+                        <div class="ai-item-desc">OpenAI ChatGPT</div>
+                    </a>
+                    <a href="https://grok.x.ai" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Grok3 AI</div>
+                        <div class="ai-item-desc">Elon Musk's Grok</div>
+                    </a>
+                    <a href="https://gemini.google.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Google Gemini</div>
+                        <div class="ai-item-desc">Google's Gemini</div>
+                    </a>
+                    <a href="https://copilot.microsoft.com" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Microsoft Copilot</div>
+                        <div class="ai-item-desc">Microsoft's Copilot</div>
+                    </a>
+                    <a href="https://groq.com/groqcloud" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">Groq AI</div>
+                        <div class="ai-item-desc">AI Agent with program</div>
+                    </a>
+                    <a href="https://base44.com/" class="ai-grid-item" target="_blank">
+                        <div class="ai-item-title">BASE44 AI</div>
+                        <div class="ai-item-desc">Program, APP Generate</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SOCIAL Panel ── -->
+        <div id="social-panel">
+            <div class="social-panel-header">
+                <div class="social-panel-title">PTT‑01 &amp; FORUM</div>
+            </div>
+            <div class="social-grid">
+                <a href="https://www.mobile01.com/" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">Mobile01 Forum</div>
+                    <div class="social-item-desc">Taiwan tech forum</div>
+                </a>
+                <a href="https://forum.gamer.com.tw/B.php?bsn=60030" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">Bahamut Gamer</div>
+                    <div class="social-item-desc">Gaming discussion</div>
+                </a>
+                <a href="https://www.ptt.cc/bbs/Tech_Job/index.html" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">PTT Tech Job</div>
+                    <div class="social-item-desc">Career board</div>
+                </a>
+                <a href="https://www.ptt.cc/bbs/CheerGirlsTW/index.html" class="social-grid-item" target="_blank">
+                    <div class="social-item-title">CheerGirls Korea on PTT</div>
+                    <div class="social-item-desc">CheerGirls Korea on PTT</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ── TOOL Panel ── -->
+        <div id="tool-panel">
+            <div class="tool-panel-header">
+                <div class="tool-panel-title">TOOLS &amp; SERVICES</div>
+            </div>
+            <div class="tool-grid">
+                <a href="https://www.google.com.tw/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Google</div>
+                    <div class="tool-item-desc">Search Engine</div>
+                </a>
+                <a href="https://YouTube.com/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">YouTube</div>
+                    <div class="tool-item-desc">YouTube Explorer</div>
+                </a>
+                <a href="https://translate.google.com" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Google Translate</div>
+                    <div class="tool-item-desc">Quick translation</div>
+                </a>
+                <a href="https://dictionary.cambridge.org/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Cambridge Dictionary</div>
+                    <div class="tool-item-desc">Dictionary UK</div>
+                </a>
+                <a href="https://www.post.gov.tw/post/internet/Postal/index.jsp?ID=207" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">POST Office</div>
+                    <div class="tool-item-desc">Translate in-TW</div>
+                </a>
+                <a href="https://tw.element14.com/temperature-converter" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">Temperature Converter</div>
+                    <div class="tool-item-desc">Unit conversion</div>
+                </a>
+                <a href="https://www.nvidia.com/en-us/geforce/drivers/results/229808/" class="tool-grid-item" target="_blank">
+                    <div class="tool-item-title">GeForce Driver</div>
+                    <div class="tool-item-desc">Nvidia WHQL Driver</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ── FASHION Panel ── -->
+        <div id="fashion-panel">
+            <div class="fashion-panel-header">
+                <div class="fashion-panel-title">FASHION &amp; BRANDS</div>
+            </div>
+            <div class="fashion-grid">
+                <a href="https://www.nike.com/tw/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Nike Taiwan</div>
+                    <div class="fashion-item-desc">Authentic sneakers</div>
+                </a>
+                <a href="https://www.adidas.com.tw/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Adidas Taiwan</div>
+                    <div class="fashion-item-desc">Official Taiwan</div>
+                </a>
+                <a href="https://shop.supreme.com/collections/all" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Supreme Official</div>
+                    <div class="fashion-item-desc">Official website</div>
+                </a>
+                <a href="https://humanmade.jp/zh-hant/collections/human-made-%E6%81%A4" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Human Made</div>
+                    <div class="fashion-item-desc">JP Human Made</div>
+                </a>
+                <a href="https://voostore.com/en-as" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">VOO Store</div>
+                    <div class="fashion-item-desc">Berlin Germany</div>
+                </a>
+                <a href="https://twn.mizuno.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Mizuno</div>
+                    <div class="fashion-item-desc">JP Baseball brand Mizuno</div>
+                </a>
+                <a href="https://shop.travisscott.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Fragment – 藤原浩 | Travis Scott</div>
+                    <div class="fashion-item-desc">JTravisScott</div>
+                </a>
+                <a href="https://yakkun-fashion.jp/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">JP Fashion News</div>
+                    <div class="fashion-item-desc">JP Fashion &amp; Sneakers &amp; clothes</div>
+                </a>
+                <a href="https://launches.endclothing.com/product/air-jordan-cj1-t-rexx-ih7971-001" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">End Clothing UK</div>
+                    <div class="fashion-item-desc">United Kingdom Fashion &amp; Sneakers</div>
+                </a>
+                <a href="https://store.unionlosangeles.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Union LA</div>
+                    <div class="fashion-item-desc">Union LA on USA</div>
+                </a>
+                <a href="https://www.uniontokyo.jp/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Union Tokyo</div>
+                    <div class="fashion-item-desc">Union Tokyo on JP</div>
+                </a>
+                <a href="https://www.solefly.com/" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">Solefly</div>
+                    <div class="fashion-item-desc">Solefly on USA</div>
+                </a>
+                <a href="https://store.vatokyo.com/collections/all-items" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">VA-Sneakers</div>
+                    <div class="fashion-item-desc">Store on JP</div>
+                </a>
+                <a href="https://www.sneakersnstuff.com/en-int/collections/jordan" class="fashion-grid-item" target="_blank">
+                    <div class="fashion-item-title">SNS-Sneakers</div>
+                    <div class="fashion-item-desc">Sneakers on EU</div>
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Theme Toggle Button -->
@@ -4416,53 +5157,128 @@
                 <h2 class="category-title">News &amp; Current Events</h2>
             </div>
 
-            <!-- News Channel Switcher: table-style layout avoids flexbox % padding bug -->
-            <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:nowrap;">
+            <!-- News Channel Switcher: Horizontal Scrollable Thumbnail Carousel -->
+            <style>
+                /* ── News Carousel ─────────────────────────────────────────── */
+                #news-thumb-track {
+                    display: flex;
+                    gap: 10px;
+                    padding: 6px 2px 12px;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    cursor: grab;
+                    scroll-behavior: smooth;
+                    /* Always show horizontal scrollbar so user can drag it */
+                    scrollbar-width: thin;
+                    scrollbar-color: #0071e3 #e0e0e8;
+                    -webkit-overflow-scrolling: touch;
+                    user-select: none;
+                }
+                #news-thumb-track:active { cursor: grabbing; }
+                #news-thumb-track::-webkit-scrollbar { height: 8px; }
+                #news-thumb-track::-webkit-scrollbar-track { background: #e0e0e8; border-radius: 4px; }
+                #news-thumb-track::-webkit-scrollbar-thumb { background: #0071e3; border-radius: 4px; }
+                #news-thumb-track::-webkit-scrollbar-thumb:hover { background: #0059b3; }
 
-                <!-- LEFT: vertical channel buttons -->
-                <div id="news-channel-list" style="flex-shrink:0; width:200px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">📺 Select Channel</div>
-                    <button id="news-btn-0" style="background:#0071e3;color:#fff;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;box-shadow:0 2px 8px rgba(0,113,227,0.35);">▶ Youtube 1</button>
-                    <button id="news-btn-1" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 2</button>
-                    <button id="news-btn-2" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 3</button>
-                    <button id="news-btn-3" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 4</button>
-                    <button id="news-btn-4" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 5</button>
-                    <button id="news-btn-5" style="background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;line-height:1.4;transition:background 0.2s,box-shadow 0.2s;">▶ Youtube 6</button>
-                    <!-- Dot indicators -->
-                    <div style="display:flex;justify-content:center;gap:7px;margin-top:6px;">
-                        <span id="news-dot-0" style="width:9px;height:9px;border-radius:50%;background:#0071e3;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 1"></span>
-                        <span id="news-dot-1" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 2"></span>
-                        <span id="news-dot-2" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 3"></span>
-                        <span id="news-dot-3" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 4"></span>
-                        <span id="news-dot-4" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 5"></span>
-                        <span id="news-dot-5" style="width:9px;height:9px;border-radius:50%;background:#d2d2d7;display:inline-block;cursor:pointer;transition:background 0.2s;" title="Youtube 6"></span>
-                    </div>
-                </div>
+                .news-thumb-card {
+                    flex: 0 0 176px;
+                    width: 176px;
+                    cursor: pointer;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    background: #111;
+                    border: 2.5px solid transparent;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+                    position: relative;
+                }
+                .news-thumb-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
+                .news-thumb-card.active-news-card { border-color: #0071e3; box-shadow: 0 0 0 3px rgba(0,113,227,0.35); }
 
-                <!-- RIGHT: player column — block element, not flex child, so aspect-ratio works correctly -->
-                <div style="flex:1; min-width:0;">
-                    <!-- Now playing label -->
-                    <div style="font-size:13px;color:#6e6e73;font-weight:500;margin-bottom:8px;">
-                        Now playing: <span id="news-now-title" style="color:#0071e3;font-weight:700;">—</span>
-                    </div>
-                    <!-- Player: aspect-ratio:16/9 works in all modern browsers, no padding-% hack needed -->
-                    <div style="width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#111;box-shadow:0 6px 28px rgba(0,0,0,0.22);">
-                        <iframe id="news-stream-iframe"
-                            src="about:blank"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                            allowfullscreen
-                            style="width:100%;height:100%;border:none;display:block;">
-                        </iframe>
-                    </div>
-                    <!-- Slider bar -->
-                    <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
-                        <span style="font-size:11px;color:#6e6e73;white-space:nowrap;">Ch 1</span>
-                        <input type="range" id="news-channel-slider" min="0" max="5" step="1" value="0"
-                            style="flex:1;accent-color:#0071e3;cursor:pointer;height:4px;">
-                        <span style="font-size:11px;color:#6e6e73;white-space:nowrap;">Ch 6</span>
-                    </div>
-                </div>
+                .news-thumb-card img {
+                    display: block;
+                    width: 176px;
+                    height: 144px;
+                    object-fit: cover;
+                    pointer-events: none;
+                }
+                .news-thumb-label {
+                    position: absolute;
+                    bottom: 0; left: 0; right: 0;
+                    background: linear-gradient(transparent, rgba(0,0,0,0.78));
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: 600;
+                    padding: 18px 6px 5px;
+                    line-height: 1.3;
+                    pointer-events: none;
+                }
+                .news-thumb-num {
+                    position: absolute;
+                    top: 5px; left: 6px;
+                    background: rgba(0,113,227,0.85);
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: 700;
+                    border-radius: 5px;
+                    padding: 1px 5px;
+                    pointer-events: none;
+                }
+                .news-play-icon {
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%,-60%);
+                    font-size: 28px;
+                    opacity: 0;
+                    transition: opacity 0.18s;
+                    pointer-events: none;
+                    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+                }
+                .news-thumb-card:hover .news-play-icon { opacity: 1; }
+            </style>
+
+            <!-- Now playing label -->
+            <div style="font-size:13px;color:#6e6e73;font-weight:500;margin-bottom:10px;">
+                Now playing: <span id="news-now-title" style="color:#0071e3;font-weight:700;">—</span>
             </div>
+
+            <!-- Horizontal thumbnail strip with drag scrollbar -->
+            <div id="news-thumb-track"></div>
+
+            <!-- Player below carousel -->
+            <div style="width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#111;box-shadow:0 6px 28px rgba(0,0,0,0.22);margin-top:14px;">
+                <iframe id="news-stream-iframe"
+                    src="about:blank"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowfullscreen
+                    style="width:100%;height:100%;border:none;display:block;">
+                </iframe>
+            </div>
+
+            <!-- Hidden elements kept for JS compatibility -->
+            <div id="news-channel-list" style="display:none;"></div>
+            <input type="range" id="news-channel-slider" min="0" max="9" step="1" value="0" style="display:none;">
+            <script>
+            // Drag-to-scroll on news carousel
+            (function(){
+                var track = document.getElementById('news-thumb-track');
+                var isDown = false, startX, scrollLeft;
+                track.addEventListener('mousedown', function(e){
+                    isDown = true; track.classList.add('active');
+                    startX = e.pageX - track.offsetLeft;
+                    scrollLeft = track.scrollLeft;
+                });
+                track.addEventListener('mouseleave', function(){ isDown = false; });
+                track.addEventListener('mouseup', function(){ isDown = false; });
+                track.addEventListener('mousemove', function(e){
+                    if (!isDown) return;
+                    e.preventDefault();
+                    var x = e.pageX - track.offsetLeft;
+                    var walk = (x - startX) * 1.4;
+                    track.scrollLeft = scrollLeft - walk;
+                });
+            })();
+            </script>
         </div>
     </div>
 
@@ -4548,6 +5364,8 @@
         // Content data organized by category
         const content = {
             life: [
+                { url: 'https://www.youtube.com/embed/Tg9g5rs9bIU', title: '260122-GD France-Gala des Pièces Jaunes', channel: 'francetv'},
+                { url: 'https://www.youtube.com/embed/WfIXP7ygOvE&list=RDWfIXP7ygOvE&start_radio=1', title: '250705 카리나(KARINA) -UP | WATERBOMB SEOUL', channel: 'alan__0317-0'},
                 { url: 'https://www.youtube.com/embed/DTUbR_l7V4A', title: '92-Grandma supervisor in Tokyo, JAPAN', channel: 'Wellness Channel' },
                 { url: 'https://www.youtube.com/embed/0T_IvWjGSjA', title: 'Rossi ride M1 practice onboard on Qatar- 2021', channel: 'Lifestyle Insights' },
                 { url: 'https://www.youtube.com/embed/ycF8oZ8xwDY', title: 'Colleague Wife', channel: 'Life Mastery' },
@@ -4604,7 +5422,10 @@
                 { url: 'https://www.youtube.com/embed/rVKIGulvVhg', title: 'COST  Living Crisis in UK- Market and Grocery store Collapsing', channel: 'Brit Rants' },
                 { url: 'https://www.youtube.com/embed/_HDI_8EInYQ', title: 'I Sleep With Married Men For Money', channel: 'AntonDaniels' },
                 { url: 'https://www.youtube.com/embed/Zc35z9-1GzI', title: 'FLOYD MAYWEATHER ENJOY SHOPING IN MONACO', channel: 'Carspotterdailymonaco'},
-                { url: 'https://www.youtube.com/embed/SD6to7hzv8Q', title: 'DisplayPort™ PHY Compliance Test-Sink-TxRx', channel: 'Teledyne LeCroy' }
+                { url: 'https://www.youtube.com/embed/SD6to7hzv8Q', title: 'DisplayPort™ PHY Compliance Test-Sink-TxRx', channel: 'Teledyne LeCroy' },
+                { url: 'https://www.youtube.com/embed/AbEvpf7swUE', title: 'People Are Taking on Debt Just to Buy Groceries', channel: 'Life priced'},
+                { url: 'https://www.youtube.com/embed/rEpFusqGITk', title: 'There’s a New Kind of Stress to Living in America', channel: 'ahomesteadjourney'},
+                { url: 'https://www.youtube.com/embed/v9aniSQZZZ4', title: 'People Are Waking Up 14 Strange Things Are Happening', channel: 'A Homestead Journey'}
             ],
             website: [
                 { url: 'chrome://history', title: 'History', channel: 'Ctrl+H' },
@@ -4617,11 +5438,7 @@
                 { url: 'https://www.synaptics.com/products/displaylink-graphics/downloads', title: 'DisplayLink Dual Monitor ', channel: 'Official Website' },
                 { url: 'https://www.youtube.com/@tektronix', title: 'tektronix Oscilloscope', channel: 'Youtube Website' },
                 { url: 'https://www.youtube.com/@HiteshCodeLab', title: 'Code teach Session', channel: 'Youtuber Hitesh from India' },
-                { url: 'https://www.icloud.com/', title: 'icloud', channel: 'Apple icloud' },
-                { url: 'https://hamivideo.hinet.net/hamivideo/main/736.do?utm_source=google&utm_medium=pmax&utm_campaign=hamivideo2026_wbc&gad_source=1&gad_campaignid=23538967918&gbraid=0AAAAApI2kVztepyqdSXpsfP5iYGiKm87i&gclid=CjwKCAiAzZ_NBhAEEiwAMtqKy0Arkjdq-6LfOncRRTUPAglOa4be8GfI5IzbrdqdPFY7p8Rdaa4kXhoCB_cQAvD_BwE#tab_2',
-                title: 'Hami', channel: 'Hami Taiwan' },
-                { url: 'https://www.youtube.com/@vlsports', title: 'vlsports', channel: '緯來體育台-vlsport'},
-                { url: 'https://eltaott.tv/purchase/buy#3month', title: 'ELTA', channel: '愛爾達ELTA TV影視'}
+                { url: 'https://www.icloud.com/', title: 'PAY$30 on day 10', channel: 'Apple icloud', appleGrid: true }
             ]
         };
 
@@ -4777,22 +5594,41 @@
         document.getElementById('entertainment-carousel').innerHTML = content.entertainment.map((item, i) => createAppleCard(item, `entertainment-${i}`)).join('');
         document.getElementById('sports-grid').innerHTML = createInsightSuperstar(content.sports);
         // ── News & Current Events: Channel Switcher ─────────────────────────
-        var _newsChannels = (content.news || []).slice(0, 6);
-        while (_newsChannels.length < 6) {
+        var _newsChannels = (content.news || []).slice(0, 10);
+        while (_newsChannels.length < 10) {
             _newsChannels.push({ url: 'https://www.youtube.com/embed/xOuhoIWjyrw', title: 'Breaking News', channel: 'News' });
         }
 
-        // Populate button labels from real data
-        _newsChannels.forEach(function(item, i) {
-            var btn = document.getElementById('news-btn-' + i);
-            if (!btn) return;
-            var short = item.title.length > 30 ? item.title.substring(0, 28) + '…' : item.title;
-            btn.innerHTML = '<small style="opacity:0.65;display:block;font-size:10px;margin-bottom:2px;">▶ Youtube ' + (i+1) + ' — ' + item.channel + '</small>' + short;
-            btn.title = item.title;
-        });
+        // Build horizontal thumbnail carousel cards
+        (function(){
+            var track = document.getElementById('news-thumb-track');
+            if (!track) return;
+            track.innerHTML = '';
+            _newsChannels.forEach(function(item, i) {
+                var vid = null;
+                var m = item.url.match(/(?:embed\/|watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+                if (m) vid = m[1];
+                var thumb = vid
+                    ? 'https://img.youtube.com/vi/' + vid + '/mqdefault.jpg'
+                    : 'https://img.youtube.com/vi/xOuhoIWjyrw/mqdefault.jpg';
+                var shortTitle = item.title.length > 36 ? item.title.substring(0, 34) + '…' : item.title;
+                var card = document.createElement('div');
+                card.className = 'news-thumb-card' + (i === 0 ? ' active-news-card' : '');
+                card.id = 'news-thumb-' + i;
+                card.title = item.title + ' — ' + item.channel;
+                card.innerHTML =
+                    '<img src="' + thumb + '" alt="' + shortTitle.replace(/"/g,'&quot;') + '" width="176" height="144" loading="lazy" ' +
+                    'onerror="this.src=\'https://img.youtube.com/vi/xOuhoIWjyrw/mqdefault.jpg\'">' +
+                    '<span class="news-thumb-num">▶ YT ' + (i+1) + '</span>' +
+                    '<div class="news-thumb-label">' + shortTitle + '</div>' +
+                    '<div class="news-play-icon">▶</div>';
+                card.onclick = function(){ _newsSwitch(i); };
+                track.appendChild(card);
+            });
+        })();
 
         function _newsSwitch(index) {
-            if (index < 0 || index > 5) return;
+            if (index < 0 || index > 9) return;
             var item = _newsChannels[index];
             if (!item) return;
 
@@ -4821,32 +5657,19 @@
             var sl = document.getElementById('news-channel-slider');
             if (sl) sl.value = index;
 
-            // Update button + dot highlights
-            for (var j = 0; j < 6; j++) {
-                var b = document.getElementById('news-btn-' + j);
-                var d = document.getElementById('news-dot-' + j);
-                if (b) {
-                    b.style.background = j === index ? '#0071e3' : '#f0f0f5';
-                    b.style.color      = j === index ? '#ffffff' : '#1d1d1f';
-                    b.style.boxShadow  = j === index ? '0 2px 8px rgba(0,113,227,0.35)' : 'none';
-                }
-                if (d) d.style.background = j === index ? '#0071e3' : '#d2d2d7';
+            // Update thumbnail card highlights
+            for (var j = 0; j < 10; j++) {
+                var c = document.getElementById('news-thumb-' + j);
+                if (c) c.className = 'news-thumb-card' + (j === index ? ' active-news-card' : '');
+            }
+            // Scroll active card into view
+            var activeCard = document.getElementById('news-thumb-' + index);
+            if (activeCard) {
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }
 
-        // Wire up buttons
-        for (var _ni = 0; _ni < 6; _ni++) {
-            (function(idx){
-                var b = document.getElementById('news-btn-' + idx);
-                var d = document.getElementById('news-dot-' + idx);
-                if (b) b.onclick = function(){ _newsSwitch(idx); };
-                if (d) d.onclick = function(){ _newsSwitch(idx); };
-            })(_ni);
-        }
-
-        // Wire up slider
-        var _newsSl = document.getElementById('news-channel-slider');
-        if (_newsSl) _newsSl.oninput = function(){ _newsSwitch(parseInt(this.value, 10)); };
+        // (Thumbnail cards are wired up in the card builder above; legacy slider hidden)
 
         // Auto-load channel 1 on start
         _newsSwitch(0);
@@ -4908,8 +5731,94 @@
             const safeChannel = item.channel.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const safeUrl = item.url.replace(/"/g, '&quot;');
 
+            // Animated iCloud+ icon for iCloud item
+            let appleGridHTML = '';
+            if (item.appleGrid) {
+                appleGridHTML = `<div style="width:52px;height:52px;flex-shrink:0;margin-right:10px;position:relative;display:flex;align-items:center;justify-content:center;">
+                <style>
+                @keyframes icloud-orbit {
+                    from { transform: rotate(0deg) translateX(19px) rotate(0deg); }
+                    to   { transform: rotate(360deg) translateX(19px) rotate(-360deg); }
+                }
+                @keyframes icloud-orbit2 {
+                    from { transform: rotate(120deg) translateX(19px) rotate(-120deg); }
+                    to   { transform: rotate(480deg) translateX(19px) rotate(-480deg); }
+                }
+                @keyframes icloud-orbit3 {
+                    from { transform: rotate(240deg) translateX(19px) rotate(-240deg); }
+                    to   { transform: rotate(600deg) translateX(19px) rotate(-600deg); }
+                }
+                @keyframes icloud-orbit4 {
+                    from { transform: rotate(60deg) translateX(22px) rotate(-60deg); }
+                    to   { transform: rotate(420deg) translateX(22px) rotate(-420deg); }
+                }
+                @keyframes icloud-pulse {
+                    0%,100% { transform: scale(1); }
+                    50% { transform: scale(1.06); }
+                }
+                .icl-wrap { position:relative; width:52px; height:52px; }
+                .icl-center {
+                    position:absolute; top:50%; left:50%;
+                    transform:translate(-50%,-50%);
+                    width:26px; height:26px;
+                    animation: icloud-pulse 3s ease-in-out infinite;
+                }
+                .icl-orb {
+                    position:absolute; top:50%; left:50%;
+                    width:11px; height:11px;
+                    margin:-5.5px 0 0 -5.5px;
+                    border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:7px;
+                }
+                .icl-o1 { animation: icloud-orbit  5s linear infinite; }
+                .icl-o2 { animation: icloud-orbit2 5s linear infinite; }
+                .icl-o3 { animation: icloud-orbit3 5s linear infinite; }
+                .icl-o4 { animation: icloud-orbit4 7s linear infinite; }
+                </style>
+                <div class="icl-wrap">
+                  <!-- Center iCloud SVG cloud -->
+                  <svg class="icl-center" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="cg1" x1="0" y1="0" x2="60" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#70cfff"/>
+                        <stop offset="100%" stop-color="#1a8fff"/>
+                      </linearGradient>
+                      <linearGradient id="cg2" x1="0" y1="0" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a8e6ff" stop-opacity="0.7"/>
+                        <stop offset="100%" stop-color="#5bc8ff" stop-opacity="0.5"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Main cloud body -->
+                    <ellipse cx="30" cy="30" rx="22" ry="14" fill="url(#cg1)"/>
+                    <!-- Left bump -->
+                    <circle cx="14" cy="26" r="10" fill="url(#cg2)"/>
+                    <!-- Right bump -->
+                    <circle cx="38" cy="22" r="13" fill="url(#cg1)" opacity="0.9"/>
+                    <!-- Top center bump -->
+                    <circle cx="24" cy="20" r="11" fill="url(#cg2)"/>
+                    <!-- Shine overlay -->
+                    <ellipse cx="26" cy="18" rx="8" ry="4" fill="white" opacity="0.18"/>
+                  </svg>
+                  <!-- Orbiting icons -->
+                  <div class="icl-orb icl-o1" style="background:linear-gradient(135deg,#4488ff,#2255dd);box-shadow:0 1px 4px rgba(34,85,221,0.4);">
+                    <svg viewBox="0 0 10 8" width="7" height="6" fill="white"><rect x="1" y="2" width="8" height="5" rx="1"/><path d="M3 2V1.5a2 2 0 014 0V2"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o2" style="background:linear-gradient(135deg,#ff6b6b,#ee1111);box-shadow:0 1px 4px rgba(238,17,17,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><circle cx="5" cy="4" r="2.5"/><path d="M1 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="1" fill="none"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o3" style="background:linear-gradient(135deg,#34c759,#248a3d);box-shadow:0 1px 4px rgba(52,199,89,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><rect x="1.5" y="4" width="1.5" height="5" rx="0.5"/><rect x="4.25" y="2" width="1.5" height="7" rx="0.5"/><rect x="7" y="0.5" width="1.5" height="8.5" rx="0.5"/></svg>
+                  </div>
+                  <div class="icl-orb icl-o4" style="background:linear-gradient(135deg,#ff9f0a,#c93400);box-shadow:0 1px 4px rgba(255,159,10,0.4);">
+                    <svg viewBox="0 0 10 10" width="7" height="7" fill="white"><path d="M5 1l1.2 2.4L9 3.9 7 5.8l.5 2.7L5 7.2 2.5 8.5 3 5.8 1 3.9l2.8-.5z"/></svg>
+                  </div>
+                </div>
+                </div>`;
+            }
             return `
-                <a href="${safeUrl}" target="_blank" class="dior-list-item">
+                <a href="${safeUrl}" target="_blank" class="dior-list-item" style="${item.appleGrid ? 'align-items:center;' : ''}">
+                    ${appleGridHTML}
                     <div class="dior-list-text">
                         <div class="dior-list-title">${safeTitle}</div>
                         <div class="dior-list-subtitle">${safeChannel}</div>
@@ -4945,7 +5854,7 @@
 
                 const isTallCard = (idx === 0 || idx === 7);
                 const displayToggle = isTallCard ? `
-                    <div class="insight-display-toggle" title="Change Display Orientation"
+                    <div class="insight-display-toggle"
                          onclick="event.stopPropagation(); toggleInsightOrientation(this.parentElement)">🔄</div>` : '';
 
                 // hover-preview only on small cards; vid may be null for non-YouTube
@@ -6408,14 +7317,33 @@
     </script>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         CHROME HISTORY INTEGRATION
-         Fetches from local Python server: http://localhost:8765/history
-         ✅ NEW: loadChromeHistory(), renderChromeHistory(),
-                 faviconUrl(), clearChromeHistoryView()
-         ✅ NOTHING in existing functions was revised.
+         CHROME HISTORY INTEGRATION  ★ ONLINE MODE (Ver 178.2)
+         Strategy: chrome.history API  (requires the companion
+         Chrome Extension "StreamHub History Bridge" to be installed
+         and active).  The extension injects window.__streamhub_history
+         with the real history rows, then dispatches a CustomEvent
+         'streamhub:history' so the page knows data is ready.
+
+         Fallback chain:
+           1. chrome.history via Extension message bridge
+           2. window.__streamhub_history  (injected by extension)
+           3. localStorage stream_hub_history_v1  (Hub's own tracking)
+           4. Friendly install-guide shown in the flyout
+
+         ✅ loadChromeHistory(), renderChromeHistory(),
+            faviconUrl(), clearChromeHistoryView()  — all updated.
+         ✅ ALL other existing functions untouched.
          ═══════════════════════════════════════════════════════════════ -->
     <script>
-        const CHROME_SERVER = 'http://localhost:8765';
+        /* ── Extension bridge config ─────────────────────────────────────
+           The companion extension listens on window for
+           'streamhub:request_history' and replies by setting
+           window.__streamhub_history and firing 'streamhub:history'.
+           Extension ID is declared here so it can be swapped easily.   */
+        const CHROME_EXT_EVENT_REQ  = 'streamhub:request_history';
+        const CHROME_EXT_EVENT_RESP = 'streamhub:history';
+        /* legacy constant kept so no other code breaks */
+        const CHROME_SERVER = null;
 
         /* ── OG / Microlink thumbnail helper ────────────────────────── */
         /* Returns a Microlink screenshot URL for any site.            */
@@ -6997,48 +7925,103 @@
                 </div>`).join('');
         }
 
-        /* ── Fetch Chrome history from local Python server ───────────── */
+        /* ── Fetch Chrome history via Extension bridge (online mode) ─── */
         async function loadChromeHistory() {
-            const list = document.getElementById('history-sidebar-list');
+            const list   = document.getElementById('history-sidebar-list');
             const search = (document.getElementById('chromeHistorySearch') || {}).value || '';
 
-            setHistoryStatus('loading', 'Loading…', '');
-            if (list) list.innerHTML = '<div class="history-flyout-empty">⏳ Fetching Chrome history…</div>';
+            setHistoryStatus('loading', 'Synchronising…', '');
+            if (list) list.innerHTML = '<div class="history-flyout-empty">⏳ Synchronising Chrome history…</div>';
 
-            const url = `${CHROME_SERVER}/history?limit=500${search ? '&search=' + encodeURIComponent(search) : ''}`;
+            /* ── Attempt 1: Extension event bridge ──────────────────────
+               The companion extension listens for this CustomEvent,
+               queries chrome.history.search(), then replies by setting
+               window.__streamhub_history and firing CHROME_EXT_EVENT_RESP. */
+            const rows = await new Promise(resolve => {
+                let settled = false;
 
-            try {
-                const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-                if (!res.ok) throw new Error(`Server returned ${res.status}`);
-                const data = await res.json();
-
-                if (data.error) {
-                    setHistoryStatus('error', 'Error: ' + data.error, '');
-                    if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
-                        ⚠️ ${data.error}<br><br>
-                        Make sure:<br>
-                        1. Chrome is <strong>closed</strong><br>
-                        2. Python server is running:<br>
-                        <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px">
-                        python chrome_history_server.py</code>
-                    </div>`;
-                    return;
+                function onExtReply(e) {
+                    if (settled) return;
+                    settled = true;
+                    window.removeEventListener(CHROME_EXT_EVENT_RESP, onExtReply);
+                    resolve((e.detail && e.detail.rows) ? e.detail.rows : null);
                 }
 
-                setHistoryStatus('live', 'Connected · Chrome History', `${data.count} sites`);
-                renderChromeHistory(data.rows);
+                window.addEventListener(CHROME_EXT_EVENT_RESP, onExtReply);
 
-            } catch (err) {
-                setHistoryStatus('error', 'Server offline', '');
-                if (list) list.innerHTML = `<div class="history-flyout-empty" style="color:#ff3b30">
-                    ❌ Cannot connect to local server.<br><br>
-                    <strong>Step 1</strong> — Close Chrome<br>
-                    <strong>Step 2</strong> — Open Command Prompt and run:<br>
-                    <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:6px;color:#1d1d1f">
-                    python chrome_history_server.py</code><br><br>
-                    Then click the History menu again.
-                </div>`;
+                /* Dispatch the request with optional search text */
+                window.dispatchEvent(new CustomEvent(CHROME_EXT_EVENT_REQ, {
+                    detail: { limit: 500, search: search }
+                }));
+
+                /* Timeout — fall through to next attempt after 2.5 s */
+                setTimeout(() => {
+                    if (!settled) {
+                        settled = true;
+                        window.removeEventListener(CHROME_EXT_EVENT_RESP, onExtReply);
+                        resolve(null);
+                    }
+                }, 2500);
+            });
+
+            /* ── Attempt 2: window.__streamhub_history (injected by ext) */
+            const fromInject = (!rows && window.__streamhub_history)
+                ? window.__streamhub_history
+                : null;
+
+            /* ── Attempt 3: Hub's own localStorage tracking ────────────── */
+            let fromStorage = null;
+            if (!rows && !fromInject) {
+                try {
+                    const raw = localStorage.getItem('stream_hub_history_v1');
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed) && parsed.length) {
+                            fromStorage = parsed.map(h => ({
+                                url:         h.url || '',
+                                title:       h.title || h.url || '',
+                                last_visit:  h.time || h.last_visit || new Date().toISOString(),
+                                visit_count: h.visit_count || 1
+                            }));
+                        }
+                    }
+                } catch (_) {}
             }
+
+            const finalRows = rows || fromInject || fromStorage;
+
+            if (finalRows && finalRows.length > 0) {
+                const src = rows ? 'Chrome · Synchronised' : fromInject ? 'Chrome · Injected' : 'Hub · Local';
+                setHistoryStatus('live', src, `${finalRows.length} sites`);
+
+                /* Filter by search term if extension didn't do it server-side */
+                let display = finalRows;
+                if (search && !rows) {
+                    const q = search.toLowerCase();
+                    display = finalRows.filter(r =>
+                        (r.url || '').toLowerCase().includes(q) ||
+                        (r.title || '').toLowerCase().includes(q)
+                    );
+                }
+                renderChromeHistory(display);
+                return;
+            }
+
+            /* ── No data at all — show install guide ─────────────────── */
+            setHistoryStatus('error', '擴充功能未連接', '');
+            if (list) list.innerHTML = `
+                <div class="history-flyout-empty" style="color:#ff3b30;line-height:1.7">
+                    🔌 <strong>尚未連接 Chrome 擴充功能</strong><br><br>
+                    請依照以下步驟啟用同步：<br><br>
+                    <strong>Step 1</strong> — 開啟 Chrome，前往<br>
+                    <code style="font-size:10px;background:#f0f0f0;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:4px;color:#1d1d1f">
+                    chrome://extensions</code><br><br>
+                    <strong>Step 2</strong> — 啟用「StreamHub History Bridge」<br><br>
+                    <strong>Step 3</strong> — 重新整理此頁面，再按 History<br><br>
+                    <span style="font-size:11px;color:#8e8e93">
+                        ℹ️ 安裝說明請見附件 SOP 文件
+                    </span>
+                </div>`;
         }
 
         /* ── Clear the visible list (does NOT delete real Chrome history) */
@@ -7069,6 +8052,64 @@
         }
         window.toggleHistoryFlyout = toggleHistoryFlyout;
 
+    </script>
+
+    <!-- ── AI ASSISTANT Toggle Script ── -->
+    <script>
+        function toggleAIAssistant() {
+            var panel  = document.getElementById('ai-assistant-panel');
+            var toggle = document.getElementById('claudeAiToggle');
+            var isOpen = panel.classList.contains('ai-visible');
+            if (isOpen) {
+                panel.classList.remove('ai-visible');
+                toggle.classList.remove('ai-toggle-active');
+            } else {
+                panel.classList.add('ai-visible');
+                toggle.classList.add('ai-toggle-active');
+            }
+        }
+
+        function toggleFashionPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('fashion-panel');
+            var toggle = document.getElementById('fashionToggle');
+            var isOpen = panel.classList.contains('fashion-open');
+            if (isOpen) {
+                panel.classList.remove('fashion-open');
+                toggle.classList.remove('fashion-active');
+            } else {
+                panel.classList.add('fashion-open');
+                toggle.classList.add('fashion-active');
+            }
+        }
+
+        function toggleToolPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('tool-panel');
+            var toggle = document.getElementById('toolToggle');
+            var isOpen = panel.classList.contains('tool-open');
+            if (isOpen) {
+                panel.classList.remove('tool-open');
+                toggle.classList.remove('tool-active');
+            } else {
+                panel.classList.add('tool-open');
+                toggle.classList.add('tool-active');
+            }
+        }
+
+        function toggleSocialPanel(e) {
+            if (e) e.preventDefault();
+            var panel  = document.getElementById('social-panel');
+            var toggle = document.getElementById('socialToggle');
+            var isOpen = panel.classList.contains('social-open');
+            if (isOpen) {
+                panel.classList.remove('social-open');
+                toggle.classList.remove('social-active');
+            } else {
+                panel.classList.add('social-open');
+                toggle.classList.add('social-active');
+            }
+        }
     </script>
     <!-- ══════════════════════════════════════════════════════════════
          HISTORY HOVER PREVIEW 720×480
